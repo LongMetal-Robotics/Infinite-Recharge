@@ -10,6 +10,10 @@ package frc.robot;
 import java.io.File;
 import java.util.Scanner;
 
+import org.longmetal.DriveTrain;
+import org.longmetal.Input;
+import org.longmetal.Constants;
+
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -30,7 +34,6 @@ public class Robot extends TimedRobot {
 
   Input input;
   DriveTrain driveTrain;
-  Arduino status;
 
   SendableChooser<Boolean> chooserQuinnDrive;
 
@@ -73,16 +76,14 @@ public class Robot extends TimedRobot {
           e.printStackTrace();
       }
 
-      input = new Input(Constants.kLEFT_STICK, Constants.kRIGHT_STICK);
+      input = new Input();
       driveTrain = new DriveTrain();
-      status = new Arduino();
 
       chooserQuinnDrive = new SendableChooser<>();
       chooserQuinnDrive.setDefaultOption("Disabled", false);
       chooserQuinnDrive.addOption("Enabled", true);
       SmartDashboard.putData("Quinn Drive Chooser", chooserQuinnDrive);
     }
-      }
 
   /**
    * This function is called every robot packet, no matter the mode. Use
@@ -111,18 +112,12 @@ public class Robot extends TimedRobot {
     if (forwardDrive && forwardDrive != lastForwardDrive && !reverseDrive) { // If it is pressed and it changed and both aren't pressed
         // Set forward drive
         driveTrain.setReverseDrive(false);
-        if (status.isReady()) {
-            status.sendStatus(Status.FORWARD);
-        }
     }
     lastForwardDrive = forwardDrive;
 
     if (reverseDrive && reverseDrive != lastReverseDrive && !forwardDrive) { // If it is pressed and it changed and both aren't pressed
         // Set reverse drive
         driveTrain.setReverseDrive(true);
-      if (status.isReady()) {
-            status.sendStatus(Status.BACKWARD);
-        }
     }
     lastReverseDrive = reverseDrive;
 
@@ -168,9 +163,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    if (status.isReady()) {
-      status.sendStatus(Status.ENABLED);
-    }
 
     driveTrain.curve(input.forwardStick.getY(),
       input.forwardStick.getThrottle(),
