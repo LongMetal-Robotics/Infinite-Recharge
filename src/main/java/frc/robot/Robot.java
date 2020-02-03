@@ -7,6 +7,14 @@
 
 package frc.robot;
 
+import java.io.File;
+import java.util.Scanner;
+
+import org.longmetal.DriveTrain;
+import org.longmetal.Input;
+import org.longmetal.Constants;
+
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,6 +32,15 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
+  Input input;
+  DriveTrain driveTrain;
+
+  SendableChooser<Boolean> chooserQuinnDrive;
+
+  boolean lastQuinnDrive = false;
+  boolean lastForwardDrive = false;
+  boolean lastReverseDrive = false;
+
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -33,7 +50,40 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
-  }
+
+    try {
+      File file = new File(Filesystem.getDeployDirectory(), "branch.txt");
+      Scanner fs = new Scanner(file);
+      String branch = "unknown",
+          commit = "unknown";
+
+      if (fs.hasNextLine()) {
+          branch = fs.nextLine();
+      }
+
+      file = new File(Filesystem.getDeployDirectory(), "commit.txt");
+      fs.close();
+      fs = new Scanner(file);
+
+      if (fs.hasNextLine()) {
+          commit = fs.nextLine();
+      }
+
+      System.out.println("Commit " + commit + " or later (branch '" + branch + "')");
+      fs.close();
+      } catch (Exception e) {
+          System.out.println("Could not determine commit or branch. (" + e.getLocalizedMessage() + ") Trace:");
+          e.printStackTrace();
+      }
+
+      input = new Input();
+      driveTrain = new DriveTrain();
+
+      chooserQuinnDrive = new SendableChooser<>();
+      chooserQuinnDrive.setDefaultOption("Disabled", false);
+      chooserQuinnDrive.addOption("Enabled", true);
+      SmartDashboard.putData("Quinn Drive Chooser", chooserQuinnDrive);
+    }
 
   /**
    * This function is called every robot packet, no matter the mode. Use
@@ -45,6 +95,33 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+
+    SmartDashboard.putData("Drive Train", driveTrain.driveTrain);
+    SmartDashboard.putBoolean("Quinn Drive", input.isQuinnDrive());
+    boolean quinnDrive = (Boolean)chooserQuinnDrive.getSelected();
+    if (quinnDrive != lastQuinnDrive) {
+        input.setQuinnDrive(quinnDrive);
+    }
+    lastQuinnDrive = quinnDrive;
+
+    // Reverse Drive mode
+
+    boolean forwardDrive = input.forwardStick.getRawButtonPressed(Constants.kFORWARD_BUTTON);
+    boolean reverseDrive = input.forwardStick.getRawButton(Constants.kREVERSE_BUTTON);
+
+    if (forwardDrive && forwardDrive != lastForwardDrive && !reverseDrive) { // If it is pressed and it changed and both aren't pressed
+        // Set forward drive
+        driveTrain.setReverseDrive(false);
+    }
+    lastForwardDrive = forwardDrive;
+
+    if (reverseDrive && reverseDrive != lastReverseDrive && !forwardDrive) { // If it is pressed and it changed and both aren't pressed
+        // Set reverse drive
+        driveTrain.setReverseDrive(true);
+    }
+    lastReverseDrive = reverseDrive;
+
+    SmartDashboard.putBoolean("Reverse Drive", driveTrain.getReverseDrive());
   }
 
   /**
@@ -86,6 +163,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+
+    driveTrain.curve(input.forwardStick.getY(),
+      input.forwardStick.getThrottle(),
+      input.turnStick.getTwist(),
+      input.turnStick.getThrottle());
   }
 
   /**
