@@ -11,6 +11,9 @@ public class Constants {
     public static final int kP_FRONT_LEFT = 1;
     public static final int kP_REAR_RIGHT = 4;
     public static final int kP_FRONT_RIGHT = 3;
+    public static final int kP_INTAKE = 7;
+    public static final int kP_TRANSPORT = 8;
+
 
     // Input
     public static final double kINPUT_DEADBAND = 0.1;   // If the value hasn't changed by more than this much we'll ignore it
