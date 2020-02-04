@@ -11,6 +11,8 @@ public class Constants {
     public static final int kP_FRONT_LEFT = 1;
     public static final int kP_REAR_RIGHT = 4;
     public static final int kP_FRONT_RIGHT = 3;
+    public static final int kP_WINCH1 = 5;
+    public static final int kP_WINCH2 = 6;
 
     // Input
     public static final double kINPUT_DEADBAND = 0.1;   // If the value hasn't changed by more than this much we'll ignore it
@@ -19,4 +21,8 @@ public class Constants {
     public static final int kP_RIGHT_STICK = 1; // Right joystick port
     public static final int kFORWARD_BUTTON = 5;    // Forward button
     public static final int kREVERSE_BUTTON = 3;    // Reverse button
+
+    //Solenoid Channels
+    public static final int kC_CLIMB1 = 0;
+    public static final int kC_CLIMB2 = 1;
 }
