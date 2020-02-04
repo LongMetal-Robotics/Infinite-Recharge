@@ -77,6 +77,7 @@ task preBuild (type:Exec) {
             workingDir './src/main/deploy'
             commandLine 'bash', '-c', '"var=`git show | grep commit`;echo ${var:7:7}>commit.txt;var=`git status | grep branch -m 1`;echo ${var:10}>branch.txt"'
             break;
+            
         case 'unix':
             commandLine 'echo', 'Running on UNIX (cannot deploy), ignoring branch and commit'
             break;
