@@ -4,9 +4,9 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.ColorSensorV3;
 
 public class ControlPanel {
-    private TalonSRX tSRX;
-    private DoubleSolenoid dSolenoid;
-    private ColorSensorV3 csensorV3;
+    private TalonSRX spinner;
+    private DoubleSolenoid rotator;
+    private ColorSensorV3 csensor;
 
     private static boolean enabled = true;
     private boolean initialized = false;
@@ -26,8 +26,8 @@ public class ControlPanel {
 
     public void init() 
     {
-        //csensorV3 = new ColorSensorV3
-        //tSRX = new TalonSRX(Constants.kP_CONTROLPANEL);
+        //csensor = new ColorSensorV3
+        //spinner = new TalonSRX(Constants.kP_CONTROLPANEL);
         //Note colorsensor has its own port but idk how to access it.
         initialized = true;
     }
