@@ -29,7 +29,7 @@ public class Constants {
     // CAN IDs
     public static final int kP_WINCH1 = 5;
     public static final int kP_WINCH2 = 6;
-    
+
     // Manipulator
     // CAN IDs
     public static final int kP_INTAKE = 7;
