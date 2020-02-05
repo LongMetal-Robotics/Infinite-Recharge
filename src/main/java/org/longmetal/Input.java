@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.Joystick;
 
 public class Input {
     private int leftStickPortInit, rightStickPortInit;
-    public Joystick forwardStick, turnStick/*, gamepad*/;
+    public Joystick forwardStick, turnStick /*, gamepad*/;
     private boolean isQuinnDrive = false;
 
     public Input() {
