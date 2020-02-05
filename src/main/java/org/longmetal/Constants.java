@@ -18,7 +18,7 @@ public class Constants {
     // Drive joysticks
     public static final int kP_LEFT_STICK = 0; // Left joystick port
     public static final int kP_RIGHT_STICK = 1; // Right joystick port
-  
+
     public static final int kFORWARD_BUTTON = 5; // Forward button
     public static final int kREVERSE_BUTTON = 3; // Reverse button
 
