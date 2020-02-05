@@ -1,16 +1,14 @@
-  
 package org.longmetal.util;
 
-/**
- * A simple class for grouping two values together into an object
- */
+/** A simple class for grouping two values together into an object */
 public class Dual<Type> {
     private Type a;
     private Type b;
 
     /**
      * Constructor
-     * @param a 
+     *
+     * @param a
      * @param b
      */
     public Dual(Type a, Type b) {
@@ -20,6 +18,7 @@ public class Dual<Type> {
 
     /**
      * Getter for a
+     *
      * @return the value of a
      */
     public Type geta() {
@@ -28,6 +27,7 @@ public class Dual<Type> {
 
     /**
      * Getter for b
+     *
      * @return the value of b
      */
     public Type getb() {
@@ -36,6 +36,7 @@ public class Dual<Type> {
 
     /**
      * Setter for a
+     *
      * @param a the value to store to a
      */
     public void seta(Type a) {
@@ -44,6 +45,7 @@ public class Dual<Type> {
 
     /**
      * Setter for b
+     *
      * @param b the value to store to b
      */
     public void setb(Type b) {

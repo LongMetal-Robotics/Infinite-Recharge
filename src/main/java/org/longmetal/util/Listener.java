@@ -7,8 +7,11 @@ public class Listener {
 
     /**
      * Create a Listener with an initial value of false
-     * @param onTrue is called during the {@link #update(boolean) update} method if the value changes to true
-     * @param onFalse is called during the {@link #update(boolean) update} method if the value changes to false
+     *
+     * @param onTrue is called during the {@link #update(boolean) update} method if the value
+     *     changes to true
+     * @param onFalse is called during the {@link #update(boolean) update} method if the value
+     *     changes to false
      */
     public Listener(Runnable onTrue, Runnable onFalse) {
         this(onTrue, onFalse, false);
@@ -16,9 +19,13 @@ public class Listener {
 
     /**
      * Create a Listener
-     * @param onTrue is called during the {@link #update(boolean) update} method if the value changes to true
-     * @param onFalse is called during the {@link #update(boolean) update} method if the value changes to false
-     * @param initValue is the value initally stored; it is what is the new value is compared to in the {@link #update(boolean) update} method
+     *
+     * @param onTrue is called during the {@link #update(boolean) update} method if the value
+     *     changes to true
+     * @param onFalse is called during the {@link #update(boolean) update} method if the value
+     *     changes to false
+     * @param initValue is the value initally stored; it is what is the new value is compared to in
+     *     the {@link #update(boolean) update} method
      */
     public Listener(Runnable onTrue, Runnable onFalse, boolean initValue) {
         this.onTrue = onTrue;
@@ -28,6 +35,7 @@ public class Listener {
 
     /**
      * Listen for a change in the value. Runs the appropriate Runnable if the value changed
+     *
      * @param newValue is the value to check for a change
      * @return a boolean which is true if a Runnable was run
      */
@@ -41,7 +49,7 @@ public class Listener {
                 } else {
                     somethingRan = false;
                 }
-            } else {        // If the new value is false
+            } else { // If the new value is false
                 if (onFalse != null) {
                     onFalse.run();
                 } else {
@@ -49,7 +57,7 @@ public class Listener {
                 }
             }
         }
-        oldValue = newValue;    // Save the new value to compare the next time
+        oldValue = newValue; // Save the new value to compare the next time
         return somethingRan;
     }
 }
