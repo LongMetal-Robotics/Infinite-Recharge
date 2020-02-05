@@ -1,7 +1,8 @@
 package org.longmetal;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
+
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.ColorSensorV3;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 public class ControlPanel {
     private TalonSRX spinner;
@@ -11,27 +12,20 @@ public class ControlPanel {
     private static boolean enabled = true;
     private boolean initialized = false;
 
-    public ControlPanel(boolean setEnabled)
-    {
+    public ControlPanel(boolean setEnabled) {
         enabled = setEnabled;
-        if (enabled) 
-        {
+        if (enabled) {
             init();
-        } 
-        else 
-        {
-            System.out.println("[WARN]\tShooter wasn't enabled on startup. You must call init() on it later to use it.");
+        } else {
+            System.out.println(
+                    "[WARN]\tShooter wasn't enabled on startup. You must call init() on it later to use it.");
         }
     }
 
-    public void init() 
-    {
-        //csensor = new ColorSensorV3
-        //spinner = new TalonSRX(Constants.kP_CONTROLPANEL);
-        //Note colorsensor has its own port but idk how to access it.
+    public void init() {
+        // csensor = new ColorSensorV3
+        // spinner = new TalonSRX(Constants.kP_CONTROLPANEL);
+        // Note colorsensor has its own port but idk how to access it.
         initialized = true;
     }
-
 }
-
-
