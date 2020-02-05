@@ -11,6 +11,7 @@ public class Constants {
     public static final int kP_FRONT_LEFT = 1;
     public static final int kP_REAR_RIGHT = 4;
     public static final int kP_FRONT_RIGHT = 3;
+    public static final int kP_DRUM = 9;
 
     // Input
     public static final double kINPUT_DEADBAND =
