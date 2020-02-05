@@ -11,7 +11,6 @@ public class Constants {
     public static final int kP_FRONT_LEFT = 1;
     public static final int kP_REAR_RIGHT = 4;
     public static final int kP_FRONT_RIGHT = 3;
-    public static final int kP_DRUM = 9;
 
     // Input
     public static final double kINPUT_DEADBAND =
@@ -27,7 +26,13 @@ public class Constants {
     // Solenoid Channels
     public static final int kC_CLIMB1 = 0;
     public static final int kC_CLIMB2 = 1;
-    // Motor Ports
+    // CAN IDs
     public static final int kP_WINCH1 = 5;
     public static final int kP_WINCH2 = 6;
+
+    // Manipulator
+    // CAN IDs
+    public static final int kP_INTAKE = 7;
+    public static final int kP_TRANSPORT = 8;
+    public static final int kP_DRUM = 9;
 }
