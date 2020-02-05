@@ -6,6 +6,10 @@ public class Constants {
     public static final double kSPEED_MODIFIER = 0.7;   // Speed modifier (on throttle)
     public static final double kTHROTTLE_SHIFT = 1.05;  // Shift throttle up
     public static final double kCURVE_MODIFIER = -0.25; // Curve modifier
+       
+    // TalonSRX
+    public static final double kP_CONTROLPANEL = 10;    //TalonSRX for spinner (Color Wheel)
+   
     // Spark Max CAN IDs
     public static final int kP_REAR_LEFT = 2;
     public static final int kP_FRONT_LEFT = 1;
@@ -19,4 +23,6 @@ public class Constants {
     public static final int kP_RIGHT_STICK = 1; // Right joystick port
     public static final int kFORWARD_BUTTON = 5;    // Forward button
     public static final int kREVERSE_BUTTON = 3;    // Reverse button
+
+
 }
