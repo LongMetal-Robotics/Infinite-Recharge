@@ -1,18 +1,19 @@
 package org.longmetal;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.revrobotics.ColorSensorV3;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 
-public class ControlPanel {
-    private TalonSRX spinner;
-    private DoubleSolenoid rotator;
-    private ColorSensorV3 csensor;
+public class Intake {
+    private TalonSRX mIntake; // Thanks for the wonderful variable names Jon, I fixed them :)
+    private TalonSRX mTransport;
 
     private static boolean enabled = true;
     private boolean initialized = false;
 
-    public ControlPanel(boolean setEnabled) {
+    public Intake() {
+        this(true);
+    }
+
+    public Intake(boolean setEnabled) {
         enabled = setEnabled;
         if (enabled) {
             init();
@@ -23,9 +24,9 @@ public class ControlPanel {
     }
 
     public void init() {
-        // csensor = new ColorSensorV3
-        spinner = new TalonSRX(Constants.kP_PANEL);
-        // Note colorsensor has its own port but idk how to access it.
+        mIntake = new TalonSRX(Constants.kP_INTAKE);
+        mTransport = new TalonSRX(Constants.kP_TRANSPORT);
+
         initialized = true;
     }
 }

@@ -1,20 +1,16 @@
 package org.longmetal;
 
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class DriveTrain {
     public DifferentialDrive driveTrain;
 
-    public CANSparkMax mRearLeft,
-        mFrontLeft,
-        mRearRight,
-        mFrontRight;
-    public SpeedControllerGroup leftMotors,
-        rightMotors;
+    public CANSparkMax mRearLeft, mFrontLeft, mRearRight, mFrontRight;
+    public SpeedControllerGroup leftMotors, rightMotors;
 
     private boolean reverseDrive = false;
 
@@ -42,18 +38,26 @@ public class DriveTrain {
         return reverseDrive;
     }
 
-    public void curve(double speedRaw, double speedThrottleRaw, double curvatureRaw, double curvatureThrottleRaw) {
-        double modifierX = (Constants.kSPEED_MODIFIER * speedThrottleRaw - Constants.kTHROTTLE_SHIFT) / 2; // Create a speed modifier
-		double modifierZ = (curvatureThrottleRaw - 1) * Constants.kCURVE_MODIFIER;   // Create a curvature modifier
+    public void curve(
+            double speedRaw,
+            double speedThrottleRaw,
+            double curvatureRaw,
+            double curvatureThrottleRaw) {
+        double modifierX =
+                (Constants.kSPEED_MODIFIER * speedThrottleRaw - Constants.kTHROTTLE_SHIFT)
+                        / 2; // Create a speed modifier
+        double modifierZ =
+                (curvatureThrottleRaw - 1)
+                        * Constants.kCURVE_MODIFIER; // Create a curvature modifier
 
-		double driveX = speedRaw * modifierX * Constants.kMAX_SPEED_MULT; // Calculate the speed
-		double driveZ = curvatureRaw * modifierZ;               // Calculate the curvature
+        double driveX = speedRaw * modifierX * Constants.kMAX_SPEED_MULT; // Calculate the speed
+        double driveZ = curvatureRaw * modifierZ; // Calculate the curvature
 
         if (reverseDrive) {
             // Reverse drive values
             driveX *= -1;
         }
 
-        driveTrain.curvatureDrive(driveX, driveZ, true);    // Drive
+        driveTrain.curvatureDrive(driveX, driveZ, true); // Drive
     }
 }
