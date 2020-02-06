@@ -7,16 +7,13 @@ enum DPad{
 }
 
 enum Axis{
-    LTX, RTX, LTY, RTY, NONE
+    LTUP, LTDOWN, LTLEFT, LTRIGHT, RTUP, RTDOWN, RTLEFT, RTRIGHT, NONE;
 }
 
 public class Input {
     private int leftStickPortInit, rightStickPortInit;
     public Joystick forwardStick, turnStick, gamepad;
     private boolean isQuinnDrive = false;
-
-    DPad Dpad;
-    Axis axis;
 
     public Input() {
         leftStickPortInit = Constants.kP_LEFT_STICK;
@@ -57,18 +54,24 @@ public class Input {
     }
     public Axis getAxis()
     {
-        if(gamepad.getRawAxis(2) < 0.5 || gamepad.getRawAxis(2) > 0.5)
-            return Axis.LTY;
-        if(gamepad.getRawAxis(2) > 0.5 || gamepad.getRawAxis(2) < -0.5)
-            return Axis.LTX;
-            if(gamepad.getRawAxis(3) < 0.5 || gamepad.getRawAxis(3) > 0.5)
-            return Axis.RTY;
-        if(gamepad.getRawAxis(3) > 0.5 || gamepad.getRawAxis(3) < -0.5)
-            return Axis.RTX;
+        if(gamepad.getRawAxis(0) < 0.1)
+            return Axis.LTLEFT;
+        if(gamepad.getRawAxis(0) > 0.9)
+            return Axis.LTRIGHT;
+        if(gamepad.getRawAxis(1) < 0.1)
+            return Axis.LTUP;
+        if(gamepad.getRawAxis(1) > 0.9)
+            return Axis.LTDOWN;
+        if(gamepad.getRawAxis(5) < 0.1)
+            return Axis.RTLEFT;
+        if(gamepad.getRawAxis(5) > 0.9)
+            return Axis.RTRIGHT;
+        if(gamepad.getRawAxis(6) < 0.1)
+            return Axis.RTUP;
+        if(gamepad.getRawAxis(6) > 0.9)
+            return Axis.RTDOWN;
         return Axis.NONE;
     }
-
-    public 
 
     public void setQuinnDrive(boolean doIt) {
         if (doIt) {
