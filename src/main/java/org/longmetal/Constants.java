@@ -21,4 +21,5 @@ public class Constants {
     public static final int kP_RIGHT_STICK = 1; // Right joystick port
     public static final int kFORWARD_BUTTON = 5; // Forward button
     public static final int kREVERSE_BUTTON = 3; // Reverse button
+    public static final int kP_GAMEPAD = 2;//Gamepad port
 }
