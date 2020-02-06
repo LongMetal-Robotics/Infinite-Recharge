@@ -3,8 +3,8 @@ package org.longmetal;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class Intake {
-    private TalonSRX intakeBoi;
-    private TalonSRX transportBoi;
+    private TalonSRX mIntake; // Thanks for the wonderful variable names Jon, I fixed them :)
+    private TalonSRX mTransport;
 
     private static boolean enabled = true;
     private boolean initialized = false;
@@ -24,8 +24,8 @@ public class Intake {
     }
 
     public void init() {
-        intakeBoi = new TalonSRX(Constants.kP_INTAKE);
-        transportBoi = new TalonSRX(Constants.kP_TRANSPORT);
+        mIntake = new TalonSRX(Constants.kP_INTAKE);
+        mTransport = new TalonSRX(Constants.kP_TRANSPORT);
 
         initialized = true;
     }

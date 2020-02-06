@@ -1,10 +1,12 @@
 package org.longmetal;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class Shooter {
     private CANSparkMax drum;
+    private TalonSRX mSingulator; // this is the motor that has the mec wheels attached
     private static boolean enabled = true;
     private boolean initialized = false;
 
@@ -20,6 +22,7 @@ public class Shooter {
 
     public void init() {
         drum = new CANSparkMax(Constants.kP_DRUM, MotorType.kBrushless);
+        mSingulator = new TalonSRX(Constants.kP_SINGULATOR);
         initialized = true;
     }
 

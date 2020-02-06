@@ -24,7 +24,7 @@ public class ControlPanel {
 
     public void init() {
         // csensor = new ColorSensorV3
-        // spinner = new TalonSRX(Constants.kP_CONTROLPANEL);
+        spinner = new TalonSRX(Constants.kP_PANEL);
         // Note colorsensor has its own port but idk how to access it.
         initialized = true;
     }
