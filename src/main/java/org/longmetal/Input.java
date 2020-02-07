@@ -6,6 +6,7 @@ public class Input {
     private int leftStickPortInit, rightStickPortInit;
     public Joystick forwardStick, turnStick /*, gamepad*/;
     private boolean isQuinnDrive = false;
+    //private boolean isTechDrive = false;
 
     public Input() {
         leftStickPortInit = Constants.kP_LEFT_STICK;
@@ -29,4 +30,8 @@ public class Input {
     public boolean isQuinnDrive() {
         return isQuinnDrive;
     }
+
+    /*public void setTechDrive(boolean doIt) {
+        
+    }*/
 }
