@@ -3,6 +3,7 @@ package org.longmetal;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.I2C.Port;
 
 public class ControlPanel {
     private TalonSRX spinner;
@@ -23,9 +24,9 @@ public class ControlPanel {
     }
 
     public void init() {
-        // csensor = new ColorSensorV3
+        csensor = new ColorSensorV3(Port.kOnboard);
         spinner = new TalonSRX(Constants.kP_PANEL);
-        // Note colorsensor has its own port but idk how to access it.
         initialized = true;
     }
+    
 }
