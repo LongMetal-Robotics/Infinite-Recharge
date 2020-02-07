@@ -28,5 +28,4 @@ public class ControlPanel {
         spinner = new TalonSRX(Constants.kP_PANEL);
         initialized = true;
     }
-    
 }
