@@ -3,8 +3,6 @@ package org.longmetal;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.util.Color;
-
 
 public class ControlPanel {
     private TalonSRX spinner;
@@ -23,7 +21,6 @@ public class ControlPanel {
                     "[WARN]\tShooter wasn't enabled on startup. You must call init() on it later to use it.");
         }
     }
-
 
     public void init() {
         // csensor = new ColorSensorV3
