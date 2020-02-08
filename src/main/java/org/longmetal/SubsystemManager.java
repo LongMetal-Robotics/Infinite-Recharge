@@ -74,13 +74,13 @@ public class SubsystemManager {
                 };
 
         intakeEnable = new SendableChooser<>();
-        if (intakeEnableValue) {
+        //if (intakeEnableValue) {
             intakeEnable.setDefaultOption(Constants.kENABLED, enableIntake);
             intakeEnable.addOption(Constants.kDISABLED, disableIntake);
-        } else {
+        /*} else {
             intakeEnable.addOption(Constants.kENABLED, enableIntake);
             intakeEnable.setDefaultOption(Constants.kDISABLED, disableIntake);
-        }
+        }*/
         SmartDashboard.putData(Constants.kINTAKE_ENABLER_KEY, intakeEnable);
         SmartDashboard.putBoolean(Constants.kINTAKE_STATE_KEY, intakeEnableValue);
 

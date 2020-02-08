@@ -171,7 +171,7 @@ public class Robot extends TimedRobot {
                 input.forwardStick.getThrottle(),
                 input.turnStick.getTwist(),
                 input.turnStick.getThrottle());
-        double trigger = input.gamepad.getRawAxis(Constants.kA_TRIGGER);
+        boolean trigger = input.gamepad.getXButton();
 
         String currentSubsystem = "Subsystem";
         try {
@@ -201,15 +201,15 @@ public class Robot extends TimedRobot {
             } else { */
             // Collecting mode
             currentSubsystem = "Collector";
-            if (Intake.getEnabled()) {
-                if (trigger > Constants.kINPUT_DEADBAND) {
+            //if (Intake.getEnabled()) {
+               // if (trigger) {
                     // status.sendStatus(Status.SHOOTING);
-                    intake.setMotor(trigger);
-                } else {
+                    intake.setMotor(0.5);
+               // } else {
                     // sendStandardStatus();
-                    intake.setMotor(0);
-                }
-            }
+              //      intake.setMotor(0);
+              //  }
+           // }
 
             currentSubsystem = "Shooter";
             /*if (Shooter.getEnabled()) {
