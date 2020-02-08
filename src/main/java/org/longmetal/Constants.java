@@ -33,8 +33,8 @@ public class Constants {
     // Manipulator
     // CAN IDs
     public static final int kP_INTAKE = 7;
-    public static final int kP_TRANSPORT = 8;
-    public static final int kP_DRUM = 9;
+    public static final int kP_TRANSPORT = 9;
+    public static final int kP_DRUM = 14; // need to fix
     public static final int kP_SINGULATOR = 13;
     // Temporarily 13 cuz I set the PDP and PCM to 11 and 12
     // Will be fixed eventually :) -Ben
