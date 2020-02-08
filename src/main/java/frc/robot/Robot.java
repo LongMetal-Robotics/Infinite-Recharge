@@ -17,7 +17,6 @@ import org.longmetal.Constants;
 import org.longmetal.DriveTrain;
 import org.longmetal.Input;
 import org.longmetal.Intake;
-import org.longmetal.Shooter;
 import org.longmetal.exception.SubsystemDisabledException;
 import org.longmetal.exception.SubsystemException;
 import org.longmetal.exception.SubsystemUninitializedException;
@@ -172,7 +171,7 @@ public class Robot extends TimedRobot {
                 input.forwardStick.getThrottle(),
                 input.turnStick.getTwist(),
                 input.turnStick.getThrottle());
-                double trigger = input.gamepad.getRawAxis(Constants.kA_TRIGGER);
+        double trigger = input.gamepad.getRawAxis(Constants.kA_TRIGGER);
 
         String currentSubsystem = "Subsystem";
         try {
@@ -199,39 +198,41 @@ public class Robot extends TimedRobot {
                 if (Collector.getEnabled()) {
                     collector.setMotor(0);
                 }
-            } else { */   // Collecting mode
-                currentSubsystem = "Collector";
-                if (Intake.getEnabled()) {
-                    if (trigger > Constants.kINPUT_DEADBAND) {
-                        //status.sendStatus(Status.SHOOTING);
-                        intake.setMotor(trigger);
-                    } else {
-                        //sendStandardStatus();
-                        intake.setMotor(0);
-                    }
+            } else { */
+            // Collecting mode
+            currentSubsystem = "Collector";
+            if (Intake.getEnabled()) {
+                if (trigger > Constants.kINPUT_DEADBAND) {
+                    // status.sendStatus(Status.SHOOTING);
+                    intake.setMotor(trigger);
+                } else {
+                    // sendStandardStatus();
+                    intake.setMotor(0);
                 }
+            }
 
-                currentSubsystem = "Shooter";
-                /*if (Shooter.getEnabled()) {
-                    shooter.modifier(0, 0); // Clear shooter modifiers
-                    shooter.idle();
-                }*/
-            //}
-
+            currentSubsystem = "Shooter";
+            /*if (Shooter.getEnabled()) {
+                shooter.modifier(0, 0); // Clear shooter modifiers
+                shooter.idle();
+            }*/
+            // }
 
         } catch (SubsystemException e) {
-            //status.sendStatus(Status.PROBLEM);
+            // status.sendStatus(Status.PROBLEM);
             System.out.println(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
             e.printStackTrace();
 
-            boolean isUninitialized = e.getClass().isInstance(SubsystemUninitializedException.class);
+            boolean isUninitialized =
+                    e.getClass().isInstance(SubsystemUninitializedException.class);
             /*if (currentSubsystem.equals("Shooter")
                 && Shooter.getEnabled() && isUninitialized) {
 
                 shooter.init();
-            } else */if (currentSubsystem.equals("Intake")
-                && Intake.getEnabled() && isUninitialized) {
-                   
+            } else */ if (currentSubsystem.equals("Intake")
+                    && Intake.getEnabled()
+                    && isUninitialized) {
+
                 intake.init();
             }
         }

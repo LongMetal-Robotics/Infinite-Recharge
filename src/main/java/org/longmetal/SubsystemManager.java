@@ -38,7 +38,7 @@ public class SubsystemManager {
 
         shooterEnable = new SendableChooser<>();
         if (shooterEnableValue) { // (hopefully) set the order of the options in the menu so enabled
-                                  // is always first but the
+            // is always first but the
             // initially selected option indicates whether the subsystem is actually enabled or not
             // based on previously-saved preferences
             shooterEnable.setDefaultOption(Constants.kENABLED, enableShooter);

@@ -61,9 +61,9 @@ public class Constants {
 
     public static final int kP_GAMEPAD = 2; // Gamepad port
     public static final int kA_TRIGGER = 3; // Trigger axis number
-    public static final int kA_LS_X = 0;    // Left stick X axis #
-    public static final int kA_LS_Y = 1;    // Left stick Y axis #
-    public static final int kA_RS_Y = 5;    // Right stick Y axis #
-    public static final int kY_AXIS_MODIFIER = -1;  // Normally, down is positive. We want up to be positive.
-    
+    public static final int kA_LS_X = 0; // Left stick X axis #
+    public static final int kA_LS_Y = 1; // Left stick Y axis #
+    public static final int kA_RS_Y = 5; // Right stick Y axis #
+    public static final int kY_AXIS_MODIFIER =
+            -1; // Normally, down is positive. We want up to be positive.
 }
