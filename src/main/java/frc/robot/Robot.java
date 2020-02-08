@@ -201,15 +201,15 @@ public class Robot extends TimedRobot {
             } else { */
             // Collecting mode
             currentSubsystem = "Collector";
-            //if (Intake.getEnabled()) {
-               // if (trigger) {
-                    // status.sendStatus(Status.SHOOTING);
-                    intake.setMotor(0.5);
-               // } else {
-                    // sendStandardStatus();
-              //      intake.setMotor(0);
-              //  }
-           // }
+            // if (Intake.getEnabled()) {
+            // if (trigger) {
+            // status.sendStatus(Status.SHOOTING);
+            intake.setMotor(0.5);
+            // } else {
+            // sendStandardStatus();
+            //      intake.setMotor(0);
+            //  }
+            // }
 
             currentSubsystem = "Shooter";
             /*if (Shooter.getEnabled()) {

@@ -74,9 +74,9 @@ public class SubsystemManager {
                 };
 
         intakeEnable = new SendableChooser<>();
-        //if (intakeEnableValue) {
-            intakeEnable.setDefaultOption(Constants.kENABLED, enableIntake);
-            intakeEnable.addOption(Constants.kDISABLED, disableIntake);
+        // if (intakeEnableValue) {
+        intakeEnable.setDefaultOption(Constants.kENABLED, enableIntake);
+        intakeEnable.addOption(Constants.kDISABLED, disableIntake);
         /*} else {
             intakeEnable.addOption(Constants.kENABLED, enableIntake);
             intakeEnable.setDefaultOption(Constants.kDISABLED, disableIntake);
