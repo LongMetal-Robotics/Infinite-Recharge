@@ -1,19 +1,16 @@
 package org.longmetal.util;
 
-import java.lang.Math;
 // This file exists solely to house my basic formula for the shooter
 // -Ben
 
-/*  Prerecs: 
+/*  Prerecs:
         double LLDistance = distance taken from LimeLight (in meters)
-        
+
 */
 
-
 public class ShootFormula {
-    public ShootFormula(){
-    }
-    
+    public ShootFormula() {}
+
     public double shooterSpeed(double distance) {
         double targetHeight = 2.495555;
         double rampHeight = 0.3048;
