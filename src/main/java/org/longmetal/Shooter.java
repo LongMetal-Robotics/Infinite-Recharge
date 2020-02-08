@@ -23,6 +23,7 @@ public class Shooter {
     public void init() {
         drum = new CANSparkMax(Constants.kP_DRUM, MotorType.kBrushless);
         mSingulator = new TalonSRX(Constants.kP_SINGULATOR);
+        drum.setOpenLoopRampRate(1);
         initialized = true;
     }
 
