@@ -16,6 +16,10 @@ import java.util.Scanner;
 import org.longmetal.Constants;
 import org.longmetal.DriveTrain;
 import org.longmetal.Input;
+import org.longmetal.Intake;
+import org.longmetal.exception.SubsystemDisabledException;
+import org.longmetal.exception.SubsystemException;
+import org.longmetal.exception.SubsystemUninitializedException;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -31,6 +35,7 @@ public class Robot extends TimedRobot {
 
     Input input;
     DriveTrain driveTrain;
+    Intake intake;
 
     SendableChooser<Boolean> chooserQuinnDrive;
 
@@ -166,6 +171,81 @@ public class Robot extends TimedRobot {
                 input.forwardStick.getThrottle(),
                 input.turnStick.getTwist(),
                 input.turnStick.getThrottle());
+        double trigger = input.gamepad.getRawAxis(Constants.kA_TRIGGER);
+
+        String currentSubsystem = "Subsystem";
+        try {
+            /*if (driveTrain.getReverseDrive()) { // Shooting mode
+                currentSubsystem = "Shooter";
+                if (Shooter.getEnabled()) {
+                    double modifierX = input.gamepad.getRawAxis(Constants.kA_LS_X);
+                    double modifierY = input.gamepad.getRawAxis(Constants.kA_LS_Y) * Constants.kY_AXIS_MODIFIER;
+
+                    shooter.modifier(modifierX, modifierY); // Set shooter modifiers
+                    if (trigger > Constants.kINPUT_DEADBAND) {    // Right trigger has passed deadband
+                        status.sendStatus(Status.SHOOTING);
+                        shooter.run(trigger);
+                    } else {
+                        sendStandardStatus();
+                        shooter.idle();
+                    }
+
+                    double angleSpeed = input.gamepad.getRawAxis(Constants.kA_RS_Y) * Constants.kY_AXIS_MODIFIER;
+                    shooter.angleSpeed(angleSpeed * Constants.kANGLE_SPEED_MODIFIER);
+                }
+
+                currentSubsystem = "Collector";
+                if (Collector.getEnabled()) {
+                    collector.setMotor(0);
+                }
+            } else { */
+            // Collecting mode
+            currentSubsystem = "Collector";
+            if (Intake.getEnabled()) {
+                if (trigger > Constants.kINPUT_DEADBAND) {
+                    // status.sendStatus(Status.SHOOTING);
+                    intake.setMotor(trigger);
+                } else {
+                    // sendStandardStatus();
+                    intake.setMotor(0);
+                }
+            }
+
+            currentSubsystem = "Shooter";
+            /*if (Shooter.getEnabled()) {
+                shooter.modifier(0, 0); // Clear shooter modifiers
+                shooter.idle();
+            }*/
+            // }
+
+        } catch (SubsystemException e) {
+            // status.sendStatus(Status.PROBLEM);
+            System.out.println(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
+            e.printStackTrace();
+
+            boolean isUninitialized =
+                    e.getClass().isInstance(SubsystemUninitializedException.class);
+            /*if (currentSubsystem.equals("Shooter")
+                && Shooter.getEnabled() && isUninitialized) {
+
+                shooter.init();
+            } else */ if (currentSubsystem.equals("Intake")
+                    && Intake.getEnabled()
+                    && isUninitialized) {
+
+                intake.init();
+            }
+        }
+    }
+
+    private String problemName(SubsystemException e) {
+        if (e.getClass().isInstance(SubsystemDisabledException.class)) {
+            return "Subsystem Disabled";
+        } else if (e.getClass().isInstance(SubsystemUninitializedException.class)) {
+            return "Subsystem Unitialized";
+        } else {
+            return "Generic Subsystem Problem";
+        }
     }
 
     /** This function is called periodically during test mode. */
