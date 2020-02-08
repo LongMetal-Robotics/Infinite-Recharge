@@ -43,6 +43,5 @@ public class Constants {
     // CAN IDs
     public static final int kP_PANEL = 10;
 
-    
     public static final int kP_GAMEPAD = 2; // Gamepad port
 }
