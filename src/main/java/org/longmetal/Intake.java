@@ -1,10 +1,9 @@
 package org.longmetal;
 
-import org.longmetal.exception.*;
-
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import org.longmetal.exception.*;
 
 public class Intake {
     private TalonSRX mIntake; // Thanks for the wonderful variable names Jon, I fixed them :)

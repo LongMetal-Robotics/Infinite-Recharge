@@ -1,12 +1,11 @@
 package org.longmetal;
 
-import org.longmetal.exception.SubsystemDisabledException;
-import org.longmetal.exception.SubsystemException;
-import org.longmetal.exception.SubsystemUninitializedException;
-
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.longmetal.exception.SubsystemDisabledException;
+import org.longmetal.exception.SubsystemException;
+import org.longmetal.exception.SubsystemUninitializedException;
 
 public class SubsystemManager {
     private SendableChooser<Runnable> shooterEnable;
@@ -17,27 +16,31 @@ public class SubsystemManager {
         boolean shooterEnableValue = false;
         boolean intakeEnableValue = false;
 
-        shooterEnableValue = preferences.getBoolean(Constants.kSHOOTER_KEY, false) /* Shooter enabled */;
+        shooterEnableValue =
+                preferences.getBoolean(Constants.kSHOOTER_KEY, false) /* Shooter enabled */;
 
-        Runnable enableShooter = new Runnable() {
-            
-            @Override
-            public void run() {
-                SubsystemManager.setSubsystem(Subsystem.SHOOTER, true);
-            }
-        };
-        Runnable disableShooter = new Runnable(){
-            
-            @Override
-            public void run() {
-                SubsystemManager.setSubsystem(Subsystem.SHOOTER, false);
-            }
-        };
+        Runnable enableShooter =
+                new Runnable() {
+
+                    @Override
+                    public void run() {
+                        SubsystemManager.setSubsystem(Subsystem.SHOOTER, true);
+                    }
+                };
+        Runnable disableShooter =
+                new Runnable() {
+
+                    @Override
+                    public void run() {
+                        SubsystemManager.setSubsystem(Subsystem.SHOOTER, false);
+                    }
+                };
 
         shooterEnable = new SendableChooser<>();
-        if (shooterEnableValue) {   // (hopefully) set the order of the options in the menu so enabled is always first but the
-                                    // initially selected option indicates whether the subsystem is actually enabled or not
-                                    // based on previously-saved preferences
+        if (shooterEnableValue) { // (hopefully) set the order of the options in the menu so enabled
+                                  // is always first but the
+            // initially selected option indicates whether the subsystem is actually enabled or not
+            // based on previously-saved preferences
             shooterEnable.setDefaultOption(Constants.kENABLED, enableShooter);
             shooterEnable.addOption(Constants.kDISABLED, disableShooter);
         } else {
@@ -49,36 +52,38 @@ public class SubsystemManager {
 
         setSubsystem(Subsystem.SHOOTER, shooterEnableValue);
 
+        intakeEnableValue =
+                preferences.getBoolean(Constants.kINTAKE_KEY, false) /* Intake enabled */;
 
-        intakeEnableValue = preferences.getBoolean(Constants.kINTAKE_KEY, false) /* Intake enabled */;
-        
-        Runnable enableIntake = new Runnable() {
-            
-            @Override
-            public void run() {
-                SubsystemManager.setSubsystem(Subsystem.INTAKE, true);
-            }
-        };
+        Runnable enableIntake =
+                new Runnable() {
 
-        Runnable disableIntake = new Runnable(){
-            
-            @Override
-            public void run() {
-                SubsystemManager.setSubsystem(Subsystem.INTAKE, false);
-            }
-        };
+                    @Override
+                    public void run() {
+                        SubsystemManager.setSubsystem(Subsystem.INTAKE, true);
+                    }
+                };
+
+        Runnable disableIntake =
+                new Runnable() {
+
+                    @Override
+                    public void run() {
+                        SubsystemManager.setSubsystem(Subsystem.INTAKE, false);
+                    }
+                };
 
         intakeEnable = new SendableChooser<>();
         if (intakeEnableValue) {
             intakeEnable.setDefaultOption(Constants.kENABLED, enableIntake);
-            intakeEnable.addOption(Constants.kDISABLED, disableIntake );
+            intakeEnable.addOption(Constants.kDISABLED, disableIntake);
         } else {
             intakeEnable.addOption(Constants.kENABLED, enableIntake);
             intakeEnable.setDefaultOption(Constants.kDISABLED, disableIntake);
         }
         SmartDashboard.putData(Constants.kINTAKE_ENABLER_KEY, intakeEnable);
         SmartDashboard.putBoolean(Constants.kINTAKE_STATE_KEY, intakeEnableValue);
-        
+
         setSubsystem(Subsystem.INTAKE, intakeEnableValue);
     }
 
@@ -92,10 +97,10 @@ public class SubsystemManager {
         switch (subsystem) {
             case SHOOTER:
                 /*Shooter.staticSetEnabled(enabled);
-                preferences.putBoolean(Constants.kSHOOTER_KEY, enabled);
-                SmartDashboard.putBoolean(Constants.kSHOOTER_STATE_KEY, enabled);
-                break;
-            */
+                    preferences.putBoolean(Constants.kSHOOTER_KEY, enabled);
+                    SmartDashboard.putBoolean(Constants.kSHOOTER_STATE_KEY, enabled);
+                    break;
+                */
             case INTAKE:
                 Intake.staticSetEnabled(enabled);
                 preferences.putBoolean(Constants.kINTAKE_KEY, enabled);
@@ -112,7 +117,7 @@ public class SubsystemManager {
             throw new SubsystemDisabledException();
         }
     }
-    
+
     public enum Subsystem {
         SHOOTER,
         INTAKE

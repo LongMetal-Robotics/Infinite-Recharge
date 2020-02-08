@@ -1,6 +1,5 @@
 package org.longmetal;
 
-
 public class Constants {
     // Drive Train
     public static final double kMAX_SPEED_MULT = 0.8; // Limit max speed, was 0.5
@@ -41,7 +40,7 @@ public class Constants {
     // Will be fixed eventually :) -Ben
 
     // Shooter
-    public static final String kSHOOTER_STATE_KEY = "Shooter Enabled";  // SmartDashboard value key
+    public static final String kSHOOTER_STATE_KEY = "Shooter Enabled"; // SmartDashboard value key
     public static final String kSHOOTER_ENABLER_KEY = "Enable Shooter";
 
     // Intake
@@ -55,7 +54,6 @@ public class Constants {
     // String literals for multiple reuses
     public static final String kENABLED = "Enabled";
     public static final String kDISABLED = "Disabled";
-
 
     // Control Panel
     // CAN IDs
