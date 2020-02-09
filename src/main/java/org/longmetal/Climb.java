@@ -2,10 +2,8 @@ package org.longmetal;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
-import org.longmetal.exception.SubsystemException;
-
 import edu.wpi.first.wpilibj.Solenoid;
+import org.longmetal.exception.SubsystemException;
 
 public class Climb {
     private CANSparkMax mWinch1;
@@ -40,7 +38,6 @@ public class Climb {
         mWinch1.set(speed);
         mWinch2.set(speed);
     }
-
 
     public void setEnabled(boolean newEnabled) {
         enabled = newEnabled;

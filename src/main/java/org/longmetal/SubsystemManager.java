@@ -90,8 +90,7 @@ public class SubsystemManager {
 
         setSubsystem(Subsystem.INTAKE, intakeEnableValue);
 
-        climbEnableValue =
-                preferences.getBoolean(Constants.kINTAKE_KEY, false) /* Climb enabled */;
+        climbEnableValue = preferences.getBoolean(Constants.kINTAKE_KEY, false) /* Climb enabled */;
 
         Runnable enableClimb =
                 new Runnable() {
