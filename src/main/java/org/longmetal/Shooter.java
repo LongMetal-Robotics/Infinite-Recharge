@@ -34,16 +34,16 @@ public class Shooter {
         initialized = true;
     }
 
-    /*public void setSingFreq(double singNum) throws SubsystemException {
-        SubsystemManager.check(enabled, initialized);
-        mSingulator.set(Math.limit(singNum, Constants.kSINGULATOR_MIN, Constants.kSINGULATOR_MAX).doubleValue());
-    }*/
-
     public void setShootSpeed(double shootSpeed) throws SubsystemException {
         SubsystemManager.check(enabled, initialized);
         shootSpeed = LMMath.limit(shootSpeed, Constants.kSHOOTER_MIN, Constants.kSHOOTER_MAX).doubleValue();
         mShooter.set(shootSpeed);
         shooting = shootSpeed > Constants.kSHOOTER_MIN + 0.1;
+    }
+
+    public void setSingulatorSpeed(double singSpeed) throws SubsystemException {
+        SubsystemManager.check(enabled, initialized);
+        mSingulator.set(ControlMode.PercentOutput, Constants.kSINGULATOR_SPEED);
     }
 
     public boolean isShooting() {

@@ -17,6 +17,7 @@ import org.longmetal.Constants;
 import org.longmetal.DriveTrain;
 import org.longmetal.Input;
 import org.longmetal.Intake;
+import org.longmetal.Shooter;
 import org.longmetal.exception.SubsystemDisabledException;
 import org.longmetal.exception.SubsystemException;
 import org.longmetal.exception.SubsystemUninitializedException;
@@ -173,11 +174,11 @@ public class Robot extends TimedRobot {
                 input.turnStick.getTwist(),
                 input.turnStick.getThrottle());
 
-        boolean trigger = input.gamepad.getXButton();
+        double trigger = input.gamepad.getRawAxis(Constants.kP_GAMEPAD);
 
         String currentSubsystem = "Subsystem";
         try {
-            if (driveTrain.getReverseDrive()) { // Shooting mode
+            if (!driveTrain.getReverseDrive()) { // Shooting mode
                 currentSubsystem = "Shooter";
                 if (Shooter.getEnabled()) {
                     double modifierX = input.gamepad.getRawAxis(Constants.kA_LS_X);
@@ -187,33 +188,29 @@ public class Robot extends TimedRobot {
 
                     shooter.modifier(modifierX, modifierY); // Set shooter modifiers
                     if (trigger > Constants.kINPUT_DEADBAND) { // Right trigger has passed deadband
-                        // status.sendStatus(Status.SHOOTING);
                         shooter.run(trigger);
                     } else {
-                        // sendStandardStatus();
                         shooter.idle();
                     }
 
                     double angleSpeed =
                             input.gamepad.getRawAxis(Constants.kA_RS_Y)
                                     * Constants.kY_AXIS_MODIFIER;
-                    shooter.angleSpeed(angleSpeed * Constants.kANGLE_SPEED_MODIFIER);
+                    // shooter.angleSpeed(angleSpeed * Constants.kANGLE_SPEED_MODIFIER);
                 }
 
                 currentSubsystem = "Collector";
-                if (Collector.getEnabled()) {
-                    collector.setMotor(0);
+                if (Intake.getEnabled()) {
+                    intake.setIntakeSpeed(0);
                 }
             } else {
                 // Collecting mode
                 currentSubsystem = "Collector";
                 if (Intake.getEnabled()) {
-                    if (trigger) {
-                        // status.sendStatus(Status.SHOOTING);
-                        intake.setMotor(0.5);
+                    if (trigger > Constants.kINPUT_DEADBAND) {
+                        intake.setIntakeSpeed(0.5);
                     } else {
-                        // sendStandardStatus();
-                        intake.setMotor(0);
+                        intake.setIntakeSpeed(0);
                     }
                 }
 

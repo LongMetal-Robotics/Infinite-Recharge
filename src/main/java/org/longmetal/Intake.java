@@ -1,5 +1,6 @@
 package org.longmetal;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -29,13 +30,17 @@ public class Intake {
     public void init() {
         mIntake = new TalonSRX(Constants.kP_INTAKE);
         mTransport = new CANSparkMax(Constants.kP_TRANSPORT, MotorType.kBrushless);
-        mTransport.setOpenLoopRampRate(1);
         initialized = true;
     }
 
-    public void setMotor(double speed) throws SubsystemException {
+    public void setTransportSpeed(double speed) throws SubsystemException {
         SubsystemManager.check(enabled, initialized);
         mTransport.set(speed);
+    }
+
+    public void setIntakeSpeed(double speed) throws SubsystemException {
+        SubsystemManager.check(enabled, initialized);
+        mIntake.set(ControlMode.PercentOutput, speed);
     }
 
     public void setEnabled(boolean newEnabled) {
@@ -45,6 +50,8 @@ public class Intake {
                 init();
             }
             mTransport.set(0);
+            mTransport.setOpenLoopRampRate(1);
+            mIntake.set(ControlMode.PercentOutput, 0);
         }
     }
 
