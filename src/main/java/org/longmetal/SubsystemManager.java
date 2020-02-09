@@ -100,7 +100,7 @@ public class SubsystemManager {
                 preferences.putBoolean(Constants.kSHOOTER_KEY, enabled);
                 SmartDashboard.putBoolean(Constants.kSHOOTER_STATE_KEY, enabled);
                 break;
-                
+
             case INTAKE:
                 Intake.staticSetEnabled(enabled);
                 preferences.putBoolean(Constants.kINTAKE_KEY, enabled);

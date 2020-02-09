@@ -181,18 +181,22 @@ public class Robot extends TimedRobot {
                 currentSubsystem = "Shooter";
                 if (Shooter.getEnabled()) {
                     double modifierX = input.gamepad.getRawAxis(Constants.kA_LS_X);
-                    double modifierY = input.gamepad.getRawAxis(Constants.kA_LS_Y) * Constants.kY_AXIS_MODIFIER;
+                    double modifierY =
+                            input.gamepad.getRawAxis(Constants.kA_LS_Y)
+                                    * Constants.kY_AXIS_MODIFIER;
 
                     shooter.modifier(modifierX, modifierY); // Set shooter modifiers
-                    if (trigger > Constants.kINPUT_DEADBAND) {    // Right trigger has passed deadband
-                        //status.sendStatus(Status.SHOOTING);
+                    if (trigger > Constants.kINPUT_DEADBAND) { // Right trigger has passed deadband
+                        // status.sendStatus(Status.SHOOTING);
                         shooter.run(trigger);
                     } else {
-                        //sendStandardStatus();
+                        // sendStandardStatus();
                         shooter.idle();
                     }
 
-                    double angleSpeed = input.gamepad.getRawAxis(Constants.kA_RS_Y) * Constants.kY_AXIS_MODIFIER;
+                    double angleSpeed =
+                            input.gamepad.getRawAxis(Constants.kA_RS_Y)
+                                    * Constants.kY_AXIS_MODIFIER;
                     shooter.angleSpeed(angleSpeed * Constants.kANGLE_SPEED_MODIFIER);
                 }
 
@@ -201,14 +205,14 @@ public class Robot extends TimedRobot {
                     collector.setMotor(0);
                 }
             } else {
-            // Collecting mode
+                // Collecting mode
                 currentSubsystem = "Collector";
                 if (Intake.getEnabled()) {
                     if (trigger) {
-                        //status.sendStatus(Status.SHOOTING);
+                        // status.sendStatus(Status.SHOOTING);
                         intake.setMotor(0.5);
                     } else {
-                        //sendStandardStatus();
+                        // sendStandardStatus();
                         intake.setMotor(0);
                     }
                 }
@@ -227,8 +231,7 @@ public class Robot extends TimedRobot {
 
             boolean isUninitialized =
                     e.getClass().isInstance(SubsystemUninitializedException.class);
-            if (currentSubsystem.equals("Shooter")
-                && Shooter.getEnabled() && isUninitialized) {
+            if (currentSubsystem.equals("Shooter") && Shooter.getEnabled() && isUninitialized) {
 
                 shooter.init();
             } else if (currentSubsystem.equals("Intake")
