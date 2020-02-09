@@ -30,16 +30,17 @@ public class Intake {
     public void init() {
         mIntake = new TalonSRX(Constants.kP_INTAKE);
         mTransport = new CANSparkMax(Constants.kP_TRANSPORT, MotorType.kBrushless);
+        mTransport.setOpenLoopRampRate(1); // Just for testing purposes
         initialized = true;
     }
 
     public void setTransportSpeed(double speed) throws SubsystemException {
-        SubsystemManager.check(enabled, initialized);
+        // SubsystemManager.check(enabled, initialized);
         mTransport.set(speed);
     }
 
     public void setIntakeSpeed(double speed) throws SubsystemException {
-        SubsystemManager.check(enabled, initialized);
+        // SubsystemManager.check(enabled, initialized);
         mIntake.set(ControlMode.PercentOutput, speed);
     }
 
