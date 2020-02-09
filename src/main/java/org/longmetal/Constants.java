@@ -52,7 +52,7 @@ public class Constants {
 
     // Singulator
     public static final double kSINGULATOR_SPEED = 0.4; // singulator speed
-    
+
     // Intake
     public static final String kINTAKE_STATE_KEY = "Intake Enabled"; // SmartDashboard value key
     public static final String kINTAKE_ENABLER_KEY = "Enable Intake";
@@ -74,6 +74,6 @@ public class Constants {
     public static final int kA_LS_X = 0; // Left stick X axis #
     public static final int kA_LS_Y = 1; // Left stick Y axis #
     public static final int kA_RS_Y = 5; // Right stick Y axis #
-    public static final int kY_AXIS_MODIFIER = -1; 
-            // Normally, down is positive. We want up to be positive.
+    public static final int kY_AXIS_MODIFIER = -1;
+    // Normally, down is positive. We want up to be positive.
 }
