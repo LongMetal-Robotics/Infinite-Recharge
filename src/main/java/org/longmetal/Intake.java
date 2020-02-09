@@ -34,7 +34,7 @@ public class Intake {
     }
 
     public void setMotor(double speed) throws SubsystemException {
-        // SubsystemManager.check(enabled, initialized);
+        SubsystemManager.check(enabled, initialized);
         mTransport.set(speed);
     }
 

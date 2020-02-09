@@ -36,6 +36,7 @@ public class Robot extends TimedRobot {
     Input input;
     DriveTrain driveTrain;
     Intake intake;
+    Shooter shooter;
 
     SendableChooser<Boolean> chooserQuinnDrive;
 
@@ -171,11 +172,12 @@ public class Robot extends TimedRobot {
                 input.forwardStick.getThrottle(),
                 input.turnStick.getTwist(),
                 input.turnStick.getThrottle());
+
         boolean trigger = input.gamepad.getXButton();
 
         String currentSubsystem = "Subsystem";
         try {
-            /*if (driveTrain.getReverseDrive()) { // Shooting mode
+            if (driveTrain.getReverseDrive()) { // Shooting mode
                 currentSubsystem = "Shooter";
                 if (Shooter.getEnabled()) {
                     double modifierX = input.gamepad.getRawAxis(Constants.kA_LS_X);
@@ -183,10 +185,10 @@ public class Robot extends TimedRobot {
 
                     shooter.modifier(modifierX, modifierY); // Set shooter modifiers
                     if (trigger > Constants.kINPUT_DEADBAND) {    // Right trigger has passed deadband
-                        status.sendStatus(Status.SHOOTING);
+                        //status.sendStatus(Status.SHOOTING);
                         shooter.run(trigger);
                     } else {
-                        sendStandardStatus();
+                        //sendStandardStatus();
                         shooter.idle();
                     }
 
@@ -198,25 +200,25 @@ public class Robot extends TimedRobot {
                 if (Collector.getEnabled()) {
                     collector.setMotor(0);
                 }
-            } else { */
+            } else {
             // Collecting mode
-            currentSubsystem = "Collector";
-            // if (Intake.getEnabled()) {
-            // if (trigger) {
-            // status.sendStatus(Status.SHOOTING);
-            intake.setMotor(0.5);
-            // } else {
-            // sendStandardStatus();
-            //      intake.setMotor(0);
-            //  }
-            // }
+                currentSubsystem = "Collector";
+                if (Intake.getEnabled()) {
+                    if (trigger) {
+                        //status.sendStatus(Status.SHOOTING);
+                        intake.setMotor(0.5);
+                    } else {
+                        //sendStandardStatus();
+                        intake.setMotor(0);
+                    }
+                }
 
-            currentSubsystem = "Shooter";
-            /*if (Shooter.getEnabled()) {
-                shooter.modifier(0, 0); // Clear shooter modifiers
-                shooter.idle();
-            }*/
-            // }
+                currentSubsystem = "Shooter";
+                if (Shooter.getEnabled()) {
+                    shooter.modifier(0, 0); // Clear shooter modifiers
+                    shooter.idle();
+                }
+            }
 
         } catch (SubsystemException e) {
             // status.sendStatus(Status.PROBLEM);
@@ -225,11 +227,11 @@ public class Robot extends TimedRobot {
 
             boolean isUninitialized =
                     e.getClass().isInstance(SubsystemUninitializedException.class);
-            /*if (currentSubsystem.equals("Shooter")
+            if (currentSubsystem.equals("Shooter")
                 && Shooter.getEnabled() && isUninitialized) {
 
                 shooter.init();
-            } else */ if (currentSubsystem.equals("Intake")
+            } else if (currentSubsystem.equals("Intake")
                     && Intake.getEnabled()
                     && isUninitialized) {
 
