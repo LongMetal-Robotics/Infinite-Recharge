@@ -10,11 +10,15 @@ import org.longmetal.exception.SubsystemUninitializedException;
 public class SubsystemManager {
     private SendableChooser<Runnable> shooterEnable;
     private SendableChooser<Runnable> intakeEnable;
+    private SendableChooser<Runnable> climbEnable;
+    private SendableChooser<Runnable> controlPanelEnable;
 
     public SubsystemManager() {
         Preferences preferences = Preferences.getInstance();
         boolean shooterEnableValue = false;
         boolean intakeEnableValue = false;
+        boolean controlPanelEnableValue = false;
+        boolean climbEnableValue = false;
 
         shooterEnableValue =
                 preferences.getBoolean(Constants.kSHOOTER_KEY, false) /* Shooter enabled */;
@@ -85,11 +89,47 @@ public class SubsystemManager {
         SmartDashboard.putBoolean(Constants.kINTAKE_STATE_KEY, intakeEnableValue);
 
         setSubsystem(Subsystem.INTAKE, intakeEnableValue);
+
+        climbEnableValue =
+                preferences.getBoolean(Constants.kINTAKE_KEY, false) /* Climb enabled */;
+
+        Runnable enableClimb =
+                new Runnable() {
+
+                    @Override
+                    public void run() {
+                        SubsystemManager.setSubsystem(Subsystem.CLIMB, true);
+                    }
+                };
+
+        Runnable disableClimb =
+                new Runnable() {
+
+                    @Override
+                    public void run() {
+                        SubsystemManager.setSubsystem(Subsystem.CLIMB, false);
+                    }
+                };
+
+        climbEnable = new SendableChooser<>();
+        if (intakeEnableValue) {
+            climbEnable.setDefaultOption(Constants.kENABLED, enableClimb);
+            climbEnable.addOption(Constants.kDISABLED, disableClimb);
+        } else {
+            climbEnable.addOption(Constants.kENABLED, enableClimb);
+            climbEnable.setDefaultOption(Constants.kDISABLED, disableClimb);
+        }
+        SmartDashboard.putData(Constants.kINTAKE_ENABLER_KEY, climbEnable);
+        SmartDashboard.putBoolean(Constants.kINTAKE_STATE_KEY, climbEnableValue);
+
+        setSubsystem(Subsystem.CLIMB, climbEnableValue);
     }
 
     public void checkSendables() {
         shooterEnable.getSelected().run();
         intakeEnable.getSelected().run();
+        climbEnable.getSelected().run();
+        controlPanelEnable.getSelected().run();
     }
 
     public static void setSubsystem(Subsystem subsystem, boolean enabled) {
@@ -120,6 +160,8 @@ public class SubsystemManager {
 
     public enum Subsystem {
         SHOOTER,
-        INTAKE
+        INTAKE,
+        CONTROL_PANEL,
+        CLIMB
     }
 }

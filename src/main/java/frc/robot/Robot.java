@@ -18,6 +18,8 @@ import org.longmetal.DriveTrain;
 import org.longmetal.Input;
 import org.longmetal.Intake;
 import org.longmetal.Shooter;
+import org.longmetal.Climb;
+import org.longmetal.ControlPanel;
 import org.longmetal.exception.SubsystemDisabledException;
 import org.longmetal.exception.SubsystemException;
 import org.longmetal.exception.SubsystemUninitializedException;
@@ -38,6 +40,8 @@ public class Robot extends TimedRobot {
     DriveTrain driveTrain;
     Intake intake;
     Shooter shooter;
+    Climb climb;
+    ControlPanel controlPanel;
 
     SendableChooser<Boolean> chooserQuinnDrive;
 
