@@ -13,6 +13,7 @@ public class DriveTrain {
     public SpeedControllerGroup leftMotors, rightMotors;
 
     private boolean reverseDrive = false;
+    private double MAX_SPEED_MULT = 0.5;
 
     public DriveTrain() {
         mRearLeft = new CANSparkMax(Constants.kP_REAR_LEFT, MotorType.kBrushless);
@@ -38,6 +39,14 @@ public class DriveTrain {
         return reverseDrive;
     }
 
+    public void setMaxSpeed(double maxSpeed) {
+        MAX_SPEED_MULT = maxSpeed;
+    }
+
+    public double getMaxSpeed() {
+        return MAX_SPEED_MULT;
+    }
+
     public void curve(
             double speedRaw,
             double speedThrottleRaw,
@@ -60,4 +69,8 @@ public class DriveTrain {
 
         driveTrain.curvatureDrive(driveX, driveZ, true); // Drive
     }
+
+    public void curveRaw(int xSpeed, double zRotation, boolean isQuickTurn) {
+        driveTrain.curvatureDrive(xSpeed, zRotation, isQuickTurn);
+	}
 }
