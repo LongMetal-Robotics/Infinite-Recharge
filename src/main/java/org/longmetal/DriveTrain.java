@@ -72,5 +72,5 @@ public class DriveTrain {
 
     public void curveRaw(int xSpeed, double zRotation, boolean isQuickTurn) {
         driveTrain.curvatureDrive(xSpeed, zRotation, isQuickTurn);
-	}
+    }
 }
