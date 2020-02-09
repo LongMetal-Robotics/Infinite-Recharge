@@ -4,9 +4,8 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
-import org.longmetal.util.LMMath;
 import org.longmetal.exception.SubsystemException;
+import org.longmetal.util.LMMath;
 
 public class Shooter {
     private CANSparkMax mShooter;
@@ -36,7 +35,9 @@ public class Shooter {
 
     public void setShootSpeed(double shootSpeed) throws SubsystemException {
         SubsystemManager.check(enabled, initialized);
-        shootSpeed = LMMath.limit(shootSpeed, Constants.kSHOOTER_MIN, Constants.kSHOOTER_MAX).doubleValue();
+        shootSpeed =
+                LMMath.limit(shootSpeed, Constants.kSHOOTER_MIN, Constants.kSHOOTER_MAX)
+                        .doubleValue();
         mShooter.set(shootSpeed);
         shooting = shootSpeed > Constants.kSHOOTER_MIN + 0.1;
     }
@@ -67,7 +68,12 @@ public class Shooter {
         speed *= Constants.kSHOOTER_SPEED_MODIFIER;
         double xModifier = modifierX * Constants.kSHOOTER_X_MODIFIER;
         double yModifier = modifierY * Constants.kSHOOTER_Y_MODIFIER;
-        mShooter.set((double)LMMath.limit(speed - xModifier + yModifier, Constants.kSHOOTER_MIN, Constants.kSHOOTER_MAX));
+        mShooter.set(
+                (double)
+                        LMMath.limit(
+                                speed - xModifier + yModifier,
+                                Constants.kSHOOTER_MIN,
+                                Constants.kSHOOTER_MAX));
     }
 
     public void idle() throws SubsystemException {
@@ -80,7 +86,7 @@ public class Shooter {
         enabled = newEnabled;
         if (!enabled) {
             if (!initialized) {
-                init();  
+                init();
             }
             mShooter.set(0);
             mSingulator.set(ControlMode.PercentOutput, 0);

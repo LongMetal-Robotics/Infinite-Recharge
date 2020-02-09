@@ -42,8 +42,9 @@ public class Constants {
     // Shooter
     public static final String kSHOOTER_STATE_KEY = "Shooter Enabled"; // SmartDashboard value key
     public static final String kSHOOTER_ENABLER_KEY = "Enable Shooter";
-    public static final double kSHOOTER_MIN = 0.1;  // Min shooter speed
-    public static final double kSHOOTER_MAX = 0.75; // Max shooter speed (to protect against excessive amperage or safety I guess)
+    public static final double kSHOOTER_MIN = 0.1; // Min shooter speed
+    public static final double kSHOOTER_MAX =
+            0.75; // Max shooter speed (to protect against excessive amperage or safety I guess)
     public static final double kSHOOTER_SPEED_MODIFIER = 1; // Decrease shooter speed
     // Effect of modifiers on finals speeds
     public static final double kSHOOTER_X_MODIFIER = 0.5;
