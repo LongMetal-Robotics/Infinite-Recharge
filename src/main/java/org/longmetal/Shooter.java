@@ -29,12 +29,12 @@ public class Shooter {
     public void init() {
         mShooter = new CANSparkMax(Constants.kP_SHOOTER, MotorType.kBrushless);
         mSingulator = new TalonSRX(Constants.kP_SINGULATOR);
-        // mShooter.setOpenLoopRampRate(1); // This is just for testing
+        mShooter.setOpenLoopRampRate(1); // This is just for testing
         initialized = true;
     }
 
     public void setShootSpeed(double shootSpeed) throws SubsystemException {
-        SubsystemManager.check(enabled, initialized);
+        //SubsystemManager.check(enabled, initialized);
         shootSpeed =
                 LMMath.limit(shootSpeed, Constants.kSHOOTER_MIN, Constants.kSHOOTER_MAX)
                         .doubleValue();
@@ -43,7 +43,7 @@ public class Shooter {
     }
 
     public void setSingulatorSpeed(double singSpeed) throws SubsystemException {
-        SubsystemManager.check(enabled, initialized);
+        //SubsystemManager.check(enabled, initialized);
         mSingulator.set(ControlMode.PercentOutput, Constants.kSINGULATOR_SPEED);
     }
 
@@ -61,11 +61,11 @@ public class Shooter {
     }
 
     public void run(double speed, boolean runSingulator) throws SubsystemException {
-        SubsystemManager.check(enabled, initialized);
+        //SubsystemManager.check(enabled, initialized);
         if (runSingulator) {
             mSingulator.set(ControlMode.PercentOutput, speed);
         }
-        speed *= Constants.kSHOOTER_SPEED_MODIFIER;
+        /*speed *= Constants.kSHOOTER_SPEED_MODIFIER;
         double xModifier = modifierX * Constants.kSHOOTER_X_MODIFIER;
         double yModifier = modifierY * Constants.kSHOOTER_Y_MODIFIER;
         mShooter.set(
@@ -73,12 +73,13 @@ public class Shooter {
                         LMMath.limit(
                                 speed - xModifier + yModifier,
                                 Constants.kSHOOTER_MIN,
-                                Constants.kSHOOTER_MAX));
+                                Constants.kSHOOTER_MAX));*/
+        mShooter.set(speed);
     }
 
     public void idle() throws SubsystemException {
-        SubsystemManager.check(enabled, initialized);
-        mSingulator.set(ControlMode.PercentOutput, 0);
+        // SubsystemManager.check(enabled, initialized);
+        //mSingulator.set(ControlMode.PercentOutput, 0);
         run(Constants.kSHOOTER_MIN, false);
     }
 

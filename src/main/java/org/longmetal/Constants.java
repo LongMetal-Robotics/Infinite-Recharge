@@ -28,13 +28,13 @@ public class Constants {
     public static final int kC_CLIMB2 = 1;
     // CAN IDs
     public static final int kP_WINCH1 = 5;
-    public static final int kP_WINCH2 = 6;
+    public static final int kP_WINCH2 = 8; // should be 6
 
     // Manipulator
     // CAN IDs
     public static final int kP_INTAKE = 7;
     public static final int kP_TRANSPORT = 9;
-    public static final int kP_SHOOTER = 8;
+    public static final int kP_SHOOTER = 6;
     public static final int kP_SINGULATOR = 13;
     // Temporarily 13 cuz I set the PDP and PCM to 11 and 12
     // Will be fixed eventually :) -Ben
@@ -69,8 +69,9 @@ public class Constants {
     // CAN IDs
     public static final int kP_PANEL = 10;
 
-    public static final int kP_GAMEPAD = 2; // Gamepad port
-    public static final int kA_TRIGGER = 3; // Trigger axis number
+    public static final int kP_GAMEPAD = 2;
+    public static final int kA_LEFT_TRIGGER = 2; // Left trigger axis number
+    public static final int kA_RIGHT_TRIGGER = 3; // Right trigger axis number
     public static final int kA_LS_X = 0; // Left stick X axis #
     public static final int kA_LS_Y = 1; // Left stick Y axis #
     public static final int kA_RS_Y = 5; // Right stick Y axis #

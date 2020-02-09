@@ -84,6 +84,8 @@ public class Robot extends TimedRobot {
 
         input = new Input();
         driveTrain = new DriveTrain();
+        intake = new Intake(true);
+        shooter = new Shooter(true);
 
         chooserQuinnDrive = new SendableChooser<>();
         chooserQuinnDrive.setDefaultOption("Disabled", false);
@@ -136,7 +138,7 @@ public class Robot extends TimedRobot {
     /**
      * This autonomous (along with the chooser code above) shows how to select between different
      * autonomous modes using the dashboard. The sendable chooser code works with the Java
-     * SmartDashboard. If you prefer the LabVIEW Dashboard, remove all of the chooser code and
+     * SmartDashboard. If you prefer the LabVIEW Dashboard (you don't), remove all of the chooser code and
      * uncomment the getString line to get the auto name from the text box below the Gyro
      *
      * <p>You can add additional auto modes by adding additional comparisons to the switch structure
@@ -174,47 +176,54 @@ public class Robot extends TimedRobot {
                 input.turnStick.getTwist(),
                 input.turnStick.getThrottle());
 
-        double trigger = input.gamepad.getRawAxis(Constants.kP_GAMEPAD);
+        double lTrigger = input.gamepad.getRawAxis(Constants.kA_LEFT_TRIGGER);
+        double rTrigger = input.gamepad.getRawAxis(Constants.kA_RIGHT_TRIGGER);
 
         String currentSubsystem = "Subsystem";
         try {
-            if (!driveTrain.getReverseDrive()) { // Shooting mode
+            if (driveTrain.getReverseDrive()) { // Shooting mode
                 currentSubsystem = "Shooter";
-                if (Shooter.getEnabled()) {
-                    double modifierX = input.gamepad.getRawAxis(Constants.kA_LS_X);
-                    double modifierY =
-                            input.gamepad.getRawAxis(Constants.kA_LS_Y)
-                                    * Constants.kY_AXIS_MODIFIER;
+                //if (Shooter.getEnabled()) {
+                    //double modifierX = input.gamepad.getRawAxis(Constants.kA_LS_X);
+                    //double modifierY =
+                            //input.gamepad.getRawAxis(Constants.kA_LS_Y)
+                                   // * Constants.kY_AXIS_MODIFIER;
 
-                    shooter.modifier(modifierX, modifierY); // Set shooter modifiers
-                    if (trigger > Constants.kINPUT_DEADBAND) { // Right trigger has passed deadband
-                        shooter.run(trigger);
+                    //shooter.modifier(modifierX, modifierY); // Set shooter modifiers
+                    if (lTrigger > Constants.kINPUT_DEADBAND) { // Right trigger has passed deadband
+                        shooter.run(lTrigger, false);
                     } else {
                         shooter.idle();
                     }
 
-                    double angleSpeed =
+                    /*double angleSpeed =
                             input.gamepad.getRawAxis(Constants.kA_RS_Y)
                                     * Constants.kY_AXIS_MODIFIER;
-                    // shooter.angleSpeed(angleSpeed * Constants.kANGLE_SPEED_MODIFIER);
-                }
+                    shooter.angleSpeed(angleSpeed * Constants.kANGLE_SPEED_MODIFIER);*/
+                //}
 
-                currentSubsystem = "Collector";
+                //currentSubsystem = "Collector";
                 if (Intake.getEnabled()) {
                     intake.setIntakeSpeed(0);
                 }
             } else {
                 // Collecting mode
                 currentSubsystem = "Collector";
-                if (Intake.getEnabled()) {
-                    if (trigger > Constants.kINPUT_DEADBAND) {
-                        intake.setIntakeSpeed(0.5);
+                //if (Intake.getEnabled()) {
+                    if (lTrigger > Constants.kINPUT_DEADBAND) {
+                        intake.setIntakeSpeed(lTrigger);
                     } else {
                         intake.setIntakeSpeed(0);
                     }
-                }
+                    if (rTrigger > Constants.kINPUT_DEADBAND) {
+                        intake.setTransportSpeed(rTrigger);
+                    } else {
+                        intake.setTransportSpeed(0);
+                    }
 
-                currentSubsystem = "Shooter";
+                //}
+
+                //currentSubsystem = "Shooter";
                 if (Shooter.getEnabled()) {
                     shooter.modifier(0, 0); // Clear shooter modifiers
                     shooter.idle();
