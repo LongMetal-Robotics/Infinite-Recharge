@@ -22,7 +22,7 @@ public class Intake {
             init();
         } else {
             System.out.println(
-                    "[WARN]\tShooter wasn't enabled on startup. You must call init() on it later to use it.");
+                    "[WARN]\tIntake wasn't enabled on startup. You must call init() on it later to use it.");
         }
     }
 
