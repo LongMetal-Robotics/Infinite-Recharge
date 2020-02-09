@@ -34,7 +34,7 @@ public class Shooter {
     }
 
     public void setShootSpeed(double shootSpeed) throws SubsystemException {
-        //SubsystemManager.check(enabled, initialized);
+        // SubsystemManager.check(enabled, initialized);
         shootSpeed =
                 LMMath.limit(shootSpeed, Constants.kSHOOTER_MIN, Constants.kSHOOTER_MAX)
                         .doubleValue();
@@ -43,7 +43,7 @@ public class Shooter {
     }
 
     public void setSingulatorSpeed(double singSpeed) throws SubsystemException {
-        //SubsystemManager.check(enabled, initialized);
+        // SubsystemManager.check(enabled, initialized);
         mSingulator.set(ControlMode.PercentOutput, Constants.kSINGULATOR_SPEED);
     }
 
@@ -61,7 +61,7 @@ public class Shooter {
     }
 
     public void run(double speed, boolean runSingulator) throws SubsystemException {
-        //SubsystemManager.check(enabled, initialized);
+        // SubsystemManager.check(enabled, initialized);
         if (runSingulator) {
             mSingulator.set(ControlMode.PercentOutput, speed);
         }
@@ -79,7 +79,7 @@ public class Shooter {
 
     public void idle() throws SubsystemException {
         // SubsystemManager.check(enabled, initialized);
-        //mSingulator.set(ControlMode.PercentOutput, 0);
+        // mSingulator.set(ControlMode.PercentOutput, 0);
         run(Constants.kSHOOTER_MIN, false);
     }
 
