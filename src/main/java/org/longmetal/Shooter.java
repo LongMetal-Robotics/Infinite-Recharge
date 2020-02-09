@@ -8,8 +8,8 @@ import org.longmetal.exception.SubsystemException;
 import org.longmetal.util.LMMath;
 
 public class Shooter {
-    private CANSparkMax mShooter;
-    private TalonSRX mSingulator; // this is the motor that has the mec wheels attached
+    private CANSparkMax mShooter; // The shooter motor itself
+    private TalonSRX mSingulator; // This is the motor that has the mec wheels attached
     private static boolean enabled = true;
     private boolean initialized = false;
     private boolean shooting = false;
@@ -29,7 +29,7 @@ public class Shooter {
     public void init() {
         mShooter = new CANSparkMax(Constants.kP_SHOOTER, MotorType.kBrushless);
         mSingulator = new TalonSRX(Constants.kP_SINGULATOR);
-        // mShooter.setOpenLoopRampRate(1);
+        // mShooter.setOpenLoopRampRate(1); // This is just for testing
         initialized = true;
     }
 

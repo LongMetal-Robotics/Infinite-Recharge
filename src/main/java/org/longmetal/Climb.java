@@ -25,8 +25,8 @@ public class Climb {
     public void init() {
         winch1 = new CANSparkMax(Constants.kP_WINCH1, MotorType.kBrushless);
         winch2 = new CANSparkMax(Constants.kP_WINCH2, MotorType.kBrushless);
-        winch1.setOpenLoopRampRate(1);
-        winch2.setOpenLoopRampRate(1);
+        winch1.setOpenLoopRampRate(1); // for testing only
+        winch2.setOpenLoopRampRate(1); // for testing only
         drumSpin1 = new Solenoid(Constants.kC_CLIMB1);
         drumSpin2 = new Solenoid(Constants.kC_CLIMB2);
         initialized = true;

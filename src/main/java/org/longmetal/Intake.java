@@ -7,8 +7,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import org.longmetal.exception.*;
 
 public class Intake {
-    private TalonSRX mIntake; // Thanks for the wonderful variable names Jon, I fixed them :)
-    private CANSparkMax mTransport;
+    private TalonSRX mIntake; // mIntake is the intake itself
+    private CANSparkMax mTransport; // mTransport drives the internal ramp
 
     private static boolean enabled = true;
     private boolean initialized = false;
@@ -49,9 +49,9 @@ public class Intake {
             if (!initialized) {
                 init();
             }
-            mTransport.set(0);
-            mTransport.setOpenLoopRampRate(1);
-            mIntake.set(ControlMode.PercentOutput, 0);
+            mTransport.set(0); // Sets mTransport to a speed of 0
+            mTransport.setOpenLoopRampRate(1); // Just for testing purposes
+            mIntake.set(ControlMode.PercentOutput, 0); // Sets mIntake to a speed of 0
         }
     }
 
