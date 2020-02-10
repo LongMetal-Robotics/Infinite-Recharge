@@ -182,7 +182,6 @@ public class Robot extends TimedRobot {
                 input.turnStick.getTwist(),
                 input.turnStick.getThrottle());
 
-
         // Left Gamepad trigger, currently used for intake and shooter
         double lTrigger = input.gamepad.getRawAxis(Constants.kA_LEFT_TRIGGER);
 
@@ -206,10 +205,9 @@ public class Robot extends TimedRobot {
                 if (lTrigger > Constants.kINPUT_DEADBAND) { // Right trigger has passed deadband
                     shooter.run(lTrigger, false);
                 } /*else {
-                    shooter.idle();
-                }*/
-                if (lButton)
-                {
+                      shooter.idle();
+                  }*/
+                if (lButton) {
                     shooter.idle();
                 }
 
@@ -242,13 +240,12 @@ public class Robot extends TimedRobot {
 
                 // currentSubsystem = "Shooter";
                 if (Shooter.getEnabled()) {
-                    //shooter.modifier(0, 0); // Clear shooter modifiers
+                    // shooter.modifier(0, 0); // Clear shooter modifiers
                     shooter.idle();
                 }
             }
-            
-            // <<<------------------ Add control panel and climb code here ------------------>>>
 
+            // <<<------------------ Add control panel and climb code here ------------------>>>
 
         } catch (SubsystemException e) {
             // status.sendStatus(Status.PROBLEM);

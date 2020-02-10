@@ -158,7 +158,6 @@ public class SubsystemManager {
         SmartDashboard.putBoolean(Constants.kSHOOTER_STATE_KEY, shooterEnableValue);
 
         setSubsystem(Subsystem.SHOOTER, shooterEnableValue);
-
     }
 
     public void checkSendables() {
