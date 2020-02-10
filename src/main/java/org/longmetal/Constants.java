@@ -60,18 +60,23 @@ public class Constants {
     // Preferences
     public static final String kSHOOTER_KEY = "SHOOTER";
     public static final String kINTAKE_KEY = "INTAKE";
+    public static final String kCONTROL_PANEL_KEY = "CONTROL PANEL";
+    public static final String kCLIMB_KEY = "CLIMB";
 
     // String literals for multiple reuses
     public static final String kENABLED = "Enabled";
     public static final String kDISABLED = "Disabled";
 
     // Control Panel
+    public static final String kCONTROL_PANEL_STATE_KEY = "CP Enabled";
+    public static final String kCONTROL_PANEL_ENABLER_KEY = "Enable CP";
     // CAN IDs
     public static final int kP_PANEL = 10;
 
     public static final int kP_GAMEPAD = 2;
     public static final int kA_LEFT_TRIGGER = 2; // Left trigger axis number
     public static final int kA_RIGHT_TRIGGER = 3; // Right trigger axis number
+    public static final int kB_LB = 4; // LB button number
     public static final int kA_LS_X = 0; // Left stick X axis #
     public static final int kA_LS_Y = 1; // Left stick Y axis #
     public static final int kA_RS_Y = 5; // Right stick Y axis #

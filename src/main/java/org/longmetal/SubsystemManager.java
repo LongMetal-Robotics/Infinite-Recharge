@@ -122,6 +122,43 @@ public class SubsystemManager {
         SmartDashboard.putBoolean(Constants.kINTAKE_STATE_KEY, climbEnableValue);
 
         setSubsystem(Subsystem.CLIMB, climbEnableValue);
+
+        controlPanelEnableValue =
+                preferences.getBoolean(Constants.kCONTROL_PANEL_KEY, false) /* Shooter enabled */;
+
+        Runnable enableControlPanel =
+                new Runnable() {
+
+                    @Override
+                    public void run() {
+                        SubsystemManager.setSubsystem(Subsystem.CONTROL_PANEL, true);
+                    }
+                };
+        Runnable disableControlPanel =
+                new Runnable() {
+
+                    @Override
+                    public void run() {
+                        SubsystemManager.setSubsystem(Subsystem.CONTROL_PANEL, false);
+                    }
+                };
+
+        shooterEnable = new SendableChooser<>();
+        if (shooterEnableValue) { // (hopefully) set the order of the options in the menu so enabled
+            // is always first but the
+            // initially selected option indicates whether the subsystem is actually enabled or not
+            // based on previously-saved preferences
+            shooterEnable.setDefaultOption(Constants.kENABLED, enableShooter);
+            shooterEnable.addOption(Constants.kDISABLED, disableShooter);
+        } else {
+            shooterEnable.addOption(Constants.kENABLED, enableShooter);
+            shooterEnable.setDefaultOption(Constants.kDISABLED, disableShooter);
+        }
+        SmartDashboard.putData(Constants.kSHOOTER_ENABLER_KEY, shooterEnable);
+        SmartDashboard.putBoolean(Constants.kSHOOTER_STATE_KEY, shooterEnableValue);
+
+        setSubsystem(Subsystem.SHOOTER, shooterEnableValue);
+
     }
 
     public void checkSendables() {

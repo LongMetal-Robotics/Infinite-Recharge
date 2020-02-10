@@ -90,6 +90,8 @@ public class Robot extends TimedRobot {
         driveTrain = new DriveTrain();
         intake = new Intake(true);
         shooter = new Shooter(true);
+        climb = new Climb(true);
+        controlPanel = new ControlPanel(true);
 
         chooserQuinnDrive = new SendableChooser<>();
         chooserQuinnDrive.setDefaultOption("Disabled", false);
@@ -180,8 +182,15 @@ public class Robot extends TimedRobot {
                 input.turnStick.getTwist(),
                 input.turnStick.getThrottle());
 
+
+        // Left Gamepad trigger, currently used for intake and shooter
         double lTrigger = input.gamepad.getRawAxis(Constants.kA_LEFT_TRIGGER);
+
+        // Right Gamepad trigger, currently used for transport
         double rTrigger = input.gamepad.getRawAxis(Constants.kA_RIGHT_TRIGGER);
+
+        // LB button, used to stop shooter
+        boolean lButton = input.gamepad.getRawButton(Constants.kB_LB);
 
         String currentSubsystem = "Subsystem";
         try {
@@ -196,7 +205,11 @@ public class Robot extends TimedRobot {
                 // shooter.modifier(modifierX, modifierY); // Set shooter modifiers
                 if (lTrigger > Constants.kINPUT_DEADBAND) { // Right trigger has passed deadband
                     shooter.run(lTrigger, false);
-                } else {
+                } /*else {
+                    shooter.idle();
+                }*/
+                if (lButton)
+                {
                     shooter.idle();
                 }
 
@@ -229,10 +242,13 @@ public class Robot extends TimedRobot {
 
                 // currentSubsystem = "Shooter";
                 if (Shooter.getEnabled()) {
-                    shooter.modifier(0, 0); // Clear shooter modifiers
+                    //shooter.modifier(0, 0); // Clear shooter modifiers
                     shooter.idle();
                 }
             }
+            
+            // <<<------------------ Add control panel and climb code here ------------------>>>
+
 
         } catch (SubsystemException e) {
             // status.sendStatus(Status.PROBLEM);
