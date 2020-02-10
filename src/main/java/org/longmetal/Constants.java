@@ -33,7 +33,7 @@ public class Constants {
     // Manipulator
     // CAN IDs
     public static final int kP_INTAKE = 7;
-    public static final int kP_TRANSPORT = 9;
+    public static final int kP_TRANSPORT = 10;
     public static final int kP_SHOOTER = 6;
     public static final int kP_SINGULATOR = 13;
     // Temporarily 13 cuz I set the PDP and PCM to 11 and 12
@@ -71,7 +71,7 @@ public class Constants {
     public static final String kCONTROL_PANEL_STATE_KEY = "CP Enabled";
     public static final String kCONTROL_PANEL_ENABLER_KEY = "Enable CP";
     // CAN IDs
-    public static final int kP_PANEL = 10;
+    public static final int kP_PANEL = 14; // Should be 10, will be changed back
 
     public static final int kP_GAMEPAD = 2;
     public static final int kA_LEFT_TRIGGER = 2; // Left trigger axis number

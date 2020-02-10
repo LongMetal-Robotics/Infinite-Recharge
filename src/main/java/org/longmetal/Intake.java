@@ -8,7 +8,7 @@ import org.longmetal.exception.*;
 
 public class Intake {
     private TalonSRX mIntake; // mIntake is the intake itself
-    private CANSparkMax mTransport; // mTransport drives the internal ramp
+    private TalonSRX mTransport; // mTransport drives the internal ramp
 
     private static boolean enabled = true;
     private boolean initialized = false;
@@ -29,14 +29,13 @@ public class Intake {
 
     public void init() {
         mIntake = new TalonSRX(Constants.kP_INTAKE);
-        mTransport = new CANSparkMax(Constants.kP_TRANSPORT, MotorType.kBrushless);
-        mTransport.setOpenLoopRampRate(1); // Just for testing purposes
+        mTransport = new TalonSRX(Constants.kP_TRANSPORT);
         initialized = true;
     }
 
     public void setTransportSpeed(double speed) throws SubsystemException {
         // SubsystemManager.check(enabled, initialized);
-        mTransport.set(speed);
+        mTransport.set(ControlMode.PercentOutput, speed);
     }
 
     public void setIntakeSpeed(double speed) throws SubsystemException {
@@ -50,8 +49,7 @@ public class Intake {
             if (!initialized) {
                 init();
             }
-            mTransport.set(0); // Sets mTransport to a speed of 0
-            mTransport.setOpenLoopRampRate(1); // Just for testing purposes
+            mTransport.set(ControlMode.PercentOutput, 0); // Sets mTransport to a speed of 0
             mIntake.set(ControlMode.PercentOutput, 0); // Sets mIntake to a speed of 0
         }
     }
