@@ -1,5 +1,8 @@
 package org.longmetal;
 
+import edu.wpi.first.wpilibj.util.Color;
+import com.revrobotics.ColorMatch;
+
 public class Constants {
     // Drive Train
     public static final double kMAX_SPEED_MULT = 0.8; // Limit max speed, was 0.5
@@ -46,4 +49,11 @@ public class Constants {
     // Control Panel
     // CAN IDs
     public static final int kP_PANEL = 10;
+    public static final double k_SPINRATE = 0.2;
+
+    //Colors
+    public static final Color kBlueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
+    public static final Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
+    public static final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
+    public static final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
 }
