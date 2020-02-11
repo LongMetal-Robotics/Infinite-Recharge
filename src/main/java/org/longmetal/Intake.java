@@ -1,10 +1,12 @@
 package org.longmetal;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class Intake {
     private TalonSRX mIntake; // Thanks for the wonderful variable names Jon, I fixed them :)
-    private TalonSRX mTransport;
+    private CANSparkMax mTransport;
 
     private static boolean enabled = true;
     private boolean initialized = false;
@@ -25,8 +27,8 @@ public class Intake {
 
     public void init() {
         mIntake = new TalonSRX(Constants.kP_INTAKE);
-        mTransport = new TalonSRX(Constants.kP_TRANSPORT);
-
+        mTransport = new CANSparkMax(Constants.kP_TRANSPORT, MotorType.kBrushless);
+        mTransport.setOpenLoopRampRate(1);
         initialized = true;
     }
 }
