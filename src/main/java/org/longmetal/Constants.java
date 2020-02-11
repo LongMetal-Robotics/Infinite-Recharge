@@ -1,7 +1,7 @@
 package org.longmetal;
 
-import edu.wpi.first.wpilibj.util.Color;
 import com.revrobotics.ColorMatch;
+import edu.wpi.first.wpilibj.util.Color;
 
 public class Constants {
     // Drive Train
@@ -51,7 +51,7 @@ public class Constants {
     public static final int kP_PANEL = 10;
     public static final double k_SPINRATE = 0.2;
 
-    //Colors
+    // Colors
     public static final Color kBlueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
     public static final Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
     public static final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
