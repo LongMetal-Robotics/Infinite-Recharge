@@ -33,7 +33,7 @@ public class Constants {
     // Manipulator
     // CAN IDs
     public static final int kP_INTAKE = 7;
-    public static final int kP_TRANSPORT = 10;
+    public static final int kP_HOPPER = 10;
     public static final int kP_SHOOTER = 6;
     public static final int kP_SINGULATOR = 13;
     // Temporarily 13 cuz I set the PDP and PCM to 11 and 12

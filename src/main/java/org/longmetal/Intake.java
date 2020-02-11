@@ -6,7 +6,7 @@ import org.longmetal.exception.*;
 
 public class Intake {
     private TalonSRX mIntake; // mIntake is the intake itself
-    private TalonSRX mTransport; // mTransport drives the internal ramp
+    private TalonSRX mHopper; // mHopper drives the internal ramp
 
     private static boolean enabled = true;
     private boolean initialized = false;
@@ -27,13 +27,13 @@ public class Intake {
 
     public void init() {
         mIntake = new TalonSRX(Constants.kP_INTAKE);
-        mTransport = new TalonSRX(Constants.kP_TRANSPORT);
+        mHopper = new TalonSRX(Constants.kP_HOPPER);
         initialized = true;
     }
 
-    public void setTransportSpeed(double speed) throws SubsystemException {
+    public void setHopperSpeed(double speed) throws SubsystemException {
         // SubsystemManager.check(enabled, initialized);
-        mTransport.set(ControlMode.PercentOutput, speed);
+        mHopper.set(ControlMode.PercentOutput, speed);
     }
 
     public void setIntakeSpeed(double speed) throws SubsystemException {
@@ -47,7 +47,7 @@ public class Intake {
             if (!initialized) {
                 init();
             }
-            mTransport.set(ControlMode.PercentOutput, 0); // Sets mTransport to a speed of 0
+            mHopper.set(ControlMode.PercentOutput, 0); // Sets mHopper to a speed of 0
             mIntake.set(ControlMode.PercentOutput, 0); // Sets mIntake to a speed of 0
         }
     }

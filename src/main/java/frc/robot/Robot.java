@@ -185,7 +185,7 @@ public class Robot extends TimedRobot {
         // Left Gamepad trigger, currently used for intake and shooter
         double lTrigger = input.gamepad.getRawAxis(Constants.kA_LEFT_TRIGGER);
 
-        // Right Gamepad trigger, currently used for transport
+        // Right Gamepad trigger, currently used for hopper
         double rTrigger = input.gamepad.getRawAxis(Constants.kA_RIGHT_TRIGGER);
 
         // LB button, used to stop shooter
@@ -217,23 +217,26 @@ public class Robot extends TimedRobot {
                 shooter.angleSpeed(angleSpeed * Constants.kANGLE_SPEED_MODIFIER);*/
                 // }
 
-                // currentSubsystem = "Collector";
+                // currentSubsystem = "Intake";
                 if (Intake.getEnabled()) {
                     intake.setIntakeSpeed(0);
                 }
             } else {
                 // Collecting mode
-                currentSubsystem = "Collector";
+                currentSubsystem = "Intake";
                 // if (Intake.getEnabled()) {
                 if (lTrigger > Constants.kINPUT_DEADBAND) {
                     intake.setIntakeSpeed(lTrigger);
+                } else if (lButton) {
+                    intake.setIntakeSpeed(-0.5);
                 } else {
                     intake.setIntakeSpeed(0);
                 }
+
                 if (rTrigger > Constants.kINPUT_DEADBAND) {
-                    intake.setTransportSpeed(rTrigger);
+                    intake.setHopperSpeed(rTrigger);
                 } else {
-                    intake.setTransportSpeed(0);
+                    intake.setHopperSpeed(0);
                 }
 
                 // }
