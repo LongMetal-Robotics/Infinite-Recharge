@@ -11,6 +11,10 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+
 import java.io.File;
 import java.util.Scanner;
 import org.longmetal.Climb;
@@ -48,6 +52,12 @@ public class Robot extends TimedRobot {
     boolean lastQuinnDrive = false;
     boolean lastForwardDrive = false;
     boolean lastReverseDrive = false;
+
+    NetworkTable limelightTable = NetworkTableInstance.getDefault().getTable("limelight"); //takes in values from limelight
+    NetworkTableEntry tx = limelightTable.getEntry("tx"); //distances
+    NetworkTableEntry ty = limelightTable.getEntry("ty"); //height or something
+
+    double tX, tY;
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -139,6 +149,12 @@ public class Robot extends TimedRobot {
         lastReverseDrive = reverseDrive;
 
         SmartDashboard.putBoolean("Reverse Drive", driveTrain.getReverseDrive());
+
+        tX = tx.getDouble(0.0);
+        tY = ty.getDouble(0.0);
+
+        SmartDashboard.putNumber("LimelightX", tX);
+        SmartDashboard.putNumber("LimelightY", tY);
     }
 
     /**
@@ -176,11 +192,20 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
 
-        driveTrain.curve(
+        if (input.forwardStick.getRawButton(1)) {
+            limelightTable.getEntry("ledMode").setDouble(3.0);
+            limelightTable.getEntry("camMode").setDouble(0.0);
+            driveTrain.curveRaw(0, (tX / 30) / 2, true);
+        } 
+        else {
+                limelightTable.getEntry("ledMode").setDouble(0.0);
+                limelightTable.getEntry("camMode").setDouble(3.0);
+                driveTrain.curve(
                 input.forwardStick.getY(),
                 input.forwardStick.getThrottle(),
                 input.turnStick.getTwist(),
                 input.turnStick.getThrottle());
+        }
 
         // Left Gamepad trigger, currently used for intake and shooter
         double lTrigger = input.gamepad.getRawAxis(Constants.kA_LEFT_TRIGGER);
