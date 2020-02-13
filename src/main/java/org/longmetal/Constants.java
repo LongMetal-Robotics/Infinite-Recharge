@@ -1,11 +1,18 @@
 package org.longmetal;
 
+import com.revrobotics.ColorMatch;
+import edu.wpi.first.wpilibj.util.Color;
+
 public class Constants {
     // Drive Train
     public static final double kMAX_SPEED_MULT = 0.8; // Limit max speed, was 0.5
     public static final double kSPEED_MODIFIER = 0.7; // Speed modifier (on throttle)
     public static final double kTHROTTLE_SHIFT = 1.05; // Shift throttle up
     public static final double kCURVE_MODIFIER = -0.25; // Curve modifier
+
+    // TalonSRX
+    public static final double kP_CONTROLPANEL = 10; // TalonSRX for spinner (Color Wheel)
+
     // Spark Max CAN IDs
     public static final int kP_REAR_LEFT = 2;
     public static final int kP_FRONT_LEFT = 1;
@@ -42,6 +49,13 @@ public class Constants {
     // Control Panel
     // CAN IDs
     public static final int kP_PANEL = 10;
+    public static final double k_SPINRATE = 0.2;
+
+    // Colors
+    public static final Color kBlueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
+    public static final Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
+    public static final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
+    public static final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
 
     public static final int kP_GAMEPAD = 2; // Gamepad port
 }
