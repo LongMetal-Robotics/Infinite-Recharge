@@ -220,7 +220,6 @@ public class Robot extends TimedRobot {
         // Right stick Y axis, right climb up/down
         double rStickY = input.gamepad.getRawAxis(Constants.kA_RS_Y);
 
-
         // LB button, used to stop shooter
         boolean lButton = input.gamepad.getRawButton(Constants.kB_LB);
 
@@ -265,7 +264,7 @@ public class Robot extends TimedRobot {
                 if (lTrigger > Constants.kINPUT_DEADBAND) {
                     intake.setIntakeSpeed(rTrigger);
                 } else if (rButton) { // Reverse intake
-                    intake.setIntakeSpeed(-0.5);
+                    intake.setIntakeSpeed(-0.2);
                 } else { // Stop intake
                     intake.setIntakeSpeed(0);
                 }
@@ -286,7 +285,10 @@ public class Robot extends TimedRobot {
 
                 // Flip up control panel and engage based on FMS values
                 if (yButton) {
-                    // Flip up
+                    // For now, this button will just spin the motor for testing purposes
+                    controlPanel.setSpinnerSpeed();
+                } else {
+                    controlPanel.spinnerStop();
                 }
 
                 // Puts the robot into endgame mode, disabling all manipulator subsystems

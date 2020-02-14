@@ -97,6 +97,9 @@ public class Constants {
     // Singulator
     public static final double kSINGULATOR_SPEED = 0.4; // singulator speed
 
+    // Control Panel
+    public static final double kCONTROL_PANEL_SPEED = 0.4; // Control Panel Speed
+
     // Intake
     public static final String kINTAKE_STATE_KEY = "Intake Enabled"; // SmartDashboard value key
     public static final String kINTAKE_ENABLER_KEY = "Enable Intake";
