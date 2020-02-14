@@ -3,10 +3,8 @@ package org.longmetal;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.ColorSensorV3;
-
-import org.longmetal.exception.SubsystemException;
-
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import org.longmetal.exception.SubsystemException;
 
 public class ControlPanel {
     private TalonSRX mSpinner;
