@@ -1,4 +1,4 @@
-package org.longmetal;
+package org.longmetal.subsystem;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -6,6 +6,11 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
+import org.longmetal.Constants;
+
+/*
+ * While one could argue that this is a subsystem, you are probably going to be driving the robot no matter what, so we'll leave out the Subsystem methods.
+ */
 public class DriveTrain {
     public DifferentialDrive driveTrain;
 

@@ -1,4 +1,4 @@
-package org.longmetal;
+package org.longmetal.subsystem;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -10,41 +10,37 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.util.Color;
 
-public class ControlPanel {
+import org.longmetal.Constants;
+import org.longmetal.exception.SubsystemException;
+
+public class ControlPanel extends Subsystem {
     // instance variables
     private TalonSRX spinner; // spinner motor
     private DoubleSolenoid rotator; // to rotate the spinner up and down?
     private ColorSensorV3 csensor; // color sensor object
 
-    private static boolean enabled = true;
     private static PanelColor lastColor = PanelColor.Unknown;
     private static PanelColor initColor = PanelColor.Unknown;
     private static int setRotations = -1;
     private static int accumulated = -1;
-    private boolean initialized = false;
     private final ColorMatch m_colorMatcher = new ColorMatch();
 
     public ControlPanel(boolean setEnabled) {
-        enabled = setEnabled;
-        if (enabled) {
-            init();
-        } else {
-            System.out.println(
-                    "[WARN]\tShooter wasn't enabled on startup. You must call init() on it later to use it.");
-        }
+        super(setEnabled);
     }
 
     public void init() {
         csensor = new ColorSensorV3(Port.kOnboard);
         spinner = new TalonSRX(Constants.kP_PANEL);
         // Note colorsensor has its own port but idk how to access it.
-        initialized = true;
         spinner.setNeutralMode(NeutralMode.Brake); // sets brake mode so we stop on color
         // adds target values to color matcher for blue, green, red, and yellow
         m_colorMatcher.addColorMatch(Constants.kBlueTarget);
         m_colorMatcher.addColorMatch(Constants.kGreenTarget);
         m_colorMatcher.addColorMatch(Constants.kRedTarget);
         m_colorMatcher.addColorMatch(Constants.kYellowTarget);
+
+        super.init();
     }
 
     private PanelColor currentColor() {
@@ -82,7 +78,8 @@ public class ControlPanel {
     }
 
     // spins and returns false if not right color, or stops and returns true if right color
-    public boolean spinTo(PanelColor color) {
+    public boolean spinTo(PanelColor color) throws SubsystemException {
+        check();
         if (!isColor(color)) {
             spin();
             return false;
@@ -93,12 +90,13 @@ public class ControlPanel {
     }
 
     // spins with a new value
-    public boolean rotatedSpinTo(PanelColor color) {
+    public boolean rotatedSpinTo(PanelColor color) throws SubsystemException {
         return spinTo(color);
     }
 
     // sets values for rotation
-    public void initRotate(int turns) {
+    public void initRotate(int turns) throws SubsystemException {
+        check();
         setRotations = turns * 2;
         accumulated = 0;
         lastColor = currentColor();
@@ -106,7 +104,8 @@ public class ControlPanel {
     }
 
     // while spinning, updates the number of turns so you stop in the right place
-    public boolean updateRotate() {
+    public boolean updateRotate() throws SubsystemException {
+        check();
         PanelColor currentColor = currentColor();
         if (currentColor != lastColor) {
             lastColor = currentColor;

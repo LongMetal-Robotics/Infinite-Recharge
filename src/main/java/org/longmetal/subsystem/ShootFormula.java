@@ -1,4 +1,4 @@
-package org.longmetal;
+package org.longmetal.subsystem;
 
 // This file exists solely to house my basic formula for the shooter
 // -Ben

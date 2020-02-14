@@ -58,4 +58,15 @@ public class Constants {
     public static final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
 
     public static final int kP_GAMEPAD = 2; // Gamepad port
+
+    // Subsystem Management
+    public static final String SHOOTER_KEY = "Enable Shooter";
+    public static final String SHOOTER_STATE_KEY = "Shooter Enabled";
+    public static final String INTAKE_KEY = "Enable Intake";
+    public static final String INTAKE_STATE_KEY = "Intake Enabled";
+    public static final String CLIMB_KEY = "Enable Climb";
+    public static final String CLIMB_STATE_KEY = "Climb Enabled";
+
+    public static final String ENABLED = "Enabled";
+    public static final String DISABLED = "Disabled";
 }
