@@ -3,7 +3,6 @@ package org.longmetal.subsystem;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.Solenoid;
-
 import org.longmetal.Constants;
 
 public class Climb extends Subsystem {
@@ -27,7 +26,7 @@ public class Climb extends Subsystem {
 
         drumSpin1 = new Solenoid(Constants.kC_CLIMB1);
         drumSpin2 = new Solenoid(Constants.kC_CLIMB2);
-        
+
         super.init();
     }
 }

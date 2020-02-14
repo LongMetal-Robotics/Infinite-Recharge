@@ -14,8 +14,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.File;
 import java.util.Scanner;
 import org.longmetal.Constants;
-import org.longmetal.subsystem.DriveTrain;
 import org.longmetal.Input;
+import org.longmetal.subsystem.DriveTrain;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to

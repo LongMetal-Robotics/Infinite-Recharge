@@ -8,6 +8,7 @@ public class Subsystem {
 
     /**
      * Creates a Subsystem
+     *
      * @param isEnabled determines if the subsystem will be enabled on startup
      */
     public Subsystem(boolean isEnabled) {
@@ -15,13 +16,16 @@ public class Subsystem {
         if (enabled) {
             init();
         } else {
-            System.out.println("[WARN]\t" + this.getClass().getSimpleName() + " wasn't enabled on startup. You must call init() on it later to use it.");
+            System.out.println(
+                    "[WARN]\t"
+                            + this.getClass().getSimpleName()
+                            + " wasn't enabled on startup. You must call init() on it later to use it.");
         }
     }
 
     /**
-     * Initialize the subsystem.
-     * NOTE: YOU MUST CALL THIS METHOD USING {@code super.init()} AFTER THE OVERRIDDEN {@code init()} METHOD
+     * Initialize the subsystem. NOTE: YOU MUST CALL THIS METHOD USING {@code super.init()} AFTER
+     * THE OVERRIDDEN {@code init()} METHOD
      */
     public void init() {
         if (!initialized) {
@@ -31,6 +35,7 @@ public class Subsystem {
 
     /**
      * Enable or disable the subsystem
+     *
      * @param isEnabled
      */
     public void setEnabled(boolean isEnabled) {

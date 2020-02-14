@@ -3,7 +3,6 @@ package org.longmetal.subsystem;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import org.longmetal.Constants;
 
 public class Intake extends Subsystem {
