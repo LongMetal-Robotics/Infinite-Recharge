@@ -220,7 +220,6 @@ public class Robot extends TimedRobot {
         // Right stick Y axis, right climb up/down
         double rStickY = input.gamepad.getRawAxis(Constants.kA_RS_Y);
 
-
         // LB button, used to stop shooter
         boolean lButton = input.gamepad.getRawButton(Constants.kB_LB);
 
@@ -242,7 +241,6 @@ public class Robot extends TimedRobot {
         // Start button, engages Endgame Mode
         boolean startButton = input.gamepad.getRawButton(Constants.kB_START);
 
-
         String currentSubsystem = "Subsystem";
         try {
             if (!endgameMode) {
@@ -250,7 +248,7 @@ public class Robot extends TimedRobot {
                 if (bButton) {
                     // Do stuff
                 }
-                
+
                 // Sets shooter to a speed
                 if (lTrigger > Constants.kINPUT_DEADBAND) { // Left trigger has passed deadband
                     shooter.testShooter(lTrigger);
@@ -293,12 +291,11 @@ public class Robot extends TimedRobot {
                 if (startButton) {
                     endgameMode = true;
                 }
-            }
-            else {
+            } else {
                 if (rButton) {
                     // Release climb upwards, disengage solenoids
                 }
-                
+
                 // Left winch engage
                 if (lStickY > Constants.kINPUT_DEADBAND) {
                     climb.setLeftWinchSpeed(lStickY);
@@ -311,7 +308,6 @@ public class Robot extends TimedRobot {
                 // Need to add solenoids engaging and disengaging
             }
 
-            
         } catch (SubsystemException e) {
             // status.sendStatus(Status.PROBLEM);
             System.out.println(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
