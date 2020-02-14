@@ -51,6 +51,7 @@ public class Robot extends TimedRobot {
     boolean lastQuinnDrive = false;
     boolean lastForwardDrive = false;
     boolean lastReverseDrive = false;
+    boolean endgameMode = false;
 
     NetworkTable limelightTable =
             NetworkTableInstance.getDefault()
@@ -207,74 +208,110 @@ public class Robot extends TimedRobot {
                     input.turnStick.getThrottle());
         }
 
-        // Left Gamepad trigger, currently used for intake and shooter
+        // Left Gamepad trigger, currently used for shooter
         double lTrigger = input.gamepad.getRawAxis(Constants.kA_LEFT_TRIGGER);
 
-        // Right Gamepad trigger, currently used for hopper
+        // Right Gamepad trigger, currently used for intake
         double rTrigger = input.gamepad.getRawAxis(Constants.kA_RIGHT_TRIGGER);
+
+        // Left stick Y axis, left climb up/down
+        double lStickY = input.gamepad.getRawAxis(Constants.kA_LS_Y);
+
+        // Right stick Y axis, right climb up/down
+        double rStickY = input.gamepad.getRawAxis(Constants.kA_RS_Y);
+
 
         // LB button, used to stop shooter
         boolean lButton = input.gamepad.getRawButton(Constants.kB_LB);
 
+        // RB button, used to run reverse intake and release climb [only in climb mode]
+        boolean rButton = input.gamepad.getRawButton(Constants.kB_RB);
+
+        // X button, not currently used
+        boolean xButton = input.gamepad.getRawButton(Constants.kB_X);
+
+        // Y button, enables Control Panel Mode
+        boolean yButton = input.gamepad.getRawButton(Constants.kB_Y);
+
+        // A button, not currently used
+        boolean aButton = input.gamepad.getRawButton(Constants.kB_A);
+
+        // B button, currently prompts shooter to aim and set speed
+        boolean bButton = input.gamepad.getRawButton(Constants.kB_B);
+
+        // Start button, engages Endgame Mode
+        boolean startButton = input.gamepad.getRawButton(Constants.kB_START);
+
+
         String currentSubsystem = "Subsystem";
         try {
-            if (driveTrain.getReverseDrive()) { // Shooting mode
-                currentSubsystem = "Shooter";
-                // if (Shooter.getEnabled()) {
-                // double modifierX = input.gamepad.getRawAxis(Constants.kA_LS_X);
-                // double modifierY =
-                // input.gamepad.getRawAxis(Constants.kA_LS_Y)
-                // * Constants.kY_AXIS_MODIFIER;
+            if (!endgameMode) {
+                // Aims and sets shooter to limelight speed
+                if (bButton) {
+                    // Do stuff
+                }
+                
+                // Sets shooter to a speed
+                if (lTrigger > Constants.kINPUT_DEADBAND) { // Left trigger has passed deadband
+                    shooter.testShooter(lTrigger);
+                }
 
-                // shooter.modifier(modifierX, modifierY); // Set shooter modifiers
-                if (lTrigger > Constants.kINPUT_DEADBAND) { // Right trigger has passed deadband
-                    shooter.run(lTrigger, false);
-                } /*else {
-                      shooter.idle();
-                  }*/
+                // Stops shooter
                 if (lButton) {
-                    shooter.idle();
+                    shooter.testShooter(0);
                 }
 
-                /*double angleSpeed =
-                        input.gamepad.getRawAxis(Constants.kA_RS_Y)
-                                * Constants.kY_AXIS_MODIFIER;
-                shooter.angleSpeed(angleSpeed * Constants.kANGLE_SPEED_MODIFIER);*/
-                // }
-
-                // currentSubsystem = "Intake";
-                if (Intake.getEnabled()) {
-                    intake.setIntakeSpeed(0);
-                }
-            } else {
-                // Collecting mode
-                currentSubsystem = "Intake";
-                // if (Intake.getEnabled()) {
+                // Sets intake to a speed
                 if (lTrigger > Constants.kINPUT_DEADBAND) {
-                    intake.setIntakeSpeed(lTrigger);
-                } else if (lButton) {
+                    intake.setIntakeSpeed(rTrigger);
+                } else if (rButton) { // Reverse intake
                     intake.setIntakeSpeed(-0.5);
-                } else {
+                } else { // Stop intake
                     intake.setIntakeSpeed(0);
                 }
 
-                if (rTrigger > Constants.kINPUT_DEADBAND) {
-                    intake.setHopperSpeed(rTrigger);
+                // Temporary button mapping... will be automatic
+                if (aButton) {
+                    intake.setHopperSpeed(0.5);
                 } else {
                     intake.setHopperSpeed(0);
                 }
 
-                // }
+                // Temporary button mapping... will be automatically
+                if (xButton) {
+                    shooter.setSingulatorSpeed(1);
+                } else {
+                    shooter.setSingulatorSpeed(0);
+                }
 
-                // currentSubsystem = "Shooter";
-                if (Shooter.getEnabled()) {
-                    // shooter.modifier(0, 0); // Clear shooter modifiers
-                    shooter.idle();
+                // Flip up control panel and engage based on FMS values
+                if (yButton) {
+                    // Flip up
+                }
+
+                // Puts the robot into endgame mode, disabling all manipulator subsystems
+                if (startButton) {
+                    endgameMode = true;
                 }
             }
+            else {
+                if (rButton) {
+                    // Release climb upwards, disengage solenoids
+                }
+                
+                // Left winch engage
+                if (lStickY > Constants.kINPUT_DEADBAND) {
+                    climb.setLeftWinchSpeed(lStickY);
+                }
 
-            // <<<------------------ Add control panel and climb code here ------------------>>>
+                // Right winch engage
+                if (rStickY > Constants.kINPUT_DEADBAND) {
+                    climb.setRightWinchSpeed(rStickY);
+                }
+                // Need to add solenoids engaging and disengaging
+            }
 
+            
         } catch (SubsystemException e) {
             // status.sendStatus(Status.PROBLEM);
             System.out.println(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");

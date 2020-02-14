@@ -33,9 +33,13 @@ public class Climb {
         initialized = true;
     }
 
-    public void setWinchSpeed(double speed) throws SubsystemException {
-        SubsystemManager.check(enabled, initialized);
+    public void setLeftWinchSpeed(double speed) throws SubsystemException {
+        // SubsystemManager.check(enabled, initialized);
         mWinch1.set(speed);
+    }
+
+    public void setRightWinchSpeed(double speed) throws SubsystemException {
+        // SubsystemManager.check(enabled, initialized);
         mWinch2.set(speed);
     }
 
