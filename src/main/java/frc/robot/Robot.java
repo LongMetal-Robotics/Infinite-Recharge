@@ -20,12 +20,12 @@ import org.longmetal.Climb;
 import org.longmetal.Constants;
 import org.longmetal.ControlPanel;
 import org.longmetal.DriveTrain;
-import org.longmetal.input.Input;
 import org.longmetal.Intake;
 import org.longmetal.Shooter;
 import org.longmetal.exception.SubsystemDisabledException;
 import org.longmetal.exception.SubsystemException;
 import org.longmetal.exception.SubsystemUninitializedException;
+import org.longmetal.input.Input;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
