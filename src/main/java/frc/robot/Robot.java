@@ -16,28 +16,29 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.File;
 import java.util.Scanner;
-import org.longmetal.Climb;
+import org.longmetal.subsystem.Climb;
 import org.longmetal.Constants;
-import org.longmetal.ControlPanel;
-import org.longmetal.DriveTrain;
-import org.longmetal.Intake;
-import org.longmetal.Shooter;
+import org.longmetal.subsystem.ControlPanel;
+import org.longmetal.subsystem.Intake;
+import org.longmetal.subsystem.Shooter;
+import org.longmetal.subsystem.SubsystemManager;
+import org.longmetal.util.Console;
 import org.longmetal.exception.SubsystemDisabledException;
 import org.longmetal.exception.SubsystemException;
 import org.longmetal.exception.SubsystemUninitializedException;
+import org.longmetal.input.Gamepad.Axis;
+import org.longmetal.input.Gamepad.Button;
 import org.longmetal.input.Input;
+import org.longmetal.subsystem.DriveTrain;
 
 /**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
+ * The VM is configured to automatically run this class, and to call the
+ * functions corresponding to each mode, as described in the TimedRobot
+ * documentation. If you change the name of this class or the package after
+ * creating this project, you must also update the build.gradle file in the
  * project.
  */
 public class Robot extends TimedRobot {
-    private static final String kDefaultAuto = "Default";
-    private static final String kCustomAuto = "My Auto";
-    private String m_autoSelected;
-    private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
     Input input;
     DriveTrain driveTrain;
@@ -45,6 +46,7 @@ public class Robot extends TimedRobot {
     Shooter shooter;
     Climb climb;
     ControlPanel controlPanel;
+    SubsystemManager manager;
 
     SendableChooser<Boolean> chooserQuinnDrive;
 
@@ -67,10 +69,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-        m_chooser.addOption("My Auto", kCustomAuto);
-        SmartDashboard.putData("Auto choices", m_chooser);
 
+        // Output current commit and branch
         try {
             File file = new File(Filesystem.getDeployDirectory(), "branch.txt");
             Scanner fs = new Scanner(file);
@@ -88,14 +88,13 @@ public class Robot extends TimedRobot {
                 commit = fs.nextLine();
             }
 
-            System.out.println("Commit " + commit + " or later (branch '" + branch + "')");
+            System.out.println(Constants.ANSI_PURPLE + "Commit " + commit + " or later (branch '" + branch + "')" + Constants.ANSI_RESET);
             fs.close();
         } catch (Exception e) {
-            System.out.println(
+            Console.warn(
                     "Could not determine commit or branch. ("
                             + e.getLocalizedMessage()
-                            + ") Trace:");
-            e.printStackTrace();
+                            + ")");
         }
 
         input = new Input();
@@ -104,6 +103,7 @@ public class Robot extends TimedRobot {
         shooter = new Shooter(true);
         climb = new Climb(true);
         controlPanel = new ControlPanel(true);
+        manager = new SubsystemManager();
 
         chooserQuinnDrive = new SendableChooser<>();
         chooserQuinnDrive.setDefaultOption("Disabled", false);
@@ -157,6 +157,8 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putNumber("LimelightX", tX);
         SmartDashboard.putNumber("LimelightY", tY);
+
+        manager.checkSendables();
     }
 
     /**
@@ -171,29 +173,18 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        m_autoSelected = m_chooser.getSelected();
-        // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-        System.out.println("Auto selected: " + m_autoSelected);
     }
 
     /** This function is called periodically during autonomous. */
     @Override
     public void autonomousPeriodic() {
-        switch (m_autoSelected) {
-            case kCustomAuto:
-                // Put custom auto code here
-                break;
-            case kDefaultAuto:
-            default:
-                // Put default auto code here
-                break;
-        }
     }
 
     /** This function is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
 
+        // Limelight line-up while 1 button is held
         if (input.forwardStick.getRawButton(1)) {
             limelightTable.getEntry("ledMode").setDouble(3.0);
             limelightTable.getEntry("camMode").setDouble(0.0);
@@ -209,37 +200,37 @@ public class Robot extends TimedRobot {
         }
 
         // Left Gamepad trigger, currently used for shooter
-        double lTrigger = input.gamepad.getRawAxis(Constants.kA_LEFT_TRIGGER);
+        double lTrigger = input.gamepad.getAxis(Axis.LT);
 
         // Right Gamepad trigger, currently used for intake
-        double rTrigger = input.gamepad.getRawAxis(Constants.kA_RIGHT_TRIGGER);
+        double rTrigger = input.gamepad.getAxis(Axis.RT);
 
         // Left stick Y axis, left climb up/down
-        double lStickY = input.gamepad.getRawAxis(Constants.kA_LS_Y);
+        double lStickY = input.gamepad.getAxis(Axis.LS_Y);
 
         // Right stick Y axis, right climb up/down
-        double rStickY = input.gamepad.getRawAxis(Constants.kA_RS_Y);
+        double rStickY = input.gamepad.getAxis(Axis.RS_Y);
 
         // LB button, used to stop shooter
-        boolean lButton = input.gamepad.getRawButton(Constants.kB_LB);
+        boolean lButton = input.gamepad.getButton(Button.LB);
 
         // RB button, used to run reverse intake and release climb [only in climb mode]
-        boolean rButton = input.gamepad.getRawButton(Constants.kB_RB);
+        boolean rButton = input.gamepad.getButton(Button.RB);
 
         // X button, not currently used
-        boolean xButton = input.gamepad.getRawButton(Constants.kB_X);
+        boolean xButton = input.gamepad.getButton(Button.X);
 
         // Y button, enables Control Panel Mode
-        boolean yButton = input.gamepad.getRawButton(Constants.kB_Y);
+        boolean yButton = input.gamepad.getButton(Button.Y);
 
         // A button, not currently used
-        boolean aButton = input.gamepad.getRawButton(Constants.kB_A);
+        boolean aButton = input.gamepad.getButton(Button.A);
 
         // B button, currently prompts shooter to aim and set speed
-        boolean bButton = input.gamepad.getRawButton(Constants.kB_B);
+        boolean bButton = input.gamepad.getButton(Button.B);
 
         // Start button, engages Endgame Mode
-        boolean startButton = input.gamepad.getRawButton(Constants.kB_START);
+        boolean startButton = input.gamepad.getButton(Button.START);
 
         String currentSubsystem = "Subsystem";
         try {
@@ -285,9 +276,9 @@ public class Robot extends TimedRobot {
                 // Flip up control panel and engage based on FMS values
                 if (yButton) {
                     // For now, this button will just spin the motor for testing purposes
-                    controlPanel.setSpinnerSpeed();
+                    controlPanel.spin();
                 } else {
-                    controlPanel.spinnerStop();
+                    controlPanel.stop();
                 }
 
                 // Puts the robot into endgame mode, disabling all manipulator subsystems
@@ -312,8 +303,7 @@ public class Robot extends TimedRobot {
             }
 
         } catch (SubsystemException e) {
-            // status.sendStatus(Status.PROBLEM);
-            System.out.println(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
+            Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
             e.printStackTrace();
 
             boolean isUninitialized =

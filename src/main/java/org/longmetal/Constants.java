@@ -1,13 +1,21 @@
 package org.longmetal;
 
+import com.revrobotics.ColorMatch;
+import edu.wpi.first.wpilibj.util.Color;
+
 public class Constants {
 
     // All CAN IDs
     // Drivetrain CAN IDs
-    public static final int kP_FRONT_LEFT = 1;
+
+    // TalonSRX
+    public static final double kP_CONTROLPANEL = 10; // TalonSRX for spinner (Color Wheel)
+
+    // Spark Max CAN IDs
     public static final int kP_REAR_LEFT = 2;
-    public static final int kP_FRONT_RIGHT = 3;
+    public static final int kP_FRONT_LEFT = 1;
     public static final int kP_REAR_RIGHT = 4;
+    public static final int kP_FRONT_RIGHT = 3;
 
     // Climb CAN IDs
     public static final int kP_WINCH1 = 5;
@@ -23,7 +31,7 @@ public class Constants {
     public static final int kP_PANEL = 11;
 
     // Reference:
-    // PCM = CAN ID 12
+    // PCM = CAN ID 0
     // PDP = CAN ID 13
 
     // Climb
@@ -36,25 +44,6 @@ public class Constants {
     // Gamepad Port
     public static final int kP_GAMEPAD = 2;
 
-    // Buttons
-    public static final int kB_A = 0; // A button
-    public static final int kB_B = 1; // B button (Shooter aim/speed)
-    public static final int kB_X = 2; // X button
-    public static final int kB_Y = 3; // Y button (Control panel mode)
-    public static final int kB_LB = 4; // LB button number (Shooter idle)
-    public static final int kB_RB = 5; // RB button number (Intake reverse [release climb])
-    public static final int kB_BACK = 6; // Back button
-    public static final int kB_START = 7; // Start button
-    public static final int kB_LS_PRESS = 8; // Left stick press button
-    public static final int kB_RS_PRESS = 9; // Right stick press button
-
-    // Axis
-    public static final int kA_LS_X = 0; // Left stick X axis #
-    public static final int kA_LS_Y = 1; // Left stick Y axis # (Left winch up/down)
-    public static final int kA_LEFT_TRIGGER = 2; // Left trigger axis # (Shooter feed)
-    public static final int kA_RIGHT_TRIGGER = 3; // Right trigger axis # (Intake control)
-    public static final int kA_RS_X = 4; // Right stick X axis #
-    public static final int kA_RS_Y = 5; // Right stick Y axis # (Right winch up/down)
     public static final int kY_AXIS_MODIFIER = -1;
     // Normally, down is positive. We want up to be positive.
 
@@ -108,4 +97,29 @@ public class Constants {
     // Control Panel
     public static final String kCONTROL_PANEL_STATE_KEY = "CP Enabled";
     public static final String kCONTROL_PANEL_ENABLER_KEY = "Enable CP";
+    public static final double k_SPINRATE = 0.2;
+
+    // Colors
+    public static final Color kBlueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
+    public static final Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
+    public static final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
+    public static final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
+
+    // Subsystem Management
+    public static final String SHOOTER_KEY = "Enable Shooter";
+    public static final String SHOOTER_STATE_KEY = "Shooter Enabled";
+    public static final String INTAKE_KEY = "Enable Intake";
+    public static final String INTAKE_STATE_KEY = "Intake Enabled";
+    public static final String CLIMB_KEY = "Enable Climb";
+    public static final String CLIMB_STATE_KEY = "Climb Enabled";
+
+    public static final String ENABLED = "Enabled";
+    public static final String DISABLED = "Disabled";
+
+    // Colors
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
 }
