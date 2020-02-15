@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.Solenoid;
 import org.longmetal.Constants;
+import org.longmetal.exception.SubsystemException;
 
 public class Climb extends Subsystem {
     private CANSparkMax winch1;
@@ -28,5 +29,37 @@ public class Climb extends Subsystem {
         drumSpin2 = new Solenoid(Constants.kC_CLIMB2);
 
         super.init();
+    }
+
+    public void setLeftWinchSpeed(double speed) throws SubsystemException {
+        check();
+        winch1.set(speed);
+    }
+
+    public void setRightWinchSpeed(double speed) throws SubsystemException {
+        check();
+        winch2.set(speed);
+    }
+
+    public void setWinchSpeed(double speed) throws SubsystemException {
+        check();
+        setLeftWinchSpeed(speed);
+        setRightWinchSpeed(speed);
+    }
+
+    public void setLeftRatchet(boolean on) throws SubsystemException {
+        check();
+        drumSpin1.set(on);
+    }
+
+    public void setRightRatchet(boolean on) throws SubsystemException {
+        check();
+        drumSpin2.set(on);
+    }
+
+    public void setRatchet(boolean on) throws SubsystemException {
+        check();
+        setLeftRatchet(on);
+        setRightRatchet(on);
     }
 }
