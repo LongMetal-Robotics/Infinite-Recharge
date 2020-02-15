@@ -1,6 +1,6 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2020.1.2"
+    id "edu.wpi.first.GradleRIO" version "2020.2.2"
 }
 
 ant.condition(property: "os", value: "windows") { os(family: "windows") }
@@ -75,7 +75,7 @@ task preBuild (type:Exec) {
         case 'windows':
             println "Building on Windows: getting branch and commit"
             workingDir './src/main/deploy'
-            commandLine 'bash', '-c', '"var=`git show | grep commit`;echo ${var:7:7}>commit.txt;var=`git status | grep branch -m 1`;echo ${var:10}>branch.txt"'
+            commandLine 'bash', '-c', '"var=`git show | grep commit -m 1`;echo ${var:7:7}>commit.txt;var=`git status | grep branch -m 1`;echo ${var:10}>branch.txt"'
             break;
             
         case 'unix':
@@ -83,4 +83,4 @@ task preBuild (type:Exec) {
             break;
     }
 }
-build.dependsOn preBuild
+//build.dependsOn preBuild

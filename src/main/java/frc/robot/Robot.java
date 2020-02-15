@@ -252,7 +252,7 @@ public class Robot extends TimedRobot {
                 }
 
                 // Sets intake to a speed
-                if (lTrigger > Constants.kINPUT_DEADBAND) {
+                if (rTrigger > Constants.kINPUT_DEADBAND) {
                     intake.setIntakeSpeed(rTrigger);
                 } else if (rButton) { // Reverse intake
                     intake.setIntakeSpeed(-0.2);
