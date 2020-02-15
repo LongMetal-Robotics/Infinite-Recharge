@@ -26,7 +26,8 @@ public class ControlPanel extends Subsystem {
 
     public ControlPanel(boolean setEnabled) {
         super(setEnabled);
-        if (setEnabled) { // I'm dumb and they way I wrote the inheritance, it wouldn't work (it wouldn't call the right init).
+        if (setEnabled) { // I'm dumb and they way I wrote the inheritance, it wouldn't work (it
+                          // wouldn't call the right init).
             init();
         }
     }

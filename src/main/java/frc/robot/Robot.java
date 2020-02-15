@@ -16,26 +16,25 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.File;
 import java.util.Scanner;
-import org.longmetal.subsystem.Climb;
 import org.longmetal.Constants;
-import org.longmetal.subsystem.ControlPanel;
-import org.longmetal.subsystem.Intake;
-import org.longmetal.subsystem.Shooter;
-import org.longmetal.subsystem.SubsystemManager;
-import org.longmetal.util.Console;
 import org.longmetal.exception.SubsystemDisabledException;
 import org.longmetal.exception.SubsystemException;
 import org.longmetal.exception.SubsystemUninitializedException;
 import org.longmetal.input.Gamepad.Axis;
 import org.longmetal.input.Gamepad.Button;
 import org.longmetal.input.Input;
+import org.longmetal.subsystem.Climb;
+import org.longmetal.subsystem.ControlPanel;
 import org.longmetal.subsystem.DriveTrain;
+import org.longmetal.subsystem.Intake;
+import org.longmetal.subsystem.Shooter;
+import org.longmetal.subsystem.SubsystemManager;
+import org.longmetal.util.Console;
 
 /**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the TimedRobot
- * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the build.gradle file in the
+ * The VM is configured to automatically run this class, and to call the functions corresponding to
+ * each mode, as described in the TimedRobot documentation. If you change the name of this class or
+ * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
 public class Robot extends TimedRobot {
@@ -88,13 +87,17 @@ public class Robot extends TimedRobot {
                 commit = fs.nextLine();
             }
 
-            System.out.println(Constants.ANSI_PURPLE + "Commit " + commit + " or later (branch '" + branch + "')" + Constants.ANSI_RESET);
+            System.out.println(
+                    Constants.ANSI_PURPLE
+                            + "Commit "
+                            + commit
+                            + " or later (branch '"
+                            + branch
+                            + "')"
+                            + Constants.ANSI_RESET);
             fs.close();
         } catch (Exception e) {
-            Console.warn(
-                    "Could not determine commit or branch. ("
-                            + e.getLocalizedMessage()
-                            + ")");
+            Console.warn("Could not determine commit or branch. (" + e.getLocalizedMessage() + ")");
         }
 
         input = new Input();
@@ -172,13 +175,11 @@ public class Robot extends TimedRobot {
      * chooser code above as well.
      */
     @Override
-    public void autonomousInit() {
-    }
+    public void autonomousInit() {}
 
     /** This function is called periodically during autonomous. */
     @Override
-    public void autonomousPeriodic() {
-    }
+    public void autonomousPeriodic() {}
 
     /** This function is called periodically during operator control. */
     @Override

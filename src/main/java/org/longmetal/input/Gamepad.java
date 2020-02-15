@@ -12,34 +12,34 @@ public class Gamepad extends Joystick {
         switch (button) {
             case A:
                 return getRawButton(1);
-            
+
             case B:
                 return getRawButton(2);
-            
+
             case X:
                 return getRawButton(3);
 
             case Y:
                 return getRawButton(4);
-            
+
             case LB:
                 return getRawButton(5);
-            
+
             case RB:
                 return getRawButton(6);
-            
+
             case BACK:
                 return getRawButton(7);
-            
+
             case START:
                 return getRawButton(8);
-            
+
             case LS:
                 return getRawButton(9);
-            
+
             case RS:
                 return getRawButton(10);
-            
+
             default:
                 throw new EnumConstantNotPresentException(Button.class, button.name());
         }
@@ -49,13 +49,13 @@ public class Gamepad extends Joystick {
         switch (getPOV(0)) {
             case 0:
                 return DPad.UP;
-            
+
             case 90:
                 return DPad.RIGHT;
-            
+
             case 180:
                 return DPad.DOWN;
-            
+
             case 270:
                 return DPad.LEFT;
 

@@ -10,7 +10,8 @@ public class Intake extends Subsystem {
 
     public Intake(boolean setEnabled) {
         super(setEnabled);
-        if (setEnabled) { // I'm dumb and they way I wrote the inheritance, it wouldn't work (it wouldn't call the right init).
+        if (setEnabled) { // I'm dumb and they way I wrote the inheritance, it wouldn't work (it
+                          // wouldn't call the right init).
             init();
         }
     }
@@ -22,11 +23,11 @@ public class Intake extends Subsystem {
         super.init();
     }
 
-	public void setIntakeSpeed(double rTrigger) {
+    public void setIntakeSpeed(double rTrigger) {
         mIntake.set(ControlMode.PercentOutput, rTrigger);
-	}
+    }
 
-	public void setHopperSpeed(double d) {
+    public void setHopperSpeed(double d) {
         mHopper.set(ControlMode.PercentOutput, d);
-	}
+    }
 }

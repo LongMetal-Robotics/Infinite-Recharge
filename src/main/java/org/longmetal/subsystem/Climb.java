@@ -14,7 +14,8 @@ public class Climb extends Subsystem {
 
     public Climb(boolean isEnabled) {
         super(isEnabled);
-        if (isEnabled) { // I'm dumb and they way I wrote the inheritance, it wouldn't work (it wouldn't call the right init).
+        if (isEnabled) { // I'm dumb and they way I wrote the inheritance, it wouldn't work (it
+                         // wouldn't call the right init).
             init();
         }
     }

@@ -17,7 +17,8 @@ public class Subsystem {
         if (enabled) {
             init();
         } else {
-            Console.warn(this.getClass().getSimpleName()
+            Console.warn(
+                    this.getClass().getSimpleName()
                             + " wasn't enabled on startup. You must call init() on it later to use it.");
         }
     }

@@ -12,7 +12,8 @@ public class Shooter extends Subsystem {
 
     public Shooter(boolean setEnabled) {
         super(setEnabled);
-        if (setEnabled) { // I'm dumb and they way I wrote the inheritance, it wouldn't work (it wouldn't call the right init).
+        if (setEnabled) { // I'm dumb and they way I wrote the inheritance, it wouldn't work (it
+                          // wouldn't call the right init).
             init();
         }
     }
@@ -26,11 +27,11 @@ public class Shooter extends Subsystem {
         super.init();
     }
 
-	public void testShooter(double lTrigger) {
+    public void testShooter(double lTrigger) {
         drum.set(lTrigger);
-	}
+    }
 
-	public void setSingulatorSpeed(int i) {
+    public void setSingulatorSpeed(int i) {
         mSingulator.set(ControlMode.PercentOutput, Constants.kSINGULATOR_SPEED * i);
-	}
+    }
 }
