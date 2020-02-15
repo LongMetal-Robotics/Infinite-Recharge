@@ -1,7 +1,6 @@
-package org.longmetal;
+package org.longmetal.input;
 
-import org.longmetal.util.DriveStick;
-import org.longmetal.util.Gamepad;
+import org.longmetal.Constants;
 
 public class Input {
     private int leftStickPortInit, rightStickPortInit;

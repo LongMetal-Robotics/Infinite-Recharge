@@ -20,7 +20,7 @@ import org.longmetal.Climb;
 import org.longmetal.Constants;
 import org.longmetal.ControlPanel;
 import org.longmetal.DriveTrain;
-import org.longmetal.Input;
+import org.longmetal.input.Input;
 import org.longmetal.Intake;
 import org.longmetal.Shooter;
 import org.longmetal.exception.SubsystemDisabledException;
