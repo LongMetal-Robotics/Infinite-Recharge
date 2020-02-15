@@ -26,13 +26,18 @@ public class ControlPanel extends Subsystem {
 
     public ControlPanel(boolean setEnabled) {
         super(setEnabled);
+        if (setEnabled) { // I'm dumb and they way I wrote the inheritance, it wouldn't work (it wouldn't call the right init).
+            init();
+        }
     }
 
     public void init() {
-        csensor = new ColorSensorV3(Port.kOnboard);
+        // Spinner
         spinner = new TalonSRX(Constants.kP_PANEL);
-        // Note colorsensor has its own port but idk how to access it.
         spinner.setNeutralMode(NeutralMode.Brake); // sets brake mode so we stop on color
+
+        // Color sensor
+        csensor = new ColorSensorV3(Port.kOnboard);
         // adds target values to color matcher for blue, green, red, and yellow
         m_colorMatcher.addColorMatch(Constants.kBlueTarget);
         m_colorMatcher.addColorMatch(Constants.kGreenTarget);
@@ -67,12 +72,12 @@ public class ControlPanel extends Subsystem {
         return thisColor == color;
     }
 
-    private void spin() {
+    public void spin() {
         spinner.set(
                 ControlMode.PercentOutput, Constants.k_SPINRATE); // spins motor at constant speed
     }
 
-    private void stop() {
+    public void stop() {
         spinner.set(ControlMode.PercentOutput, 0.0); // Hard stop
     }
 

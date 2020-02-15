@@ -14,16 +14,19 @@ public class Climb extends Subsystem {
 
     public Climb(boolean isEnabled) {
         super(isEnabled);
+        if (isEnabled) { // I'm dumb and they way I wrote the inheritance, it wouldn't work (it wouldn't call the right init).
+            init();
+        }
     }
 
     @Override
     public void init() {
         winch1 = new CANSparkMax(Constants.kP_WINCH1, MotorType.kBrushless);
         winch2 = new CANSparkMax(Constants.kP_WINCH2, MotorType.kBrushless);
-        winch1.setOpenLoopRampRate(1);
-        winch2.setOpenLoopRampRate(1);
         winch1.set(0);
         winch2.set(0);
+        winch1.setOpenLoopRampRate(1);
+        winch2.setOpenLoopRampRate(1);
 
         drumSpin1 = new Solenoid(Constants.kC_CLIMB1);
         drumSpin2 = new Solenoid(Constants.kC_CLIMB2);

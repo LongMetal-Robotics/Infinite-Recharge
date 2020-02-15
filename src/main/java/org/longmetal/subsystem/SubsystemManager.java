@@ -13,19 +13,18 @@ public class SubsystemManager {
     public SubsystemManager() {
         Preferences preferences = Preferences.getInstance();
 
+        // Shooter
         boolean shooterEnableValue =
                 preferences.getBoolean(Constants.SHOOTER_KEY, false) /* Shooter enabled */;
 
-        Runnable enableShooter =
-                new Runnable() {
+        Runnable enableShooter = new Runnable() {
 
                     @Override
                     public void run() {
                         SubsystemManager.setSubsystem(Subsystem.SHOOTER, true);
                     }
                 };
-        Runnable disableShooter =
-                new Runnable() {
+        Runnable disableShooter = new Runnable() {
 
                     @Override
                     public void run() {
@@ -49,20 +48,18 @@ public class SubsystemManager {
 
         setSubsystem(Subsystem.SHOOTER, shooterEnableValue);
 
+        // Intake
         boolean intakeEnableValue =
                 preferences.getBoolean(Constants.INTAKE_KEY, false) /* Intake enabled */;
 
-        Runnable enableIntake =
-                new Runnable() {
+        Runnable enableIntake = new Runnable() {
 
                     @Override
                     public void run() {
                         SubsystemManager.setSubsystem(Subsystem.INTAKE, true);
                     }
                 };
-
-        Runnable disableIntake =
-                new Runnable() {
+        Runnable disableIntake = new Runnable() {
 
                     @Override
                     public void run() {
@@ -83,11 +80,11 @@ public class SubsystemManager {
 
         setSubsystem(Subsystem.INTAKE, intakeEnableValue);
 
+        // Climb
         boolean climbEnableValue =
                 preferences.getBoolean(Constants.CLIMB_KEY, false) /* Climb enabled */;
 
-        Runnable enableClimb =
-                new Runnable() {
+        Runnable enableClimb = new Runnable() {
 
                     @Override
                     public void run() {
@@ -95,8 +92,7 @@ public class SubsystemManager {
                     }
                 };
 
-        Runnable disableClimb =
-                new Runnable() {
+        Runnable disableClimb = new Runnable() {
 
                     @Override
                     public void run() {
@@ -121,6 +117,7 @@ public class SubsystemManager {
     public void checkSendables() {
         shooterEnable.getSelected().run();
         intakeEnable.getSelected().run();
+        climbEnable.getSelected().run();
     }
 
     public static void setSubsystem(Subsystem subsystem, boolean enabled) {
