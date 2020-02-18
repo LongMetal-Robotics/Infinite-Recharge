@@ -88,13 +88,11 @@ public class Robot extends TimedRobot {
             }
 
             System.out.println(
-                    Constants.ANSI_PURPLE
-                            + "Commit "
+                            "Commit "
                             + commit
                             + " or later (branch '"
                             + branch
-                            + "')"
-                            + Constants.ANSI_RESET);
+                            + "')");
             fs.close();
         } catch (Exception e) {
             Console.warn("Could not determine commit or branch. (" + e.getLocalizedMessage() + ")");

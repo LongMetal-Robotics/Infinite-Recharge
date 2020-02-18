@@ -7,15 +7,10 @@ public class Constants {
 
     // All CAN IDs
     // Drivetrain CAN IDs
-
-    // TalonSRX
-    public static final double kP_CONTROLPANEL = 10; // TalonSRX for spinner (Color Wheel)
-
-    // Spark Max CAN IDs
-    public static final int kP_REAR_LEFT = 2;
     public static final int kP_FRONT_LEFT = 1;
-    public static final int kP_REAR_RIGHT = 4;
+    public static final int kP_REAR_LEFT = 2;
     public static final int kP_FRONT_RIGHT = 3;
+    public static final int kP_REAR_RIGHT = 4;
 
     // Climb CAN IDs
     public static final int kP_WINCH1 = 5;
@@ -34,10 +29,10 @@ public class Constants {
     // PCM = CAN ID 0
     // PDP = CAN ID 13
 
-    // Climb
     // Solenoid Channels
-    public static final int kC_CLIMB1 = 0;
-    public static final int kC_CLIMB2 = 1;
+    public static final int kC_PANEL = 0;
+    public static final int kC_CLIMB1 = 1;
+    public static final int kC_CLIMB2 = 2;
 
     // Input
     // Gamepad Input Ports/Axis/Buttons
@@ -49,7 +44,17 @@ public class Constants {
 
     // Input
     public static final double kINPUT_DEADBAND =
-            0.1; // If the value hasn't changed by more than this much we'll ignore it
+        0.1; // If the value hasn't changed by more than this much we'll ignore it
+    
+    
+   
+
+    // Drive Train
+    public static final double kMAX_SPEED_MULT = 0.8; // Limit max speed, was 0.5
+    public static final double kSPEED_MODIFIER = 0.7; // Speed modifier (on throttle)
+    public static final double kTHROTTLE_SHIFT = 1.05; // Shift throttle up
+    public static final double kCURVE_MODIFIER = -0.25; // Curve modifier
+
     // Drive joysticks
     public static final int kP_LEFT_STICK = 0; // Left joystick port
     public static final int kP_RIGHT_STICK = 1; // Right joystick port
@@ -57,11 +62,9 @@ public class Constants {
     public static final int kFORWARD_BUTTON = 5; // Forward button
     public static final int kREVERSE_BUTTON = 3; // Reverse button
 
-    // Drive Train
-    public static final double kMAX_SPEED_MULT = 0.8; // Limit max speed, was 0.5
-    public static final double kSPEED_MODIFIER = 0.7; // Speed modifier (on throttle)
-    public static final double kTHROTTLE_SHIFT = 1.05; // Shift throttle up
-    public static final double kCURVE_MODIFIER = -0.25; // Curve modifier
+
+
+
 
     // Shooter
     public static final String kSHOOTER_STATE_KEY = "Shooter Enabled"; // SmartDashboard value key
@@ -74,11 +77,20 @@ public class Constants {
     public static final double kSHOOTER_X_MODIFIER = 0.5;
     public static final double kSHOOTER_Y_MODIFIER = 0.5;
 
+
+
+    
     // Singulator
     public static final double kSINGULATOR_SPEED = 0.4; // singulator speed
 
+
+
+
     // Control Panel
     public static final double kCONTROL_PANEL_SPEED = 0.4; // Control Panel Speed
+
+
+
 
     // Intake
     public static final String kINTAKE_STATE_KEY = "Intake Enabled"; // SmartDashboard value key
@@ -115,11 +127,4 @@ public class Constants {
 
     public static final String ENABLED = "Enabled";
     public static final String DISABLED = "Disabled";
-
-    // Colors
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_RED = "\u001B[31m";
-    public static final String ANSI_GREEN = "\u001B[32m";
-    public static final String ANSI_YELLOW = "\u001B[33m";
-    public static final String ANSI_PURPLE = "\u001B[35m";
 }
