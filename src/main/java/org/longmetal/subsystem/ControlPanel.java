@@ -22,7 +22,7 @@ public class ControlPanel extends Subsystem {
     private static PanelColor initColor = PanelColor.Unknown;
     private static int setRotations = -1;
     private static int accumulated = -1;
-    private final ColorMatch m_colorMatcher = new ColorMatch();
+    private ColorMatch m_colorMatcher;
 
     public ControlPanel(boolean setEnabled) {
         super(setEnabled);
@@ -38,8 +38,10 @@ public class ControlPanel extends Subsystem {
         spinner.setNeutralMode(NeutralMode.Brake); // sets brake mode so we stop on color
 
         // Color sensor
-        csensor = new ColorSensorV3(Port.kOnboard);
+        // csensor = new ColorSensorV3(Port.kOnboard);
         // adds target values to color matcher for blue, green, red, and yellow
+
+        m_colorMatcher = new ColorMatch();
         m_colorMatcher.addColorMatch(Constants.kBlueTarget);
         m_colorMatcher.addColorMatch(Constants.kGreenTarget);
         m_colorMatcher.addColorMatch(Constants.kRedTarget);
@@ -73,12 +75,14 @@ public class ControlPanel extends Subsystem {
         return thisColor == color;
     }
 
-    public void spin() {
+    public void spin() throws SubsystemException {
+        check();
         spinner.set(
                 ControlMode.PercentOutput, Constants.k_SPINRATE); // spins motor at constant speed
     }
 
-    public void stop() {
+    public void stop() throws SubsystemException {
+        check();
         spinner.set(ControlMode.PercentOutput, 0.0); // Hard stop
     }
 

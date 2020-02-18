@@ -29,8 +29,8 @@ public class Climb extends Subsystem {
         winch1.setOpenLoopRampRate(1);
         winch2.setOpenLoopRampRate(1);
 
-        drumSpin1 = new Solenoid(Constants.kC_CLIMB1);
-        drumSpin2 = new Solenoid(Constants.kC_CLIMB2);
+        // drumSpin1 = new Solenoid(Constants.kC_CLIMB1);
+        // drumSpin2 = new Solenoid(Constants.kC_CLIMB2);
 
         super.init();
     }

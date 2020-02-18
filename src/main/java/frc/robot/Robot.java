@@ -234,13 +234,16 @@ public class Robot extends TimedRobot {
         boolean startButton = input.gamepad.getButton(Button.START);
 
         String currentSubsystem = "Subsystem";
-        try {
-            if (!endgameMode) {
-                // Aims and sets shooter to limelight speed
-                if (bButton) {
-                    // Do stuff
-                }
 
+
+        if (!endgameMode) {
+            // Aims and sets shooter to limelight speed
+            if (bButton) {
+                // Do stuff
+            }
+
+            currentSubsystem = "Shooter";
+            try {
                 // Sets shooter to a speed
                 if (lTrigger > Constants.kINPUT_DEADBAND) { // Left trigger has passed deadband
                     shooter.testShooter(lTrigger);
@@ -251,6 +254,26 @@ public class Robot extends TimedRobot {
                     shooter.testShooter(0);
                 }
 
+                // Temporary button mapping... will be automatically
+                if (xButton) {
+                    shooter.setSingulatorSpeed(1);
+                } else {
+                    shooter.setSingulatorSpeed(0);
+                }
+            } catch (SubsystemException e) {
+                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
+                e.printStackTrace();
+    
+                boolean isUninitialized =
+                        e.getClass().isInstance(SubsystemUninitializedException.class);
+                if (Shooter.getEnabled() && isUninitialized) {
+    
+                    shooter.init();
+                }
+            }
+
+            currentSubsystem = "Intake";
+            try {
                 // Sets intake to a speed
                 if (rTrigger > Constants.kINPUT_DEADBAND) {
                     intake.setIntakeSpeed(rTrigger);
@@ -266,14 +289,22 @@ public class Robot extends TimedRobot {
                 } else {
                     intake.setHopperSpeed(0);
                 }
-
-                // Temporary button mapping... will be automatically
-                if (xButton) {
-                    shooter.setSingulatorSpeed(1);
-                } else {
-                    shooter.setSingulatorSpeed(0);
+            } catch (SubsystemException e) {
+                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
+                e.printStackTrace();
+    
+                boolean isUninitialized =
+                        e.getClass().isInstance(SubsystemUninitializedException.class);
+                if (currentSubsystem.equals("Intake")
+                        && Intake.getEnabled()
+                        && isUninitialized) {
+    
+                    intake.init();
                 }
+            }
 
+            currentSubsystem = "Control Panel";
+            try {
                 // Flip up control panel and engage based on FMS values
                 if (yButton) {
                     // For now, this button will just spin the motor for testing purposes
@@ -281,12 +312,25 @@ public class Robot extends TimedRobot {
                 } else {
                     controlPanel.stop();
                 }
-
-                // Puts the robot into endgame mode, disabling all manipulator subsystems
-                if (startButton) {
-                    endgameMode = true;
+            } catch (SubsystemException e) {
+                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
+                e.printStackTrace();
+    
+                boolean isUninitialized =
+                        e.getClass().isInstance(SubsystemUninitializedException.class);
+                if (ControlPanel.getEnabled() && isUninitialized) {
+    
+                    controlPanel.init();
                 }
-            } else {
+            }
+
+            // Puts the robot into endgame mode, disabling all manipulator subsystems
+            if (startButton) {
+                endgameMode = true;
+            }
+        } else {
+            currentSubsystem = "Climb";
+            try {
                 if (rButton) {
                     // Release climb upwards, disengage solenoids
                 }
@@ -301,24 +345,18 @@ public class Robot extends TimedRobot {
                     climb.setRightWinchSpeed(rStickY);
                 }
                 // Need to add solenoids engaging and disengaging
+            } catch (SubsystemException e) {
+                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
+                e.printStackTrace();
+    
+                boolean isUninitialized =
+                        e.getClass().isInstance(SubsystemUninitializedException.class);
+                if (Climb.getEnabled() && isUninitialized) {
+    
+                    climb.init();
+                }
             }
-
-        } catch (SubsystemException e) {
-            Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
-            e.printStackTrace();
-
-            boolean isUninitialized =
-                    e.getClass().isInstance(SubsystemUninitializedException.class);
-            if (currentSubsystem.equals("Shooter") && Shooter.getEnabled() && isUninitialized) {
-
-                shooter.init();
-            } else if (currentSubsystem.equals("Intake")
-                    && Intake.getEnabled()
-                    && isUninitialized) {
-
-                intake.init();
-            }
-        }
+        }      
     }
 
     private String problemName(SubsystemException e) {

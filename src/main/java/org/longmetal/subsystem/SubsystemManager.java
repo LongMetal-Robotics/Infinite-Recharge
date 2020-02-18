@@ -13,9 +13,32 @@ public class SubsystemManager {
     public SubsystemManager() {
         Preferences preferences = Preferences.getInstance();
 
+        /*int i = 0;
+        
+
+        for (Subsystem subsystem:Subsystem.values()) {
+            boolean subsystemEnableValue = preferences.getBoolean(subsystem.name(), false);
+
+            Runnable enableSubsystem = new Runnable() {
+                @Override
+                public void run() {
+                    SubsystemManager.setSubsystem(subsystem, true);
+                }
+            };
+            Runnable disableSubsystem = new Runnable(){
+            
+                @Override
+                public void run() {
+                    SubsystemManager.setSubsystem(subsystem, false);
+                }
+            };
+
+            subsystemEnable
+        }*/
+
         // Shooter
         boolean shooterEnableValue =
-                preferences.getBoolean(Constants.SHOOTER_KEY, false) /* Shooter enabled */;
+                preferences.getBoolean(Subsystem.SHOOTER.name(), false) /* Shooter enabled */;
 
         Runnable enableShooter =
                 new Runnable() {
@@ -46,13 +69,13 @@ public class SubsystemManager {
             shooterEnable.setDefaultOption(Constants.DISABLED, disableShooter);
         }
         SmartDashboard.putData(Constants.SHOOTER_KEY, shooterEnable);
-        SmartDashboard.putBoolean(Constants.SHOOTER_STATE_KEY, shooterEnableValue);
+        SmartDashboard.putBoolean(Constants.kSHOOTER_KEY, shooterEnableValue);
 
         setSubsystem(Subsystem.SHOOTER, shooterEnableValue);
 
         // Intake
         boolean intakeEnableValue =
-                preferences.getBoolean(Constants.INTAKE_KEY, false) /* Intake enabled */;
+                preferences.getBoolean(Constants.kINTAKE_KEY, false) /* Intake enabled */;
 
         Runnable enableIntake =
                 new Runnable() {
@@ -80,13 +103,13 @@ public class SubsystemManager {
             intakeEnable.setDefaultOption(Constants.DISABLED, disableIntake);
         }
         SmartDashboard.putData(Constants.INTAKE_KEY, intakeEnable);
-        SmartDashboard.putBoolean(Constants.INTAKE_STATE_KEY, intakeEnableValue);
+        SmartDashboard.putBoolean(Constants.kINTAKE_KEY, intakeEnableValue);
 
         setSubsystem(Subsystem.INTAKE, intakeEnableValue);
 
         // Climb
         boolean climbEnableValue =
-                preferences.getBoolean(Constants.CLIMB_KEY, false) /* Climb enabled */;
+                preferences.getBoolean(Constants.kCLIMB_KEY, false) /* Climb enabled */;
 
         Runnable enableClimb =
                 new Runnable() {
@@ -115,7 +138,7 @@ public class SubsystemManager {
             climbEnable.setDefaultOption(Constants.DISABLED, disableClimb);
         }
         SmartDashboard.putData(Constants.CLIMB_KEY, climbEnable);
-        SmartDashboard.putBoolean(Constants.CLIMB_STATE_KEY, climbEnableValue);
+        SmartDashboard.putBoolean(Constants.kCLIMB_KEY, climbEnableValue);
 
         setSubsystem(Subsystem.CLIMB, climbEnableValue);
     }

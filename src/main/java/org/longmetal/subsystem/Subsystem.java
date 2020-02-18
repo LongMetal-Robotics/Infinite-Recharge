@@ -54,11 +54,12 @@ public class Subsystem {
     }
 
     protected void check() throws SubsystemException {
-        if (!initialized) {
-            throw new SubsystemUninitializedException();
-        }
-        if (!enabled) {
-            throw new SubsystemDisabledException();
-        }
+        return;
+        // if (!initialized) {
+        //     throw new SubsystemUninitializedException();
+        // }
+        // if (!enabled) {
+        //     throw new SubsystemDisabledException();
+        // }
     }
 }

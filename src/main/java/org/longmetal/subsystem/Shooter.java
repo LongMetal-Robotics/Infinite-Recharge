@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import org.longmetal.Constants;
+import org.longmetal.exception.SubsystemException;
 
 public class Shooter extends Subsystem {
     private CANSparkMax drum;
@@ -27,11 +28,13 @@ public class Shooter extends Subsystem {
         super.init();
     }
 
-    public void testShooter(double lTrigger) {
+    public void testShooter(double lTrigger) throws SubsystemException {
+        check();
         drum.set(lTrigger);
     }
 
-    public void setSingulatorSpeed(int i) {
+    public void setSingulatorSpeed(int i) throws SubsystemException {
+        check();
         mSingulator.set(ControlMode.PercentOutput, Constants.kSINGULATOR_SPEED * i);
     }
 }

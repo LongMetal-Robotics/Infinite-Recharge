@@ -3,6 +3,7 @@ package org.longmetal.subsystem;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import org.longmetal.Constants;
+import org.longmetal.exception.SubsystemException;
 
 public class Intake extends Subsystem {
     private TalonSRX mIntake;
@@ -23,11 +24,13 @@ public class Intake extends Subsystem {
         super.init();
     }
 
-    public void setIntakeSpeed(double rTrigger) {
+    public void setIntakeSpeed(double rTrigger) throws SubsystemException {
+        check();
         mIntake.set(ControlMode.PercentOutput, rTrigger);
     }
 
-    public void setHopperSpeed(double d) {
-        mHopper.set(ControlMode.PercentOutput, d);
+    public void setHopperSpeed(double d) throws SubsystemException {
+        check();
+        mHopper.set(ControlMode.PercentOutput, -d);
     }
 }
