@@ -6,17 +6,14 @@ public class Console {
     }
 
     public static void ok(Object output) {
-        System.out.println(
-                "[ OK ]\t" + output.toString());
+        System.out.println("[ OK ]\t" + output.toString());
     }
 
     public static void warn(Object output) {
-        System.out.println(
-                "[WARN]\t" + output.toString());
+        System.out.println("[WARN]\t" + output.toString());
     }
 
     public static void error(Object output) {
-        System.out.println(
-                "[ERROR]\t" + output.toString());
+        System.out.println("[ERROR]\t" + output.toString());
     }
 }

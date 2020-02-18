@@ -44,10 +44,7 @@ public class Constants {
 
     // Input
     public static final double kINPUT_DEADBAND =
-        0.1; // If the value hasn't changed by more than this much we'll ignore it
-    
-    
-   
+            0.1; // If the value hasn't changed by more than this much we'll ignore it
 
     // Drive Train
     public static final double kMAX_SPEED_MULT = 0.8; // Limit max speed, was 0.5
@@ -62,10 +59,6 @@ public class Constants {
     public static final int kFORWARD_BUTTON = 5; // Forward button
     public static final int kREVERSE_BUTTON = 3; // Reverse button
 
-
-
-
-
     // Shooter
     public static final String kSHOOTER_STATE_KEY = "Shooter Enabled"; // SmartDashboard value key
     public static final String kSHOOTER_ENABLER_KEY = "Enable Shooter";
@@ -77,20 +70,11 @@ public class Constants {
     public static final double kSHOOTER_X_MODIFIER = 0.5;
     public static final double kSHOOTER_Y_MODIFIER = 0.5;
 
-
-
-    
     // Singulator
     public static final double kSINGULATOR_SPEED = 0.4; // singulator speed
 
-
-
-
     // Control Panel
     public static final double kCONTROL_PANEL_SPEED = 0.4; // Control Panel Speed
-
-
-
 
     // Intake
     public static final String kINTAKE_STATE_KEY = "Intake Enabled"; // SmartDashboard value key
