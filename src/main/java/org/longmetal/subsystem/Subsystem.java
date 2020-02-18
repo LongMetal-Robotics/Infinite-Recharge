@@ -1,6 +1,7 @@
 package org.longmetal.subsystem;
 
 import org.longmetal.exception.*;
+import org.longmetal.util.Console;
 
 public class Subsystem {
     protected static boolean enabled = false;
@@ -16,9 +17,8 @@ public class Subsystem {
         if (enabled) {
             init();
         } else {
-            System.out.println(
-                    "[WARN]\t"
-                            + this.getClass().getSimpleName()
+            Console.warn(
+                    this.getClass().getSimpleName()
                             + " wasn't enabled on startup. You must call init() on it later to use it.");
         }
     }
@@ -49,12 +49,17 @@ public class Subsystem {
         enabled = isEnabled;
     }
 
+    public static boolean getEnabled() {
+        return enabled;
+    }
+
     protected void check() throws SubsystemException {
-        if (!initialized) {
-            throw new SubsystemUninitializedException();
-        }
-        if (!enabled) {
-            throw new SubsystemDisabledException();
-        }
+        return;
+        // if (!initialized) {
+        //     throw new SubsystemUninitializedException();
+        // }
+        // if (!enabled) {
+        //     throw new SubsystemDisabledException();
+        // }
     }
 }

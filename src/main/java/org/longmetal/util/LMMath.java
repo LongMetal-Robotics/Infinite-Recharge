@@ -1,6 +1,6 @@
 package org.longmetal.util;
 
-public class Math {
+public class LMMath {
     /**
      * Limits a value between two numbers
      *

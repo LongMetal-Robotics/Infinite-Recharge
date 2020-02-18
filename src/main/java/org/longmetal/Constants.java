@@ -4,11 +4,9 @@ import com.revrobotics.ColorMatch;
 import edu.wpi.first.wpilibj.util.Color;
 
 public class Constants {
-    // Drive Train
-    public static final double kMAX_SPEED_MULT = 0.8; // Limit max speed, was 0.5
-    public static final double kSPEED_MODIFIER = 0.7; // Speed modifier (on throttle)
-    public static final double kTHROTTLE_SHIFT = 1.05; // Shift throttle up
-    public static final double kCURVE_MODIFIER = -0.25; // Curve modifier
+
+    // All CAN IDs
+    // Drivetrain CAN IDs
 
     // TalonSRX
     public static final double kP_CONTROLPANEL = 10; // TalonSRX for spinner (Color Wheel)
@@ -18,6 +16,36 @@ public class Constants {
     public static final int kP_FRONT_LEFT = 1;
     public static final int kP_REAR_RIGHT = 4;
     public static final int kP_FRONT_RIGHT = 3;
+
+    // Climb CAN IDs
+    public static final int kP_WINCH1 = 5;
+    public static final int kP_WINCH2 = 6;
+
+    // Manipulator CAN IDs
+    public static final int kP_SHOOTER = 7;
+    public static final int kP_SINGULATOR = 8;
+    public static final int kP_HOPPER = 9;
+    public static final int kP_INTAKE = 10;
+
+    // Control Panel CAN IDs
+    public static final int kP_PANEL = 11;
+
+    // Reference:
+    // PCM = CAN ID 0
+    // PDP = CAN ID 13
+
+    // Climb
+    // Solenoid Channels
+    public static final int kC_CLIMB1 = 0;
+    public static final int kC_CLIMB2 = 1;
+
+    // Input
+    // Gamepad Input Ports/Axis/Buttons
+    // Gamepad Port
+    public static final int kP_GAMEPAD = 2;
+
+    public static final int kY_AXIS_MODIFIER = -1;
+    // Normally, down is positive. We want up to be positive.
 
     // Input
     public static final double kINPUT_DEADBAND =
@@ -29,26 +57,46 @@ public class Constants {
     public static final int kFORWARD_BUTTON = 5; // Forward button
     public static final int kREVERSE_BUTTON = 3; // Reverse button
 
-    // Climb
-    // Solenoid Channels
-    public static final int kC_CLIMB1 = 0;
-    public static final int kC_CLIMB2 = 1;
-    // CAN IDs
-    public static final int kP_WINCH1 = 5;
-    public static final int kP_WINCH2 = 6;
+    // Drive Train
+    public static final double kMAX_SPEED_MULT = 0.8; // Limit max speed, was 0.5
+    public static final double kSPEED_MODIFIER = 0.7; // Speed modifier (on throttle)
+    public static final double kTHROTTLE_SHIFT = 1.05; // Shift throttle up
+    public static final double kCURVE_MODIFIER = -0.25; // Curve modifier
 
-    // Manipulator
-    // CAN IDs
-    public static final int kP_INTAKE = 7;
-    public static final int kP_TRANSPORT = 8;
-    public static final int kP_DRUM = 9;
-    public static final int kP_SINGULATOR =
-            13; // Temporarily 13 cuz I set the PDP and PCM to 11 and 12
-    // Will be fixed eventually :) -Ben
+    // Shooter
+    public static final String kSHOOTER_STATE_KEY = "Shooter Enabled"; // SmartDashboard value key
+    public static final String kSHOOTER_ENABLER_KEY = "Enable Shooter";
+    public static final double kSHOOTER_MIN = 0.1; // Min shooter speed
+    public static final double kSHOOTER_MAX =
+            0.75; // Max shooter speed (to protect against excessive amperage or safety I guess)
+    public static final double kSHOOTER_SPEED_MODIFIER = 1; // Decrease shooter speed
+    // Effect of modifiers on finals speeds
+    public static final double kSHOOTER_X_MODIFIER = 0.5;
+    public static final double kSHOOTER_Y_MODIFIER = 0.5;
+
+    // Singulator
+    public static final double kSINGULATOR_SPEED = 0.4; // singulator speed
 
     // Control Panel
-    // CAN IDs
-    public static final int kP_PANEL = 10;
+    public static final double kCONTROL_PANEL_SPEED = 0.4; // Control Panel Speed
+
+    // Intake
+    public static final String kINTAKE_STATE_KEY = "Intake Enabled"; // SmartDashboard value key
+    public static final String kINTAKE_ENABLER_KEY = "Enable Intake";
+
+    // Preferences
+    public static final String kSHOOTER_KEY = "SHOOTER";
+    public static final String kINTAKE_KEY = "INTAKE";
+    public static final String kCONTROL_PANEL_KEY = "CONTROL PANEL";
+    public static final String kCLIMB_KEY = "CLIMB";
+
+    // String literals for multiple reuses
+    public static final String kENABLED = "Enabled";
+    public static final String kDISABLED = "Disabled";
+
+    // Control Panel
+    public static final String kCONTROL_PANEL_STATE_KEY = "CP Enabled";
+    public static final String kCONTROL_PANEL_ENABLER_KEY = "Enable CP";
     public static final double k_SPINRATE = 0.2;
 
     // Colors
@@ -56,8 +104,6 @@ public class Constants {
     public static final Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
     public static final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
     public static final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
-
-    public static final int kP_GAMEPAD = 2; // Gamepad port
 
     // Subsystem Management
     public static final String SHOOTER_KEY = "Enable Shooter";
@@ -69,4 +115,11 @@ public class Constants {
 
     public static final String ENABLED = "Enabled";
     public static final String DISABLED = "Disabled";
+
+    // Colors
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
 }

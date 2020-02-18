@@ -7,7 +7,6 @@ import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.util.Color;
 import org.longmetal.Constants;
 import org.longmetal.exception.SubsystemException;
@@ -22,18 +21,26 @@ public class ControlPanel extends Subsystem {
     private static PanelColor initColor = PanelColor.Unknown;
     private static int setRotations = -1;
     private static int accumulated = -1;
-    private final ColorMatch m_colorMatcher = new ColorMatch();
+    private ColorMatch m_colorMatcher;
 
     public ControlPanel(boolean setEnabled) {
         super(setEnabled);
+        if (setEnabled) { // I'm dumb and they way I wrote the inheritance, it wouldn't work (it
+            // wouldn't call the right init).
+            init();
+        }
     }
 
     public void init() {
-        csensor = new ColorSensorV3(Port.kOnboard);
+        // Spinner
         spinner = new TalonSRX(Constants.kP_PANEL);
-        // Note colorsensor has its own port but idk how to access it.
         spinner.setNeutralMode(NeutralMode.Brake); // sets brake mode so we stop on color
+
+        // Color sensor
+        // csensor = new ColorSensorV3(Port.kOnboard);
         // adds target values to color matcher for blue, green, red, and yellow
+
+        m_colorMatcher = new ColorMatch();
         m_colorMatcher.addColorMatch(Constants.kBlueTarget);
         m_colorMatcher.addColorMatch(Constants.kGreenTarget);
         m_colorMatcher.addColorMatch(Constants.kRedTarget);
@@ -67,12 +74,14 @@ public class ControlPanel extends Subsystem {
         return thisColor == color;
     }
 
-    private void spin() {
+    public void spin() throws SubsystemException {
+        check();
         spinner.set(
                 ControlMode.PercentOutput, Constants.k_SPINRATE); // spins motor at constant speed
     }
 
-    private void stop() {
+    public void stop() throws SubsystemException {
+        check();
         spinner.set(ControlMode.PercentOutput, 0.0); // Hard stop
     }
 

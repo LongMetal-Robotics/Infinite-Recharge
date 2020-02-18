@@ -7,6 +7,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -14,8 +17,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.File;
 import java.util.Scanner;
 import org.longmetal.Constants;
-import org.longmetal.Input;
+import org.longmetal.exception.SubsystemDisabledException;
+import org.longmetal.exception.SubsystemException;
+import org.longmetal.exception.SubsystemUninitializedException;
+import org.longmetal.input.Gamepad.Axis;
+import org.longmetal.input.Gamepad.Button;
+import org.longmetal.input.Input;
+import org.longmetal.subsystem.Climb;
+import org.longmetal.subsystem.ControlPanel;
 import org.longmetal.subsystem.DriveTrain;
+import org.longmetal.subsystem.Intake;
+import org.longmetal.subsystem.Shooter;
+import org.longmetal.subsystem.SubsystemManager;
+import org.longmetal.util.Console;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -24,19 +38,29 @@ import org.longmetal.subsystem.DriveTrain;
  * project.
  */
 public class Robot extends TimedRobot {
-    private static final String kDefaultAuto = "Default";
-    private static final String kCustomAuto = "My Auto";
-    private String m_autoSelected;
-    private SendableChooser<String> m_chooser = new SendableChooser<>();
 
     Input input;
     DriveTrain driveTrain;
+    Intake intake;
+    Shooter shooter;
+    Climb climb;
+    ControlPanel controlPanel;
+    SubsystemManager manager;
 
     SendableChooser<Boolean> chooserQuinnDrive;
 
     boolean lastQuinnDrive = false;
     boolean lastForwardDrive = false;
     boolean lastReverseDrive = false;
+    boolean endgameMode = false;
+
+    NetworkTable limelightTable =
+            NetworkTableInstance.getDefault()
+                    .getTable("limelight"); // takes in values from limelight
+    NetworkTableEntry tx = limelightTable.getEntry("tx"); // distances
+    NetworkTableEntry ty = limelightTable.getEntry("ty"); // height or something
+
+    double tX, tY;
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -44,10 +68,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-        m_chooser.addOption("My Auto", kCustomAuto);
-        SmartDashboard.putData("Auto choices", m_chooser);
 
+        // Output current commit and branch
         try {
             File file = new File(Filesystem.getDeployDirectory(), "branch.txt");
             Scanner fs = new Scanner(file);
@@ -65,18 +87,26 @@ public class Robot extends TimedRobot {
                 commit = fs.nextLine();
             }
 
-            System.out.println("Commit " + commit + " or later (branch '" + branch + "')");
+            System.out.println(
+                    Constants.ANSI_PURPLE
+                            + "Commit "
+                            + commit
+                            + " or later (branch '"
+                            + branch
+                            + "')"
+                            + Constants.ANSI_RESET);
             fs.close();
         } catch (Exception e) {
-            System.out.println(
-                    "Could not determine commit or branch. ("
-                            + e.getLocalizedMessage()
-                            + ") Trace:");
-            e.printStackTrace();
+            Console.warn("Could not determine commit or branch. (" + e.getLocalizedMessage() + ")");
         }
 
         input = new Input();
         driveTrain = new DriveTrain();
+        intake = new Intake(true);
+        shooter = new Shooter(true);
+        climb = new Climb(true);
+        controlPanel = new ControlPanel(true);
+        manager = new SubsystemManager();
 
         chooserQuinnDrive = new SendableChooser<>();
         chooserQuinnDrive.setDefaultOption("Disabled", false);
@@ -124,48 +154,216 @@ public class Robot extends TimedRobot {
         lastReverseDrive = reverseDrive;
 
         SmartDashboard.putBoolean("Reverse Drive", driveTrain.getReverseDrive());
+
+        tX = tx.getDouble(0.0);
+        tY = ty.getDouble(0.0);
+
+        SmartDashboard.putNumber("LimelightX", tX);
+        SmartDashboard.putNumber("LimelightY", tY);
+
+        manager.checkSendables();
     }
 
     /**
      * This autonomous (along with the chooser code above) shows how to select between different
      * autonomous modes using the dashboard. The sendable chooser code works with the Java
-     * SmartDashboard. If you prefer the LabVIEW Dashboard, remove all of the chooser code and
-     * uncomment the getString line to get the auto name from the text box below the Gyro
+     * SmartDashboard. If you prefer the LabVIEW Dashboard (you don't), remove all of the chooser
+     * code and uncomment the getString line to get the auto name from the text box below the Gyro
      *
      * <p>You can add additional auto modes by adding additional comparisons to the switch structure
      * below with additional strings. If using the SendableChooser make sure to add them to the
      * chooser code above as well.
      */
     @Override
-    public void autonomousInit() {
-        m_autoSelected = m_chooser.getSelected();
-        // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-        System.out.println("Auto selected: " + m_autoSelected);
-    }
+    public void autonomousInit() {}
 
     /** This function is called periodically during autonomous. */
     @Override
-    public void autonomousPeriodic() {
-        switch (m_autoSelected) {
-            case kCustomAuto:
-                // Put custom auto code here
-                break;
-            case kDefaultAuto:
-            default:
-                // Put default auto code here
-                break;
-        }
-    }
+    public void autonomousPeriodic() {}
 
     /** This function is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
 
-        driveTrain.curve(
-                input.forwardStick.getY(),
-                input.forwardStick.getThrottle(),
-                input.turnStick.getTwist(),
-                input.turnStick.getThrottle());
+        // Limelight line-up while 1 button is held
+        if (input.forwardStick.getRawButton(1)) {
+            limelightTable.getEntry("ledMode").setDouble(3.0);
+            limelightTable.getEntry("camMode").setDouble(0.0);
+            driveTrain.curveRaw(0, (tX / 30) / 2, true);
+        } else {
+            limelightTable.getEntry("ledMode").setDouble(0.0);
+            limelightTable.getEntry("camMode").setDouble(3.0);
+            driveTrain.curve(
+                    input.forwardStick.getY(),
+                    input.forwardStick.getThrottle(),
+                    input.turnStick.getTwist(),
+                    input.turnStick.getThrottle());
+        }
+
+        // Left Gamepad trigger, currently used for shooter
+        double lTrigger = input.gamepad.getAxis(Axis.LT);
+
+        // Right Gamepad trigger, currently used for intake
+        double rTrigger = input.gamepad.getAxis(Axis.RT);
+
+        // Left stick Y axis, left climb up/down
+        double lStickY = input.gamepad.getAxis(Axis.LS_Y);
+
+        // Right stick Y axis, right climb up/down
+        double rStickY = input.gamepad.getAxis(Axis.RS_Y);
+
+        // LB button, used to stop shooter
+        boolean lButton = input.gamepad.getButton(Button.LB);
+
+        // RB button, used to run reverse intake and release climb [only in climb mode]
+        boolean rButton = input.gamepad.getButton(Button.RB);
+
+        // X button, not currently used
+        boolean xButton = input.gamepad.getButton(Button.X);
+
+        // Y button, enables Control Panel Mode
+        boolean yButton = input.gamepad.getButton(Button.Y);
+
+        // A button, not currently used
+        boolean aButton = input.gamepad.getButton(Button.A);
+
+        // B button, currently prompts shooter to aim and set speed
+        boolean bButton = input.gamepad.getButton(Button.B);
+
+        // Start button, engages Endgame Mode
+        boolean startButton = input.gamepad.getButton(Button.START);
+
+        String currentSubsystem = "Subsystem";
+
+        if (!endgameMode) {
+            // Aims and sets shooter to limelight speed
+            if (bButton) {
+                // Do stuff
+            }
+
+            currentSubsystem = "Shooter";
+            try {
+                // Sets shooter to a speed
+                if (lTrigger > Constants.kINPUT_DEADBAND) { // Left trigger has passed deadband
+                    shooter.testShooter(lTrigger);
+                }
+
+                // Stops shooter
+                if (lButton) {
+                    shooter.testShooter(0);
+                }
+
+                // Temporary button mapping... will be automatically
+                if (xButton) {
+                    shooter.setSingulatorSpeed(1);
+                } else {
+                    shooter.setSingulatorSpeed(0);
+                }
+            } catch (SubsystemException e) {
+                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
+                e.printStackTrace();
+
+                boolean isUninitialized =
+                        e.getClass().isInstance(SubsystemUninitializedException.class);
+                if (Shooter.getEnabled() && isUninitialized) {
+
+                    shooter.init();
+                }
+            }
+
+            currentSubsystem = "Intake";
+            try {
+                // Sets intake to a speed
+                if (rTrigger > Constants.kINPUT_DEADBAND) {
+                    intake.setIntakeSpeed(rTrigger);
+                } else if (rButton) { // Reverse intake
+                    intake.setIntakeSpeed(-0.2);
+                } else { // Stop intake
+                    intake.setIntakeSpeed(0);
+                }
+
+                // Temporary button mapping... will be automatic
+                if (aButton) {
+                    intake.setHopperSpeed(0.5);
+                } else {
+                    intake.setHopperSpeed(0);
+                }
+            } catch (SubsystemException e) {
+                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
+                e.printStackTrace();
+
+                boolean isUninitialized =
+                        e.getClass().isInstance(SubsystemUninitializedException.class);
+                if (currentSubsystem.equals("Intake") && Intake.getEnabled() && isUninitialized) {
+
+                    intake.init();
+                }
+            }
+
+            currentSubsystem = "Control Panel";
+            try {
+                // Flip up control panel and engage based on FMS values
+                if (yButton) {
+                    // For now, this button will just spin the motor for testing purposes
+                    controlPanel.spin();
+                } else {
+                    controlPanel.stop();
+                }
+            } catch (SubsystemException e) {
+                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
+                e.printStackTrace();
+
+                boolean isUninitialized =
+                        e.getClass().isInstance(SubsystemUninitializedException.class);
+                if (ControlPanel.getEnabled() && isUninitialized) {
+
+                    controlPanel.init();
+                }
+            }
+
+            // Puts the robot into endgame mode, disabling all manipulator subsystems
+            if (startButton) {
+                endgameMode = true;
+            }
+        } else {
+            currentSubsystem = "Climb";
+            try {
+                if (rButton) {
+                    // Release climb upwards, disengage solenoids
+                }
+
+                // Left winch engage
+                if (lStickY > Constants.kINPUT_DEADBAND) {
+                    climb.setLeftWinchSpeed(lStickY);
+                }
+
+                // Right winch engage
+                if (rStickY > Constants.kINPUT_DEADBAND) {
+                    climb.setRightWinchSpeed(rStickY);
+                }
+                // Need to add solenoids engaging and disengaging
+            } catch (SubsystemException e) {
+                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
+                e.printStackTrace();
+
+                boolean isUninitialized =
+                        e.getClass().isInstance(SubsystemUninitializedException.class);
+                if (Climb.getEnabled() && isUninitialized) {
+
+                    climb.init();
+                }
+            }
+        }
+    }
+
+    private String problemName(SubsystemException e) {
+        if (e.getClass().isInstance(SubsystemDisabledException.class)) {
+            return "Subsystem Disabled";
+        } else if (e.getClass().isInstance(SubsystemUninitializedException.class)) {
+            return "Subsystem Unitialized";
+        } else {
+            return "Generic Subsystem Problem";
+        }
     }
 
     /** This function is called periodically during test mode. */
