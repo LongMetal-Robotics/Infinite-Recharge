@@ -14,7 +14,7 @@ public class SubsystemManager {
         Preferences preferences = Preferences.getInstance();
 
         /*int i = 0;
-        
+
 
         for (Subsystem subsystem:Subsystem.values()) {
             boolean subsystemEnableValue = preferences.getBoolean(subsystem.name(), false);
@@ -26,7 +26,7 @@ public class SubsystemManager {
                 }
             };
             Runnable disableSubsystem = new Runnable(){
-            
+
                 @Override
                 public void run() {
                     SubsystemManager.setSubsystem(subsystem, false);

@@ -235,7 +235,6 @@ public class Robot extends TimedRobot {
 
         String currentSubsystem = "Subsystem";
 
-
         if (!endgameMode) {
             // Aims and sets shooter to limelight speed
             if (bButton) {
@@ -263,11 +262,11 @@ public class Robot extends TimedRobot {
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
                 e.printStackTrace();
-    
+
                 boolean isUninitialized =
                         e.getClass().isInstance(SubsystemUninitializedException.class);
                 if (Shooter.getEnabled() && isUninitialized) {
-    
+
                     shooter.init();
                 }
             }
@@ -292,13 +291,11 @@ public class Robot extends TimedRobot {
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
                 e.printStackTrace();
-    
+
                 boolean isUninitialized =
                         e.getClass().isInstance(SubsystemUninitializedException.class);
-                if (currentSubsystem.equals("Intake")
-                        && Intake.getEnabled()
-                        && isUninitialized) {
-    
+                if (currentSubsystem.equals("Intake") && Intake.getEnabled() && isUninitialized) {
+
                     intake.init();
                 }
             }
@@ -315,11 +312,11 @@ public class Robot extends TimedRobot {
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
                 e.printStackTrace();
-    
+
                 boolean isUninitialized =
                         e.getClass().isInstance(SubsystemUninitializedException.class);
                 if (ControlPanel.getEnabled() && isUninitialized) {
-    
+
                     controlPanel.init();
                 }
             }
@@ -348,15 +345,15 @@ public class Robot extends TimedRobot {
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
                 e.printStackTrace();
-    
+
                 boolean isUninitialized =
                         e.getClass().isInstance(SubsystemUninitializedException.class);
                 if (Climb.getEnabled() && isUninitialized) {
-    
+
                     climb.init();
                 }
             }
-        }      
+        }
     }
 
     private String problemName(SubsystemException e) {
