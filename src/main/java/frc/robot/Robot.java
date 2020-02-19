@@ -233,13 +233,13 @@ public class Robot extends TimedRobot {
         if (!endgameMode) {
             // Aims and sets shooter to limelight speed
             if (bButton) {
-                //double shootPercent = formula.shooterSpeed(1 /*will be limelight distance*/);
+                // double shootPercent = formula.shooterSpeed(1 /*will be limelight distance*/);
                 /*try {
                     shooter.testShooter(shootPercent);
                 } catch (SubsystemException shooterE) {
                     shooter.testShooter()
                 }*/
-                
+
             }
 
             currentSubsystem = "Shooter";
