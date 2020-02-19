@@ -83,4 +83,4 @@ task preBuild (type:Exec) {
             break;
     }
 }
-//build.dependsOn preBuild
+build.dependsOn preBuild
