@@ -70,8 +70,9 @@ public class Constants {
     public static final double kSHOOTER_X_MODIFIER = 0.5;
     public static final double kSHOOTER_Y_MODIFIER = 0.5;
 
-    // Singulator
-    public static final double kSINGULATOR_SPEED = 0.4; // singulator speed
+    // Singulator / Transport
+    public static final double kSINGULATOR_SPEED = 0.6; // singulator speed
+    public static final double kTRANSPORT_SPEED = 0.8; // transport speed
 
     // Control Panel
     public static final double kCONTROL_PANEL_SPEED = 0.4; // Control Panel Speed

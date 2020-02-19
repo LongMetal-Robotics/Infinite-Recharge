@@ -20,6 +20,7 @@ public class ShootFormula {
         double ballVelocity = 0;
         double drumRPM = 0;
         double motorRPM = 0;
+        double motorSpeed = 0;
 
         xVelocity = Math.sqrt((distance * distance * -0.5 * gravity) / (height - distance));
 
@@ -29,6 +30,8 @@ public class ShootFormula {
 
         motorRPM = drumRPM / 3;
 
-        return motorRPM;
+        motorSpeed = motorRPM / 4000;
+
+        return motorSpeed;
     }
 }

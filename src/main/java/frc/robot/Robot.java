@@ -30,6 +30,7 @@ import org.longmetal.subsystem.Intake;
 import org.longmetal.subsystem.Shooter;
 import org.longmetal.subsystem.SubsystemManager;
 import org.longmetal.util.Console;
+import org.longmetal.util.ShootFormula;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -46,6 +47,7 @@ public class Robot extends TimedRobot {
     Climb climb;
     ControlPanel controlPanel;
     SubsystemManager manager;
+    ShootFormula formula;
 
     SendableChooser<Boolean> chooserQuinnDrive;
 
@@ -231,7 +233,13 @@ public class Robot extends TimedRobot {
         if (!endgameMode) {
             // Aims and sets shooter to limelight speed
             if (bButton) {
-                // Do stuff
+                //double shootPercent = formula.shooterSpeed(1 /*will be limelight distance*/);
+                /*try {
+                    shooter.testShooter(shootPercent);
+                } catch (SubsystemException shooterE) {
+                    shooter.testShooter()
+                }*/
+                
             }
 
             currentSubsystem = "Shooter";
@@ -277,7 +285,7 @@ public class Robot extends TimedRobot {
 
                 // Temporary button mapping... will be automatic
                 if (aButton) {
-                    intake.setHopperSpeed(0.5);
+                    intake.setHopperSpeed(0.8);
                 } else {
                     intake.setHopperSpeed(0);
                 }
