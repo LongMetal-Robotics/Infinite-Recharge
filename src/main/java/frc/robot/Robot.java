@@ -259,26 +259,36 @@ public class Robot extends TimedRobot {
             currentSubsystem = "Shooter";
             try {
                 if (bButton) {
-                    shooter.runShooter(
-                            formula.shooterSpeed(
-                                    5)); // Will set shooter based on limelight distance
+                    //shooter.runShooter(
+                    //        formula.shooterSpeed(
+                      //              5)); // Will set shooter based on limelight distance
                     // Add automatic limelight alignment
+                    shooter.testShooter(0.2);
+                    
+                    // Singulator directly controlled by left trigger
+                    // Hopper is either on or off
+                    if (bButton && lTrigger > Constants.kINPUT_DEADBAND) {
+                        shooter.setSingulatorSpeed(lTrigger);
+                        // intake.setHopperSpeed(0.8);
+                    } else {
+                        shooter.setSingulatorSpeed(0);
+                        //intake.setHopperSpeed(0);
+                    }
+                    
                 }
+
+                
+                
+                /*else {
+                    shooter.runShooter(Constants.kSHOOTER_MIN);
+                }*/
 
                 // Stops shooter
                 if (lButton) {
                     shooter.stop();
                 }
 
-                // Singulator directly controlled by left trigger
-                // Hopper is either on or off
-                if (lTrigger > Constants.kINPUT_DEADBAND) {
-                    shooter.setSingulatorSpeed(lTrigger);
-                    intake.setHopperSpeed(1);
-                } else {
-                    shooter.setSingulatorSpeed(0);
-                    intake.setHopperSpeed(0);
-                }
+                
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
                 e.printStackTrace();
@@ -306,6 +316,13 @@ public class Robot extends TimedRobot {
                 if (aButton) {
                     intake.setHopperSpeed(0.8);
                 } else {
+                    intake.setHopperSpeed(0);
+                }
+
+                if (bButton && lTrigger > Constants.kINPUT_DEADBAND) {
+                    intake.setHopperSpeed(0.8);
+                }
+                else {
                     intake.setHopperSpeed(0);
                 }
 
