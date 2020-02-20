@@ -53,6 +53,7 @@ public class Robot extends TimedRobot {
     DigitalInput intakeLimit;
     Timer timer;
     Listener intakeListener;
+    Listener panelListener;
     ShootFormula formula;
 
     SendableChooser<Boolean> chooserQuinnDrive;
@@ -124,6 +125,7 @@ public class Robot extends TimedRobot {
                             }
                         },
                         true);
+        panelListener = new Listener(new Runnable() {public void run() {try { controlPanel.flipArmUp();}catch (SubsystemException e) {Console.log(e.getMessage());}}}, new Runnable() {public void run() {try { controlPanel.flipArmDown();}catch (SubsystemException e) {Console.log(e.getMessage());}}}, false);
 
         timer.start();
 
@@ -364,6 +366,10 @@ public class Robot extends TimedRobot {
                 } else {
                     controlPanel.stop();
                 }
+
+                // Temporary control for flipping arm up
+                panelListener.update(xButton);
+                
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
                 e.printStackTrace();
