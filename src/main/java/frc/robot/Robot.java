@@ -10,6 +10,7 @@ package frc.robot;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -55,6 +56,8 @@ public class Robot extends TimedRobot {
     Listener intakeListener;
     Listener panelListener;
     ShootFormula formula;
+    Compressor compressor;
+    
 
     SendableChooser<Boolean> chooserQuinnDrive;
 
@@ -112,6 +115,7 @@ public class Robot extends TimedRobot {
         formula = new ShootFormula();
         intakeLimit = new DigitalInput(0);
         timer = new Timer();
+        compressor = new Compressor(0);
         intakeListener =
                 new Listener(
                         null,
