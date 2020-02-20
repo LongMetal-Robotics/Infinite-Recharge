@@ -37,8 +37,6 @@ public class ControlPanel extends Subsystem {
         spinner = new TalonSRX(Constants.kP_PANEL);
         spinner.setNeutralMode(NeutralMode.Brake); // sets brake mode so we stop on color
 
-        
-
         // Color sensor
         // csensor = new ColorSensorV3(Port.kOnboard);
         // adds target values to color matcher for blue, green, red, and yellow
@@ -131,8 +129,6 @@ public class ControlPanel extends Subsystem {
         spin();
         return false;
     }
-
-    
 
     public enum PanelColor {
         Blue,

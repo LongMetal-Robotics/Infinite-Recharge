@@ -1,10 +1,10 @@
 package org.longmetal.subsystem;
 
+import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
+
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import org.longmetal.Constants;
 import org.longmetal.exception.SubsystemException;
-import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
 public class Pneumatics extends Subsystem {
     // instance variables
@@ -37,7 +37,4 @@ public class Pneumatics extends Subsystem {
         rotator.set(DoubleSolenoid.Value.kReverse);
         armUp = false;
     }
-
-
 }
-     
