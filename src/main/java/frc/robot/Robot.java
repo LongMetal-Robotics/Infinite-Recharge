@@ -110,8 +110,20 @@ public class Robot extends TimedRobot {
         manager = new SubsystemManager();
         intakeLimit = new DigitalInput(0);
         timer = new Timer();
-        intakeListener = new Listener(null, new Runnable() {public void run() {try{intake.runHopper(Constants.kTRANSPORT_SPEED);}catch(SubsystemException e) {Console.log(e.getMessage());}}}, true);
-        
+        intakeListener =
+                new Listener(
+                        null,
+                        new Runnable() {
+                            public void run() {
+                                try {
+                                    intake.runHopper(Constants.kTRANSPORT_SPEED);
+                                } catch (SubsystemException e) {
+                                    Console.log(e.getMessage());
+                                }
+                            }
+                        },
+                        true);
+
         timer.start();
 
         chooserQuinnDrive = new SendableChooser<>();

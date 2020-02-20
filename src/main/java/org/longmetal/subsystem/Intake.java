@@ -2,9 +2,9 @@ package org.longmetal.subsystem;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.Timer;
 import org.longmetal.Constants;
 import org.longmetal.exception.SubsystemException;
-import edu.wpi.first.wpilibj.Timer;
 
 public class Intake extends Subsystem {
     private TalonSRX mIntake;
