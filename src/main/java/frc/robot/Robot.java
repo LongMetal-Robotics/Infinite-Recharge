@@ -259,10 +259,12 @@ public class Robot extends TimedRobot {
             currentSubsystem = "Shooter";
             try {
                 if (bButton) {
-                    shooter.runShooter(formula.shooterSpeed(5)); // Will set shooter based on limelight distance
+                    shooter.runShooter(
+                            formula.shooterSpeed(
+                                    5)); // Will set shooter based on limelight distance
                     // Add automatic limelight alignment
                 }
-                
+
                 // Stops shooter
                 if (lButton) {
                     shooter.stop();
