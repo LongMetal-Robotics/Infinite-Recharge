@@ -52,7 +52,7 @@ public class Robot extends TimedRobot {
 
     Listener quinnDriveListener;
     Listener reverseListener;
-    
+
     boolean endgameMode = false;
 
     NetworkTable limelightTable =
@@ -107,33 +107,41 @@ public class Robot extends TimedRobot {
         chooserQuinnDrive.addOption("Enabled", true);
         SmartDashboard.putData("Quinn Drive Chooser", chooserQuinnDrive);
 
-        quinnDriveListener = new Listener(new Runnable(){
-        
-            @Override
-            public void run() {
-                input.setQuinnDrive(true);
-            }
-        }, new Runnable(){
-        
-            @Override
-            public void run() {
-                input.setQuinnDrive(false);
-            }
-        }, false);
+        quinnDriveListener =
+                new Listener(
+                        new Runnable() {
 
-        reverseListener = new Listener(new Runnable(){
-        
-            @Override
-            public void run() {
-                driveTrain.setReverseDrive(true);
-            }
-        }, new Runnable(){
-        
-            @Override
-            public void run() {
-                driveTrain.setReverseDrive(false);
-            }
-        }, false);
+                            @Override
+                            public void run() {
+                                input.setQuinnDrive(true);
+                            }
+                        },
+                        new Runnable() {
+
+                            @Override
+                            public void run() {
+                                input.setQuinnDrive(false);
+                            }
+                        },
+                        false);
+
+        reverseListener =
+                new Listener(
+                        new Runnable() {
+
+                            @Override
+                            public void run() {
+                                driveTrain.setReverseDrive(true);
+                            }
+                        },
+                        new Runnable() {
+
+                            @Override
+                            public void run() {
+                                driveTrain.setReverseDrive(false);
+                            }
+                        },
+                        false);
     }
 
     /**
