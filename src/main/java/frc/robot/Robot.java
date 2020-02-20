@@ -57,7 +57,6 @@ public class Robot extends TimedRobot {
     Listener panelListener;
     ShootFormula formula;
     Compressor compressor;
-    
 
     SendableChooser<Boolean> chooserQuinnDrive;
 
