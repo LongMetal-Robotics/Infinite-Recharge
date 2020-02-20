@@ -54,7 +54,7 @@ public class Subsystem {
     }
 
     protected void check() throws SubsystemException {
-        //return;
+        // return;
         if (!initialized) {
             throw new SubsystemUninitializedException();
         }

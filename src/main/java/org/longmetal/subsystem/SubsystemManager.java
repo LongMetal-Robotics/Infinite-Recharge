@@ -15,25 +15,26 @@ public class SubsystemManager {
 
         int i = 0;
 
-
-        for (Subsystem subsystem:Subsystem.values()) {
+        for (Subsystem subsystem : Subsystem.values()) {
             boolean subsystemEnableValue = preferences.getBoolean(subsystem.name(), false);
 
-            Runnable enableSubsystem = new Runnable() {
-                @Override
-                public void run() {
-                    SubsystemManager.setSubsystem(subsystem, true);
-                }
-            };
-            Runnable disableSubsystem = new Runnable(){
+            Runnable enableSubsystem =
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            SubsystemManager.setSubsystem(subsystem, true);
+                        }
+                    };
+            Runnable disableSubsystem =
+                    new Runnable() {
 
-                @Override
-                public void run() {
-                    SubsystemManager.setSubsystem(subsystem, false);
-                }
-            };
+                        @Override
+                        public void run() {
+                            SubsystemManager.setSubsystem(subsystem, false);
+                        }
+                    };
 
-            //subsystemEnable;
+            // subsystemEnable;
         }
 
         // Shooter
