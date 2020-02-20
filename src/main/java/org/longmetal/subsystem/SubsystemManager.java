@@ -13,7 +13,7 @@ public class SubsystemManager {
     public SubsystemManager() {
         Preferences preferences = Preferences.getInstance();
 
-        /*int i = 0;
+        int i = 0;
 
 
         for (Subsystem subsystem:Subsystem.values()) {
@@ -33,8 +33,8 @@ public class SubsystemManager {
                 }
             };
 
-            subsystemEnable
-        }*/
+            //subsystemEnable;
+        }
 
         // Shooter
         boolean shooterEnableValue =
