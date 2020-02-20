@@ -10,8 +10,10 @@ package frc.robot;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.File;
@@ -30,6 +32,7 @@ import org.longmetal.subsystem.Intake;
 import org.longmetal.subsystem.Shooter;
 import org.longmetal.subsystem.SubsystemManager;
 import org.longmetal.util.Console;
+import org.longmetal.util.Listener;
 import org.longmetal.util.ShootFormula;
 
 /**
@@ -48,6 +51,9 @@ public class Robot extends TimedRobot {
     ControlPanel controlPanel;
     SubsystemManager manager;
     ShootFormula formula;
+    DigitalInput intakeLimit;
+    Timer timer;
+    Listener intakeListener;
 
     SendableChooser<Boolean> chooserQuinnDrive;
 
@@ -102,6 +108,11 @@ public class Robot extends TimedRobot {
         climb = new Climb(true);
         controlPanel = new ControlPanel(true);
         manager = new SubsystemManager();
+        intakeLimit = new DigitalInput(0);
+        timer = new Timer();
+        intakeListener = new Listener(null, new Runnable() {public void run() {try{intake.runHopper(Constants.kTRANSPORT_SPEED);}catch(SubsystemException e) {Console.log(e.getMessage());}}}, true);
+        
+        timer.start();
 
         chooserQuinnDrive = new SendableChooser<>();
         chooserQuinnDrive.setDefaultOption("Disabled", false);
@@ -289,6 +300,9 @@ public class Robot extends TimedRobot {
                 } else {
                     intake.setHopperSpeed(0);
                 }
+
+                intakeListener.update(intakeLimit.get());
+
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
                 e.printStackTrace();

@@ -4,10 +4,12 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import org.longmetal.Constants;
 import org.longmetal.exception.SubsystemException;
+import edu.wpi.first.wpilibj.Timer;
 
 public class Intake extends Subsystem {
     private TalonSRX mIntake;
     private TalonSRX mHopper;
+    private Timer timer;
 
     public Intake(boolean setEnabled) {
         super(setEnabled);
@@ -20,6 +22,8 @@ public class Intake extends Subsystem {
     public void init() {
         mIntake = new TalonSRX(Constants.kP_INTAKE);
         mHopper = new TalonSRX(Constants.kP_HOPPER);
+        timer = new Timer();
+        timer.start();
 
         super.init();
     }
@@ -32,5 +36,12 @@ public class Intake extends Subsystem {
     public void setHopperSpeed(double d) throws SubsystemException {
         check();
         mHopper.set(ControlMode.PercentOutput, -d);
+    }
+
+    public void runHopper(double d) throws SubsystemException {
+        check();
+        mHopper.set(ControlMode.PercentOutput, -d);
+        Timer.delay(3);
+        mHopper.set(ControlMode.PercentOutput, 0);
     }
 }
