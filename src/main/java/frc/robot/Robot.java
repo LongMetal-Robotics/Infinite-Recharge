@@ -259,12 +259,12 @@ public class Robot extends TimedRobot {
             currentSubsystem = "Shooter";
             try {
                 if (bButton) {
-                    //shooter.runShooter(
+                    // shooter.runShooter(
                     //        formula.shooterSpeed(
-                      //              5)); // Will set shooter based on limelight distance
+                    //              5)); // Will set shooter based on limelight distance
                     // Add automatic limelight alignment
                     shooter.testShooter(0.2);
-                    
+
                     // Singulator directly controlled by left trigger
                     // Hopper is either on or off
                     if (bButton && lTrigger > Constants.kINPUT_DEADBAND) {
@@ -272,13 +272,10 @@ public class Robot extends TimedRobot {
                         // intake.setHopperSpeed(0.8);
                     } else {
                         shooter.setSingulatorSpeed(0);
-                        //intake.setHopperSpeed(0);
+                        // intake.setHopperSpeed(0);
                     }
-                    
                 }
 
-                
-                
                 /*else {
                     shooter.runShooter(Constants.kSHOOTER_MIN);
                 }*/
@@ -288,7 +285,6 @@ public class Robot extends TimedRobot {
                     shooter.stop();
                 }
 
-                
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
                 e.printStackTrace();
@@ -321,8 +317,7 @@ public class Robot extends TimedRobot {
 
                 if (bButton && lTrigger > Constants.kINPUT_DEADBAND) {
                     intake.setHopperSpeed(0.8);
-                }
-                else {
+                } else {
                     intake.setHopperSpeed(0);
                 }
 
