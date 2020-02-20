@@ -10,8 +10,10 @@ package frc.robot;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.File;
@@ -30,6 +32,8 @@ import org.longmetal.subsystem.Intake;
 import org.longmetal.subsystem.Shooter;
 import org.longmetal.subsystem.SubsystemManager;
 import org.longmetal.util.Console;
+import org.longmetal.util.Listener;
+import org.longmetal.util.ShootFormula;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -46,6 +50,10 @@ public class Robot extends TimedRobot {
     Climb climb;
     ControlPanel controlPanel;
     SubsystemManager manager;
+    DigitalInput intakeLimit;
+    Timer timer;
+    Listener intakeListener;
+    ShootFormula formula;
 
     SendableChooser<Boolean> chooserQuinnDrive;
 
@@ -100,6 +108,24 @@ public class Robot extends TimedRobot {
         climb = new Climb(true);
         controlPanel = new ControlPanel(true);
         manager = new SubsystemManager();
+        formula = new ShootFormula();
+        intakeLimit = new DigitalInput(0);
+        timer = new Timer();
+        intakeListener =
+                new Listener(
+                        null,
+                        new Runnable() {
+                            public void run() {
+                                try {
+                                    intake.runHopper(Constants.kTRANSPORT_SPEED);
+                                } catch (SubsystemException e) {
+                                    Console.log(e.getMessage());
+                                }
+                            }
+                        },
+                        true);
+
+        timer.start();
 
         chooserQuinnDrive = new SendableChooser<>();
         chooserQuinnDrive.setDefaultOption("Disabled", false);
@@ -229,29 +255,40 @@ public class Robot extends TimedRobot {
         String currentSubsystem = "Subsystem";
 
         if (!endgameMode) {
-            // Aims and sets shooter to limelight speed
-            if (bButton) {
-                // Do stuff
-            }
 
             currentSubsystem = "Shooter";
             try {
-                // Sets shooter to a speed
-                if (lTrigger > Constants.kINPUT_DEADBAND) { // Left trigger has passed deadband
-                    shooter.testShooter(lTrigger);
+                if (bButton) {
+                    //shooter.runShooter(
+                    //        formula.shooterSpeed(
+                      //              5)); // Will set shooter based on limelight distance
+                    // Add automatic limelight alignment
+                    shooter.testShooter(0.2);
+                    
+                    // Singulator directly controlled by left trigger
+                    // Hopper is either on or off
+                    if (bButton && lTrigger > Constants.kINPUT_DEADBAND) {
+                        shooter.setSingulatorSpeed(lTrigger);
+                        // intake.setHopperSpeed(0.8);
+                    } else {
+                        shooter.setSingulatorSpeed(0);
+                        //intake.setHopperSpeed(0);
+                    }
+                    
                 }
+
+                
+                
+                /*else {
+                    shooter.runShooter(Constants.kSHOOTER_MIN);
+                }*/
 
                 // Stops shooter
                 if (lButton) {
-                    shooter.testShooter(0);
+                    shooter.stop();
                 }
 
-                // Temporary button mapping... will be automatically
-                if (xButton) {
-                    shooter.setSingulatorSpeed(1);
-                } else {
-                    shooter.setSingulatorSpeed(0);
-                }
+                
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
                 e.printStackTrace();
@@ -277,10 +314,20 @@ public class Robot extends TimedRobot {
 
                 // Temporary button mapping... will be automatic
                 if (aButton) {
-                    intake.setHopperSpeed(0.5);
+                    intake.setHopperSpeed(0.8);
                 } else {
                     intake.setHopperSpeed(0);
                 }
+
+                if (bButton && lTrigger > Constants.kINPUT_DEADBAND) {
+                    intake.setHopperSpeed(0.8);
+                }
+                else {
+                    intake.setHopperSpeed(0);
+                }
+
+                intakeListener.update(intakeLimit.get());
+
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
                 e.printStackTrace();
