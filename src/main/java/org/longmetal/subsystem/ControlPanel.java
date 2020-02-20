@@ -37,8 +37,7 @@ public class ControlPanel extends Subsystem {
         spinner = new TalonSRX(Constants.kP_PANEL);
         spinner.setNeutralMode(NeutralMode.Brake); // sets brake mode so we stop on color
 
-        // Solenoid to flip up arm
-        rotator = new DoubleSolenoid(0, 3);
+        
 
         // Color sensor
         // csensor = new ColorSensorV3(Port.kOnboard);
@@ -133,17 +132,7 @@ public class ControlPanel extends Subsystem {
         return false;
     }
 
-    public void flipArmUp() throws SubsystemException {
-        check();
-        rotator.set(DoubleSolenoid.Value.kForward);
-        armUp = true;
-    }
-
-    public void flipArmDown() throws SubsystemException {
-        check();
-        rotator.set(DoubleSolenoid.Value.kReverse);
-        armUp = false;
-    }
+    
 
     public enum PanelColor {
         Blue,
