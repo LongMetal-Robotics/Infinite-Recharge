@@ -125,7 +125,27 @@ public class Robot extends TimedRobot {
                             }
                         },
                         true);
-        panelListener = new Listener(new Runnable() {public void run() {try { controlPanel.flipArmUp();}catch (SubsystemException e) {Console.log(e.getMessage());}}}, new Runnable() {public void run() {try { controlPanel.flipArmDown();}catch (SubsystemException e) {Console.log(e.getMessage());}}}, false);
+        panelListener =
+                new Listener(
+                        new Runnable() {
+                            public void run() {
+                                try {
+                                    controlPanel.flipArmUp();
+                                } catch (SubsystemException e) {
+                                    Console.log(e.getMessage());
+                                }
+                            }
+                        },
+                        new Runnable() {
+                            public void run() {
+                                try {
+                                    controlPanel.flipArmDown();
+                                } catch (SubsystemException e) {
+                                    Console.log(e.getMessage());
+                                }
+                            }
+                        },
+                        false);
 
         timer.start();
 
@@ -369,7 +389,7 @@ public class Robot extends TimedRobot {
 
                 // Temporary control for flipping arm up
                 panelListener.update(xButton);
-                
+
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
                 e.printStackTrace();
