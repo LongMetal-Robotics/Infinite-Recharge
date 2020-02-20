@@ -57,9 +57,9 @@ public class Robot extends TimedRobot {
 
     SendableChooser<Boolean> chooserQuinnDrive;
 
-    boolean lastQuinnDrive = false;
-    boolean lastForwardDrive = false;
-    boolean lastReverseDrive = false;
+    Listener quinnDriveListener;
+    Listener reverseListener;
+
     boolean endgameMode = false;
 
     NetworkTable limelightTable =
@@ -131,6 +131,42 @@ public class Robot extends TimedRobot {
         chooserQuinnDrive.setDefaultOption("Disabled", false);
         chooserQuinnDrive.addOption("Enabled", true);
         SmartDashboard.putData("Quinn Drive Chooser", chooserQuinnDrive);
+
+        quinnDriveListener =
+                new Listener(
+                        new Runnable() {
+
+                            @Override
+                            public void run() {
+                                input.setQuinnDrive(true);
+                            }
+                        },
+                        new Runnable() {
+
+                            @Override
+                            public void run() {
+                                input.setQuinnDrive(false);
+                            }
+                        },
+                        false);
+
+        reverseListener =
+                new Listener(
+                        new Runnable() {
+
+                            @Override
+                            public void run() {
+                                driveTrain.setReverseDrive(true);
+                            }
+                        },
+                        new Runnable() {
+
+                            @Override
+                            public void run() {
+                                driveTrain.setReverseDrive(false);
+                            }
+                        },
+                        false);
     }
 
     /**
@@ -145,32 +181,16 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putData("Drive Train", driveTrain.driveTrain);
         SmartDashboard.putBoolean("Quinn Drive", input.isQuinnDrive());
-        boolean quinnDrive = (Boolean) chooserQuinnDrive.getSelected();
-        if (quinnDrive != lastQuinnDrive) {
-            input.setQuinnDrive(quinnDrive);
-        }
-        lastQuinnDrive = quinnDrive;
+        quinnDriveListener.update(chooserQuinnDrive.getSelected());
 
         // Reverse Drive mode
 
         boolean forwardDrive = input.forwardStick.getRawButtonPressed(Constants.kFORWARD_BUTTON);
         boolean reverseDrive = input.forwardStick.getRawButton(Constants.kREVERSE_BUTTON);
 
-        if (forwardDrive
-                && forwardDrive != lastForwardDrive
-                && !reverseDrive) { // If it is pressed and it changed and both aren't pressed
-            // Set forward drive
-            driveTrain.setReverseDrive(false);
+        if (forwardDrive ^ reverseDrive) { // XOR: a or b but not both
+            reverseListener.update(reverseDrive);
         }
-        lastForwardDrive = forwardDrive;
-
-        if (reverseDrive
-                && reverseDrive != lastReverseDrive
-                && !forwardDrive) { // If it is pressed and it changed and both aren't pressed
-            // Set reverse drive
-            driveTrain.setReverseDrive(true);
-        }
-        lastReverseDrive = reverseDrive;
 
         SmartDashboard.putBoolean("Reverse Drive", driveTrain.getReverseDrive());
 
