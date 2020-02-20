@@ -50,10 +50,10 @@ public class Robot extends TimedRobot {
     Climb climb;
     ControlPanel controlPanel;
     SubsystemManager manager;
-    ShootFormula formula;
     DigitalInput intakeLimit;
     Timer timer;
     Listener intakeListener;
+    ShootFormula formula;
 
     SendableChooser<Boolean> chooserQuinnDrive;
 
@@ -108,6 +108,7 @@ public class Robot extends TimedRobot {
         climb = new Climb(true);
         controlPanel = new ControlPanel(true);
         manager = new SubsystemManager();
+        formula = new ShootFormula();
         intakeLimit = new DigitalInput(0);
         timer = new Timer();
         intakeListener =
@@ -254,34 +255,27 @@ public class Robot extends TimedRobot {
         String currentSubsystem = "Subsystem";
 
         if (!endgameMode) {
-            // Aims and sets shooter to limelight speed
-            if (bButton) {
-                // double shootPercent = formula.shooterSpeed(1 /*will be limelight distance*/);
-                /*try {
-                    shooter.testShooter(shootPercent);
-                } catch (SubsystemException shooterE) {
-                    shooter.testShooter()
-                }*/
-
-            }
 
             currentSubsystem = "Shooter";
             try {
-                // Sets shooter to a speed
-                if (lTrigger > Constants.kINPUT_DEADBAND) { // Left trigger has passed deadband
-                    shooter.testShooter(lTrigger);
+                if (bButton) {
+                    shooter.runShooter(formula.shooterSpeed(5)); // Will set shooter based on limelight distance
+                    // Add automatic limelight alignment
                 }
-
+                
                 // Stops shooter
                 if (lButton) {
-                    shooter.testShooter(0);
+                    shooter.stop();
                 }
 
-                // Temporary button mapping... will be automatically
-                if (xButton) {
-                    shooter.setSingulatorSpeed(1);
+                // Singulator directly controlled by left trigger
+                // Hopper is either on or off
+                if (lTrigger > Constants.kINPUT_DEADBAND) {
+                    shooter.setSingulatorSpeed(lTrigger);
+                    intake.setHopperSpeed(1);
                 } else {
                     shooter.setSingulatorSpeed(0);
+                    intake.setHopperSpeed(0);
                 }
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");

@@ -37,8 +37,18 @@ public class Shooter extends Subsystem {
         System.out.println(drumEncoder.getVelocity());
     }
 
-    public void setSingulatorSpeed(int i) throws SubsystemException {
+    public void runShooter(double d) throws SubsystemException {
         check();
-        mSingulator.set(ControlMode.PercentOutput, Constants.kSINGULATOR_SPEED * i);
+        drum.set(d);
+    }
+
+    public void stop() throws SubsystemException {
+        check();
+        drum.set(0);
+    }
+
+    public void setSingulatorSpeed(double d) throws SubsystemException {
+        check();
+        mSingulator.set(ControlMode.PercentOutput, d);
     }
 }
