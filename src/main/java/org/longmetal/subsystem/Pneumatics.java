@@ -1,5 +1,7 @@
 package org.longmetal.subsystem;
 
+import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
+
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -70,4 +72,3 @@ public class Pneumatics extends Subsystem {
     }
 
 }
-     
