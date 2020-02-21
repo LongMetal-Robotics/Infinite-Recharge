@@ -6,7 +6,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.util.Color;
 import org.longmetal.Constants;
 import org.longmetal.exception.SubsystemException;
@@ -14,7 +13,6 @@ import org.longmetal.exception.SubsystemException;
 public class ControlPanel extends Subsystem {
     // instance variables
     private TalonSRX spinner; // spinner motor
-    private DoubleSolenoid rotator; // to rotate the spinner up and down?
     private ColorSensorV3 csensor; // color sensor object
 
     private static PanelColor lastColor = PanelColor.Unknown;
@@ -22,7 +20,6 @@ public class ControlPanel extends Subsystem {
     private static int setRotations = -1;
     private static int accumulated = -1;
     private ColorMatch m_colorMatcher;
-    private boolean armUp = false;
 
     public ControlPanel(boolean setEnabled) {
         super(setEnabled);
