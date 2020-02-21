@@ -24,7 +24,7 @@ public class Climb extends Subsystem {
         winch2.set(0);
         winch1.setOpenLoopRampRate(1);
         winch2.setOpenLoopRampRate(1);
-        
+
         super.init();
     }
 

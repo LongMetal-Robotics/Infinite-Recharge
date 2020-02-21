@@ -5,19 +5,16 @@ import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
-
 import org.longmetal.Constants;
 import org.longmetal.exception.SubsystemException;
 import org.longmetal.util.Console;
-
-import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
 public class Pneumatics extends Subsystem {
     // instance variables
     private DoubleSolenoid rotator; // to rotate the spinner up and down?
     private Solenoid drumSpin1;
     private Solenoid drumSpin2;
-    
+
     private Compressor compressor;
     private boolean armUp = false;
 
@@ -31,7 +28,7 @@ public class Pneumatics extends Subsystem {
     public void init() {
         compressor = new Compressor(Constants.kP_PCM);
         compressor.start();
-        
+
         // Solenoid to flip up arm
         rotator = new DoubleSolenoid(Constants.kC_PANEL1, Constants.kC_PANEL2);
 
@@ -70,5 +67,4 @@ public class Pneumatics extends Subsystem {
         setLeftRatchet(on);
         setRightRatchet(on);
     }
-
 }

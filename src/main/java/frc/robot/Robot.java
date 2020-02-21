@@ -427,7 +427,7 @@ public class Robot extends TimedRobot {
                     if (lStickY > Constants.kINPUT_DEADBAND) {
                         climb.setLeftWinchSpeed(lStickY);
                     }
-                    
+
                     if (lStickY < -Constants.kINPUT_DEADBAND) {
                         pneumatics.setLeftRatchet(true);
                         climb.setLeftWinchSpeed(-0.05);
