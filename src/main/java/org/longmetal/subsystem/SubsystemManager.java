@@ -203,7 +203,7 @@ public class SubsystemManager {
             case CLIMB:
                 Climb.staticSetEnabled(enabled);
                 break;
-                
+
             case PANEL:
                 ControlPanel.staticSetEnabled(enabled);
                 break;
