@@ -6,6 +6,7 @@ import org.longmetal.util.Console;
 public class Subsystem {
     protected static boolean enabled = false;
     protected boolean initialized = false;
+    protected static boolean disabledErrorThrown = false;
 
     /**
      * Creates a Subsystem
@@ -46,6 +47,9 @@ public class Subsystem {
     }
 
     public static void staticSetEnabled(boolean isEnabled) {
+        if (isEnabled) {
+            disabledErrorThrown = false;
+        }
         enabled = isEnabled;
     }
 
@@ -54,11 +58,11 @@ public class Subsystem {
     }
 
     protected void check() throws SubsystemException {
-        // return;
         if (!initialized) {
             throw new SubsystemUninitializedException();
         }
-        if (!enabled) {
+        if (!enabled && !disabledErrorThrown) {
+            disabledErrorThrown = true;
             throw new SubsystemDisabledException();
         }
     }
