@@ -9,6 +9,7 @@ public class SubsystemManager {
     private SendableChooser<Runnable> shooterEnable;
     private SendableChooser<Runnable> intakeEnable;
     private SendableChooser<Runnable> climbEnable;
+    private SendableChooser<Runnable> panelEnable;
 
     public SubsystemManager() {
         Preferences preferences = Preferences.getInstance();
@@ -142,6 +143,42 @@ public class SubsystemManager {
         SmartDashboard.putBoolean(Constants.kCLIMB_KEY, climbEnableValue);
 
         setSubsystem(Subsystem.CLIMB, climbEnableValue);
+
+
+        // Control Panel
+        boolean panelEnableValue =
+                preferences.getBoolean(Constants.kPANEL_KEY, false) /* Control Panel enabled */;
+
+        Runnable enablePanel =
+                new Runnable() {
+
+                    @Override
+                    public void run() {
+                        SubsystemManager.setSubsystem(Subsystem.PANEL, true);
+                    }
+                };
+
+        Runnable disablePanel =
+                new Runnable() {
+
+                    @Override
+                    public void run() {
+                        SubsystemManager.setSubsystem(Subsystem.PANEL, false);
+                    }
+                };
+
+        panelEnable = new SendableChooser<>();
+        if (panelEnableValue) {
+            panelEnable.setDefaultOption(Constants.ENABLED, enablePanel);
+            panelEnable.addOption(Constants.DISABLED, disablePanel);
+        } else {
+            panelEnable.addOption(Constants.ENABLED, enablePanel);
+            panelEnable.setDefaultOption(Constants.DISABLED, disablePanel);
+        }
+        SmartDashboard.putData(Constants.PANEL_KEY, panelEnable);
+        SmartDashboard.putBoolean(Constants.kPANEL_KEY, panelEnableValue);
+
+        setSubsystem(Subsystem.PANEL, panelEnableValue);
     }
 
     public void checkSendables() {
@@ -166,12 +203,16 @@ public class SubsystemManager {
             case CLIMB:
                 Climb.staticSetEnabled(enabled);
                 break;
+            case PANEL:
+                ControlPanel.staticSetEnabled(enabled);
+                break;
         }
     }
 
     public enum Subsystem {
         SHOOTER,
         INTAKE,
-        CLIMB
+        CLIMB,
+        PANEL
     }
 }

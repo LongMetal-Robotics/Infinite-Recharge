@@ -77,14 +77,10 @@ public class Constants {
     // Control Panel
     public static final double kCONTROL_PANEL_SPEED = 0.4; // Control Panel Speed
 
-    // Intake
-    public static final String kINTAKE_STATE_KEY = "Intake Enabled"; // SmartDashboard value key
-    public static final String kINTAKE_ENABLER_KEY = "Enable Intake";
-
     // Preferences
     public static final String kSHOOTER_KEY = "SHOOTER";
     public static final String kINTAKE_KEY = "INTAKE";
-    public static final String kCONTROL_PANEL_KEY = "CONTROL PANEL";
+    public static final String kPANEL_KEY = "PANEL";
     public static final String kCLIMB_KEY = "CLIMB";
 
     // String literals for multiple reuses
@@ -92,8 +88,6 @@ public class Constants {
     public static final String kDISABLED = "Disabled";
 
     // Control Panel
-    public static final String kCONTROL_PANEL_STATE_KEY = "CP Enabled";
-    public static final String kCONTROL_PANEL_ENABLER_KEY = "Enable CP";
     public static final double k_SPINRATE = 0.2;
 
     // Colors
@@ -109,6 +103,8 @@ public class Constants {
     public static final String INTAKE_STATE_KEY = "Intake Enabled";
     public static final String CLIMB_KEY = "Enable Climb";
     public static final String CLIMB_STATE_KEY = "Climb Enabled";
+    public static final String PANEL_STATE_KEY = "Panel Enabled";
+    public static final String PANEL_KEY = "Enable Panel";
 
     public static final String ENABLED = "Enabled";
     public static final String DISABLED = "Disabled";
