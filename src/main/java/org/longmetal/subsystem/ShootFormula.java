@@ -36,7 +36,8 @@ public class ShootFormula {
     public double shooterPercent(double distance) {
         double motorRPM = shooterSpeed(distance);
 
-        return motorRPM / 4000; // will need to be changed to account for actual limelight conversion
+        return motorRPM
+                / 4000; // will need to be changed to account for actual limelight conversion
         // or completely deleted when we use PID controls instead of PercentMode
     }
 }
