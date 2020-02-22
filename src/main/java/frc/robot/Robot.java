@@ -194,6 +194,12 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putBoolean("Reverse Drive", driveTrain.getReverseDrive());
 
+        // Endgame mode
+        SmartDashboard.putBoolean("Endgame Mode", endgameMode);
+
+        // Shooter RPM
+        SmartDashboard.putNumber("ShooterRPM", shooter.getSpeed());
+
         tX = tx.getDouble(0.0);
         tY = ty.getDouble(0.0);
 
