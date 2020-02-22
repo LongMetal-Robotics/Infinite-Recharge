@@ -41,7 +41,15 @@ public class Intake extends Subsystem {
     public void runHopper(double d) throws SubsystemException {
         check();
         mHopper.set(ControlMode.PercentOutput, -d);
-        Timer.delay(3);
+        double oldTime = timer.get();
+        double newTime = 0;
+        boolean moveOn = false;
+        while (!moveOn) {
+            newTime = timer.get();
+            if (newTime - oldTime >= 3) {
+                moveOn = true;
+            }
+        }
         mHopper.set(ControlMode.PercentOutput, 0);
     }
 }
