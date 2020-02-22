@@ -29,6 +29,7 @@ import org.longmetal.subsystem.Climb;
 import org.longmetal.subsystem.ControlPanel;
 import org.longmetal.subsystem.DriveTrain;
 import org.longmetal.subsystem.Intake;
+import org.longmetal.subsystem.Pneumatics;
 import org.longmetal.subsystem.Shooter;
 import org.longmetal.subsystem.SubsystemManager;
 import org.longmetal.util.Console;
@@ -53,7 +54,9 @@ public class Robot extends TimedRobot {
     DigitalInput intakeLimit;
     Timer timer;
     Listener intakeListener;
+    Listener panelListener;
     ShootFormula formula;
+    Pneumatics pneumatics;
 
     SendableChooser<Boolean> chooserQuinnDrive;
 
@@ -64,6 +67,7 @@ public class Robot extends TimedRobot {
     boolean shooterCheck = false;
     double shootLow = 0;
     double shootHigh = 0;
+    boolean readyClimb = false;
 
     NetworkTable limelightTable =
             NetworkTableInstance.getDefault()
@@ -114,6 +118,7 @@ public class Robot extends TimedRobot {
         formula = new ShootFormula();
         intakeLimit = new DigitalInput(0);
         timer = new Timer();
+        pneumatics = new Pneumatics(true);
         intakeListener =
                 new Listener(
                         null,
@@ -127,6 +132,27 @@ public class Robot extends TimedRobot {
                             }
                         },
                         true);
+        panelListener =
+                new Listener(
+                        new Runnable() {
+                            public void run() {
+                                try {
+                                    pneumatics.flipArmUp();
+                                } catch (SubsystemException e) {
+                                    Console.log(e.getMessage());
+                                }
+                            }
+                        },
+                        new Runnable() {
+                            public void run() {
+                                try {
+                                    pneumatics.flipArmDown();
+                                } catch (SubsystemException e) {
+                                    Console.log(e.getMessage());
+                                }
+                            }
+                        },
+                        false);
 
         timer.start();
 
@@ -338,7 +364,7 @@ public class Robot extends TimedRobot {
                 if (rTrigger > Constants.kINPUT_DEADBAND) {
                     intake.setIntakeSpeed(rTrigger);
                 } else if (rButton) { // Reverse intake
-                    intake.setIntakeSpeed(-0.2);
+                    intake.setIntakeSpeed(-0.3);
                 } else { // Stop intake
                     intake.setIntakeSpeed(0);
                 }
@@ -379,6 +405,10 @@ public class Robot extends TimedRobot {
                 } else {
                     controlPanel.stop();
                 }
+
+                // Temporary control for flipping arm up
+                panelListener.update(xButton);
+
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
                 e.printStackTrace();
@@ -400,18 +430,38 @@ public class Robot extends TimedRobot {
             try {
                 if (rButton) {
                     // Release climb upwards, disengage solenoids
+                    pneumatics.setRatchet(true);
+                    readyClimb = true;
                 }
 
-                // Left winch engage
-                if (lStickY > Constants.kINPUT_DEADBAND) {
-                    climb.setLeftWinchSpeed(lStickY);
-                }
+                if (readyClimb) {
 
-                // Right winch engage
-                if (rStickY > Constants.kINPUT_DEADBAND) {
-                    climb.setRightWinchSpeed(rStickY);
+                    // add safety to make sure that you don't have them go in opposite directions?
+
+                    // Left winch engage
+                    if (lStickY > Constants.kINPUT_DEADBAND) {
+                        climb.setLeftWinchSpeed(lStickY);
+                    }
+
+                    if (lStickY < -Constants.kINPUT_DEADBAND) {
+                        pneumatics.setLeftRatchet(true);
+                        climb.setLeftWinchSpeed(-0.05);
+                    } else {
+                        pneumatics.setLeftRatchet(false);
+                    }
+
+                    // Right winch engage
+                    if (rStickY > Constants.kINPUT_DEADBAND) {
+                        climb.setRightWinchSpeed(rStickY);
+                    }
+
+                    if (rStickY < -Constants.kINPUT_DEADBAND) {
+                        pneumatics.setRightRatchet(true);
+                        climb.setRightWinchSpeed(-0.05);
+                    } else {
+                        pneumatics.setRightRatchet(false);
+                    }
                 }
-                // Need to add solenoids engaging and disengaging
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
                 e.printStackTrace();
