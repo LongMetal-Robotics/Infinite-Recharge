@@ -144,7 +144,6 @@ public class SubsystemManager {
 
         setSubsystem(Subsystem.CLIMB, climbEnableValue);
 
-
         // Control Panel
         boolean panelEnableValue =
                 preferences.getBoolean(Constants.kPANEL_KEY, false) /* Control Panel enabled */;
