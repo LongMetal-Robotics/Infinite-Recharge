@@ -51,4 +51,8 @@ public class Shooter extends Subsystem {
         check();
         mSingulator.set(ControlMode.PercentOutput, d);
     }
+
+    public double getSpeed() {
+        return drumEncoder.getVelocity();
+    }
 }
