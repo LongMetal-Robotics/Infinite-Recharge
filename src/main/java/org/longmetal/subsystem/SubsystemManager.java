@@ -184,6 +184,7 @@ public class SubsystemManager {
         shooterEnable.getSelected().run();
         intakeEnable.getSelected().run();
         climbEnable.getSelected().run();
+        panelEnable.getSelected().run();
     }
 
     public static void setSubsystem(Subsystem subsystem, boolean enabled) {
@@ -202,6 +203,7 @@ public class SubsystemManager {
             case CLIMB:
                 Climb.staticSetEnabled(enabled);
                 break;
+
             case PANEL:
                 ControlPanel.staticSetEnabled(enabled);
                 break;

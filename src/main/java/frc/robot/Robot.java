@@ -61,6 +61,9 @@ public class Robot extends TimedRobot {
     Listener reverseListener;
 
     boolean endgameMode = false;
+    boolean shooterCheck = false;
+    double shootLow = 0;
+    double shootHigh = 0;
 
     NetworkTable limelightTable =
             NetworkTableInstance.getDefault()
@@ -200,6 +203,12 @@ public class Robot extends TimedRobot {
         // Shooter RPM
         SmartDashboard.putNumber("ShooterRPM", shooter.getSpeed());
 
+        // Shooter CorrectRPM
+        shootLow = formula.shooterSpeed(/*Limelight distance*/ 4) * 0.95;
+        shootHigh = formula.shooterSpeed(/* Limelight distance */ 4) * 1.05;
+        shooterCheck = (shooter.getSpeed() > shootLow && shooter.getSpeed() < shootHigh);
+        SmartDashboard.putBoolean("ShooterCheck", shooterCheck);
+
         tX = tx.getDouble(0.0);
         tY = ty.getDouble(0.0);
 
@@ -286,7 +295,7 @@ public class Robot extends TimedRobot {
             try {
                 if (bButton) {
                     // shooter.runShooter(
-                    //        formula.shooterSpeed(
+                    //        formula.shooterPercent(
                     //              5)); // Will set shooter based on limelight distance
                     // Add automatic limelight alignment
                     shooter.testShooter(0.2);
