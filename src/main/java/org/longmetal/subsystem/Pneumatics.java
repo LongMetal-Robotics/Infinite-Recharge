@@ -20,9 +20,9 @@ public class Pneumatics extends Subsystem {
 
     public Pneumatics(boolean setEnabled) {
         super(setEnabled);
-        if (setEnabled) {
-            init();
-        }
+        // if (setEnabled) {
+        //     init();
+        // }
     }
 
     public void init() {
