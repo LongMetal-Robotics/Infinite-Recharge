@@ -65,6 +65,9 @@ public class Robot extends TimedRobot {
 
     boolean endgameMode = false;
     boolean readyClimb = false;
+    boolean shooterCheck = false;
+    double shootLow = 0;
+    double shootHigh = 0;
 
     NetworkTable limelightTable =
             NetworkTableInstance.getDefault()
@@ -219,6 +222,18 @@ public class Robot extends TimedRobot {
         }
 
         SmartDashboard.putBoolean("Reverse Drive", driveTrain.getReverseDrive());
+
+        // Endgame mode
+        SmartDashboard.putBoolean("Endgame Mode", endgameMode);
+
+        // Shooter RPM
+        SmartDashboard.putNumber("ShooterRPM", shooter.getSpeed());
+
+        // Shooter CorrectRPM
+        shootLow = formula.shooterSpeed(/*Limelight distance*/ 4) * 0.95;
+        shootHigh = formula.shooterSpeed(/* Limelight distance */ 4) * 1.05;
+        shooterCheck = (shooter.getSpeed() > shootLow && shooter.getSpeed() < shootHigh);
+        SmartDashboard.putBoolean("ShooterCheck", shooterCheck);
 
         tX = tx.getDouble(0.0);
         tY = ty.getDouble(0.0);
@@ -405,6 +420,10 @@ public class Robot extends TimedRobot {
                     readyClimb = true;
                     climb.setRightWinchSpeed(-0.2);
                     climb.setLeftWinchSpeed(0.2);
+                }
+
+                if (startButton) {
+                    endgameMode = false;
                 }
 
                 if (readyClimb) {

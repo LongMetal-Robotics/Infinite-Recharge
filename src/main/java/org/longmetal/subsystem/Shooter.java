@@ -15,10 +15,10 @@ public class Shooter extends Subsystem {
 
     public Shooter(boolean setEnabled) {
         super(setEnabled);
-        if (setEnabled) { // I'm dumb and they way I wrote the inheritance, it wouldn't work (it
-            // wouldn't call the right init).
-            init();
-        }
+        // if (setEnabled) { // I'm dumb and they way I wrote the inheritance, it wouldn't work (it
+        //     // wouldn't call the right init).
+        //     init();
+        // }
     }
 
     public void init() {
@@ -50,5 +50,9 @@ public class Shooter extends Subsystem {
     public void setSingulatorSpeed(double d) throws SubsystemException {
         check();
         mSingulator.set(ControlMode.PercentOutput, d);
+    }
+
+    public double getSpeed() {
+        return drumEncoder.getVelocity();
     }
 }
