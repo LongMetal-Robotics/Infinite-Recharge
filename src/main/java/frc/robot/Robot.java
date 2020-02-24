@@ -330,6 +330,8 @@ public class Robot extends TimedRobot {
 
                 if (bButton) {
                     shooter.setSingulatorSpeed(0.8);
+                } else {
+                    shooter.setSingulatorSpeed(0);
                 }
 
             } catch (SubsystemException e) {
@@ -424,6 +426,7 @@ public class Robot extends TimedRobot {
 
                 if (startButton) {
                     endgameMode = false;
+                    climb.setWinchSpeed(0);
                 }
 
                 if (readyClimb) {
