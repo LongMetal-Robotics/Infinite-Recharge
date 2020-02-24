@@ -420,6 +420,10 @@ public class Robot extends TimedRobot {
                     readyClimb = true;
                 }
 
+                if (startButton) {
+                    endgameMode = false;
+                }
+
                 if (readyClimb) {
 
                     // add safety to make sure that you don't have them go in opposite directions?
