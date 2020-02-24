@@ -11,7 +11,6 @@ public class Climb extends Subsystem {
 
     public Climb(boolean isEnabled) {
         super(isEnabled);
-        
     }
 
     @Override
