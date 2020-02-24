@@ -403,6 +403,8 @@ public class Robot extends TimedRobot {
                     // Release climb upwards, disengage solenoids
                     pneumatics.setRatchet(true);
                     readyClimb = true;
+                    climb.setRightWinchSpeed(-0.2);
+                    climb.setLeftWinchSpeed(0.2);
                 }
 
                 if (readyClimb) {
@@ -411,12 +413,12 @@ public class Robot extends TimedRobot {
 
                     // Left winch engage
                     if (lStickY > Constants.kINPUT_DEADBAND) {
-                        climb.setLeftWinchSpeed(lStickY);
+                        climb.setLeftWinchSpeed(-lStickY);
                     }
 
                     if (lStickY < -Constants.kINPUT_DEADBAND) {
                         pneumatics.setLeftRatchet(true);
-                        climb.setLeftWinchSpeed(-0.05);
+                        climb.setLeftWinchSpeed(0.05);
                     } else {
                         pneumatics.setLeftRatchet(false);
                     }
