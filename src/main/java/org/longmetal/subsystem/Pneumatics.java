@@ -20,9 +20,9 @@ public class Pneumatics extends Subsystem {
 
     public Pneumatics(boolean setEnabled) {
         super(setEnabled);
-        if (setEnabled) {
-            init();
-        }
+        // if (setEnabled) {
+        //     init();
+        // }
     }
 
     public void init() {
@@ -36,6 +36,8 @@ public class Pneumatics extends Subsystem {
         drumSpin2 = new Solenoid(2);
         drumSpin1.set(false);
         drumSpin2.set(false);
+
+        super.init();
     }
 
     public void flipArmUp() throws SubsystemException {
