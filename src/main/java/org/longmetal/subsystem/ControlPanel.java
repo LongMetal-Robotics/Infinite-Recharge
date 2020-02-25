@@ -112,9 +112,7 @@ public class ControlPanel extends Subsystem {
         else if (color.equals(PanelColor.Yellow))
         {
             return PanelColor.Red;
-        }
-        else
-        {
+        } else {
             return PanelColor.Unknown;
         }
     }
