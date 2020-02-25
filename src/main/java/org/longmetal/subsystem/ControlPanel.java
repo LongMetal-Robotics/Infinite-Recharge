@@ -94,23 +94,15 @@ public class ControlPanel extends Subsystem {
             return true;
         }
     }
-    //takes color FMS is going to be looking at and returns what sensor is looking at
-    public PanelColor rotatedColor(PanelColor color) throws SubsystemException
-    {
-        if (color.equals(PanelColor.Red))
-        {
+    // takes color FMS is going to be looking at and returns what sensor is looking at
+    public PanelColor rotatedColor(PanelColor color) throws SubsystemException {
+        if (color.equals(PanelColor.Red)) {
             return PanelColor.Green;
-        }
-        else if (color.equals(PanelColor.Green))
-        {
+        } else if (color.equals(PanelColor.Green)) {
             return PanelColor.Blue;
-        }
-        else if (color.equals(PanelColor.Blue))
-        {
+        } else if (color.equals(PanelColor.Blue)) {
             return PanelColor.Yellow;
-        }
-        else if (color.equals(PanelColor.Yellow))
-        {
+        } else if (color.equals(PanelColor.Yellow)) {
             return PanelColor.Red;
         } else {
             return PanelColor.Unknown;
