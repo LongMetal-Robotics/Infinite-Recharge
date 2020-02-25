@@ -95,21 +95,21 @@ public class ControlPanel extends Subsystem {
         }
     }
     //takes color FMS is going to be looking at and returns what sensor is looking at
-    public PanelColor rotatedColor(PanelColor color)
+    public PanelColor rotatedColor(PanelColor color) throws SubsystemException
     {
-        if (color == PanelColor.Red)
+        if (color.equals(PanelColor.Red))
         {
             return PanelColor.Green;
         }
-        else if (color == PanelColor.Green)
+        else if (color.equals(PanelColor.Green))
         {
             return PanelColor.Blue;
         }
-        else if (color == PanelColor.Blue)
+        else if (color.equals(PanelColor.Blue))
         {
             return PanelColor.Yellow;
         }
-        else if (color == PanelColor.Yellow)
+        else if (color.equals(PanelColor.Yellow))
         {
             return PanelColor.Red;
         }
