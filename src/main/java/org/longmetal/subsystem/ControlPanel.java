@@ -94,10 +94,33 @@ public class ControlPanel extends Subsystem {
             return true;
         }
     }
-
+    //takes FMS color and returns sensor color
+    public PanelColor rotatedColor(PanelColor color)
+    {
+        if (color == Red)
+        {
+            return Green;
+        }
+        else if (color == Green)
+        {
+            return Blue;
+        }
+        else if (color == Blue)
+        {
+            return Yellow;
+        }
+        else if (color == Yellow)
+        {
+            return Red;
+        }
+        else
+        {
+            return Unknown;
+        }
+    }
     // spins with a new value
     public boolean rotatedSpinTo(PanelColor color) throws SubsystemException {
-        return spinTo(color);
+        return spinTo(rotatedColor(color));
     }
 
     // sets values for rotation
