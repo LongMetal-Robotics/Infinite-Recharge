@@ -554,7 +554,11 @@ public class Robot extends TimedRobot {
         }
     }
 
+
+
+
     /** This function is called periodically during test mode. */
+    // For now, testPeriodic() will allow us to test all the controls directly, bypassing our automated features
     @Override
     public void testPeriodic() {
         // Limelight line-up while 1 button is held
@@ -607,158 +611,138 @@ public class Robot extends TimedRobot {
 
         String currentSubsystem = "Subsystem";
 
-        if (!endgameMode) {
 
-            currentSubsystem = "Shooter";
-            try {
-                if (lTrigger > Constants.kINPUT_DEADBAND) {
-                    shooter.runShooter(lTrigger);
-                }
-
-                // Stops shooter
-                if (lButton) {
-                    shooter.stop();
-                }
-
-                if (bButton) {
-                    shooter.setSingulatorSpeed(0.8);
-                } else {
-                    shooter.setSingulatorSpeed(0);
-                }
-
-            } catch (SubsystemException e) {
-                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
-                e.printStackTrace();
-
-                boolean isUninitialized =
-                        e.getClass().isInstance(SubsystemUninitializedException.class);
-                if (Shooter.getEnabled() && isUninitialized) {
-
-                    shooter.init();
-                }
+        currentSubsystem = "Shooter";
+        try {
+            if (lTrigger > Constants.kINPUT_DEADBAND) {
+                shooter.runShooter(lTrigger);
             }
 
-            currentSubsystem = "Intake";
-            try {
-                // Sets intake to a speed
-                if (rTrigger > Constants.kINPUT_DEADBAND) {
-                    intake.setIntakeSpeed(rTrigger);
-                } else if (rButton) { // Reverse intake
-                    intake.setIntakeSpeed(-0.3);
-                } else { // Stop intake
-                    intake.setIntakeSpeed(0);
-                }
-
-                // Temporary button mapping... will be automatic
-                if (aButton) {
-                    intake.setHopperSpeed(0.8);
-                } else {
-                    intake.setHopperSpeed(0);
-                }
-
-                // if (bButton && lTrigger > Constants.kINPUT_DEADBAND) {
-                //     intake.setHopperSpeed(0.8);
-                // } else {
-                //     intake.setHopperSpeed(0);
-                // }
-
-                // intakeListener.update(intakeLimit.get());
-
-            } catch (SubsystemException e) {
-                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
-                e.printStackTrace();
-
-                boolean isUninitialized =
-                        e.getClass().isInstance(SubsystemUninitializedException.class);
-                if (currentSubsystem.equals("Intake") && Intake.getEnabled() && isUninitialized) {
-
-                    intake.init();
-                }
+            // Stops shooter
+            if (lButton) {
+                shooter.stop();
             }
 
-            currentSubsystem = "Control Panel";
-            try {
-                // Flip up control panel and engage based on FMS values
-                if (yButton) {
-                    // For now, this button will just spin the motor for testing purposes
-                    controlPanel.spin();
-                } else {
-                    controlPanel.stop();
-                }
-
-                // Temporary control for flipping arm up
-                panelListener.update(xButton);
-
-            } catch (SubsystemException e) {
-                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
-                e.printStackTrace();
-
-                boolean isUninitialized =
-                        e.getClass().isInstance(SubsystemUninitializedException.class);
-                if (ControlPanel.getEnabled() && isUninitialized) {
-
-                    controlPanel.init();
-                }
+            if (bButton) {
+                shooter.setSingulatorSpeed(0.8);
+            } else {
+                shooter.setSingulatorSpeed(0);
             }
 
-            // Puts the robot into endgame mode, disabling all manipulator subsystems
+        } catch (SubsystemException e) {
+            Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
+            e.printStackTrace();
+
+            boolean isUninitialized =
+                    e.getClass().isInstance(SubsystemUninitializedException.class);
+            if (Shooter.getEnabled() && isUninitialized) {
+
+                shooter.init();
+            }
+        }
+
+
+
+        currentSubsystem = "Intake";
+        try {
+            // Sets intake to a speed
+            if (rTrigger > Constants.kINPUT_DEADBAND) {
+                intake.setIntakeSpeed(rTrigger);
+            } else if (rButton) { // Reverse intake
+                intake.setIntakeSpeed(-0.3);
+            } else { // Stop intake
+                intake.setIntakeSpeed(0);
+            }
+
+            if (aButton) {
+                intake.setHopperSpeed(0.8);
+            } else {
+                intake.setHopperSpeed(0);
+            }
+
+        } catch (SubsystemException e) {
+            Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
+            e.printStackTrace();
+
+            boolean isUninitialized =
+                    e.getClass().isInstance(SubsystemUninitializedException.class);
+            if (currentSubsystem.equals("Intake") && Intake.getEnabled() && isUninitialized) {
+
+                intake.init();
+            }
+        }
+
+
+
+        currentSubsystem = "Control Panel";
+        try {
+            // Flip up control panel and engage based on FMS values
+            if (yButton) {
+                controlPanel.spin();
+            } else {
+                controlPanel.stop();
+            }
+
+            // Temporary control for flipping arm up
+            panelListener.update(xButton);
+
+        } catch (SubsystemException e) {
+            Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
+            e.printStackTrace();
+
+            boolean isUninitialized =
+                    e.getClass().isInstance(SubsystemUninitializedException.class);
+            if (ControlPanel.getEnabled() && isUninitialized) {
+
+                controlPanel.init();
+            }
+        }
+
+
+
+        currentSubsystem = "Climb";
+        try {
+
             if (startButton) {
-                endgameMode = true;
+                climb.setWinchSpeed(0);
+                pneumatics.setRatchet(true);
             }
-        } else {
-            currentSubsystem = "Climb";
-            try {
-                if (rButton) {
-                    // Release climb upwards, disengage solenoids
-                    pneumatics.setRatchet(true);
-                    readyClimb = true;
-                    climb.setRightWinchSpeed(-0.2);
-                    climb.setLeftWinchSpeed(0.2);
-                }
 
-                if (startButton) {
-                    endgameMode = false;
-                    climb.setWinchSpeed(0);
-                }
+            // add safety to make sure that you don't have them go in opposite directions?
 
-                if (readyClimb) {
+            // Left winch engage
+            if (lStickY > Constants.kINPUT_DEADBAND) {
+                climb.setLeftWinchSpeed(-lStickY);
+            }
 
-                    // add safety to make sure that you don't have them go in opposite directions?
+            if (lStickY < -Constants.kINPUT_DEADBAND) {
+                pneumatics.setLeftRatchet(true);
+                climb.setLeftWinchSpeed(0.05);
+            } else {
+                pneumatics.setLeftRatchet(false);
+            }
 
-                    // Left winch engage
-                    if (lStickY > Constants.kINPUT_DEADBAND) {
-                        climb.setLeftWinchSpeed(-lStickY);
-                    }
+            // Right winch engage
+            if (rStickY > Constants.kINPUT_DEADBAND) {
+                climb.setRightWinchSpeed(rStickY);
+            }
 
-                    if (lStickY < -Constants.kINPUT_DEADBAND) {
-                        pneumatics.setLeftRatchet(true);
-                        climb.setLeftWinchSpeed(0.05);
-                    } else {
-                        pneumatics.setLeftRatchet(false);
-                    }
+            if (rStickY < -Constants.kINPUT_DEADBAND) {
+                pneumatics.setRightRatchet(true);
+                climb.setRightWinchSpeed(-0.05);
+            } else {
+                pneumatics.setRightRatchet(false);
+            }
 
-                    // Right winch engage
-                    if (rStickY > Constants.kINPUT_DEADBAND) {
-                        climb.setRightWinchSpeed(rStickY);
-                    }
+        } catch (SubsystemException e) {
+            Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
+            e.printStackTrace();
 
-                    if (rStickY < -Constants.kINPUT_DEADBAND) {
-                        pneumatics.setRightRatchet(true);
-                        climb.setRightWinchSpeed(-0.05);
-                    } else {
-                        pneumatics.setRightRatchet(false);
-                    }
-                }
-            } catch (SubsystemException e) {
-                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
-                e.printStackTrace();
+            boolean isUninitialized =
+                    e.getClass().isInstance(SubsystemUninitializedException.class);
+            if (Climb.getEnabled() && isUninitialized) {
 
-                boolean isUninitialized =
-                        e.getClass().isInstance(SubsystemUninitializedException.class);
-                if (Climb.getEnabled() && isUninitialized) {
-
-                    climb.init();
-                }
+                climb.init();
             }
         }
     }
