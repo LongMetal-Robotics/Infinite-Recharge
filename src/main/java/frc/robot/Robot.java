@@ -483,5 +483,210 @@ public class Robot extends TimedRobot {
 
     /** This function is called periodically during test mode. */
     @Override
-    public void testPeriodic() {}
+    public void testPeriodic() {
+        // Limelight line-up while 1 button is held
+        if (input.forwardStick.getRawButton(1)) {
+            limelightTable.getEntry("ledMode").setDouble(3.0);
+            limelightTable.getEntry("camMode").setDouble(0.0);
+            driveTrain.curveRaw(0, (tX / 30) / 2, true);
+        } else {
+            limelightTable.getEntry("ledMode").setDouble(0.0);
+            limelightTable.getEntry("camMode").setDouble(3.0);
+            driveTrain.curve(
+                    input.forwardStick.getY(),
+                    input.forwardStick.getThrottle(),
+                    input.turnStick.getTwist(),
+                    input.turnStick.getThrottle());
+        }
+
+        // Left Gamepad trigger, currently used for shooter
+        double lTrigger = input.gamepad.getAxis(Axis.LT);
+
+        // Right Gamepad trigger, currently used for intake
+        double rTrigger = input.gamepad.getAxis(Axis.RT);
+
+        // Left stick Y axis, left climb up/down
+        double lStickY = input.gamepad.getAxis(Axis.LS_Y);
+
+        // Right stick Y axis, right climb up/down
+        double rStickY = input.gamepad.getAxis(Axis.RS_Y);
+
+        // LB button, used to stop shooter
+        boolean lButton = input.gamepad.getButton(Button.LB);
+
+        // RB button, used to run reverse intake and release climb [only in climb mode]
+        boolean rButton = input.gamepad.getButton(Button.RB);
+
+        // X button, not currently used
+        boolean xButton = input.gamepad.getButton(Button.X);
+
+        // Y button, enables Control Panel Mode
+        boolean yButton = input.gamepad.getButton(Button.Y);
+
+        // A button, not currently used
+        boolean aButton = input.gamepad.getButton(Button.A);
+
+        // B button, currently prompts shooter to aim and set speed
+        boolean bButton = input.gamepad.getButton(Button.B);
+
+        // Start button, engages Endgame Mode
+        boolean startButton = input.gamepad.getButton(Button.START);
+
+        String currentSubsystem = "Subsystem";
+
+        if (!endgameMode) {
+
+            currentSubsystem = "Shooter";
+            try {
+                if (lTrigger > Constants.kINPUT_DEADBAND) {
+                    shooter.runShooter(lTrigger);
+                }
+
+                // Stops shooter
+                if (lButton) {
+                    shooter.stop();
+                }
+
+                if (bButton) {
+                    shooter.setSingulatorSpeed(0.8);
+                } else {
+                    shooter.setSingulatorSpeed(0);
+                }
+
+            } catch (SubsystemException e) {
+                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
+                e.printStackTrace();
+
+                boolean isUninitialized =
+                        e.getClass().isInstance(SubsystemUninitializedException.class);
+                if (Shooter.getEnabled() && isUninitialized) {
+
+                    shooter.init();
+                }
+            }
+
+            currentSubsystem = "Intake";
+            try {
+                // Sets intake to a speed
+                if (rTrigger > Constants.kINPUT_DEADBAND) {
+                    intake.setIntakeSpeed(rTrigger);
+                } else if (rButton) { // Reverse intake
+                    intake.setIntakeSpeed(-0.3);
+                } else { // Stop intake
+                    intake.setIntakeSpeed(0);
+                }
+
+                // Temporary button mapping... will be automatic
+                if (aButton) {
+                    intake.setHopperSpeed(0.8);
+                } else {
+                    intake.setHopperSpeed(0);
+                }
+
+                // if (bButton && lTrigger > Constants.kINPUT_DEADBAND) {
+                //     intake.setHopperSpeed(0.8);
+                // } else {
+                //     intake.setHopperSpeed(0);
+                // }
+
+                // intakeListener.update(intakeLimit.get());
+
+            } catch (SubsystemException e) {
+                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
+                e.printStackTrace();
+
+                boolean isUninitialized =
+                        e.getClass().isInstance(SubsystemUninitializedException.class);
+                if (currentSubsystem.equals("Intake") && Intake.getEnabled() && isUninitialized) {
+
+                    intake.init();
+                }
+            }
+
+            currentSubsystem = "Control Panel";
+            try {
+                // Flip up control panel and engage based on FMS values
+                if (yButton) {
+                    // For now, this button will just spin the motor for testing purposes
+                    controlPanel.spin();
+                } else {
+                    controlPanel.stop();
+                }
+
+                // Temporary control for flipping arm up
+                panelListener.update(xButton);
+
+            } catch (SubsystemException e) {
+                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
+                e.printStackTrace();
+
+                boolean isUninitialized =
+                        e.getClass().isInstance(SubsystemUninitializedException.class);
+                if (ControlPanel.getEnabled() && isUninitialized) {
+
+                    controlPanel.init();
+                }
+            }
+
+            // Puts the robot into endgame mode, disabling all manipulator subsystems
+            if (startButton) {
+                endgameMode = true;
+            }
+        } else {
+            currentSubsystem = "Climb";
+            try {
+                if (rButton) {
+                    // Release climb upwards, disengage solenoids
+                    pneumatics.setRatchet(true);
+                    readyClimb = true;
+                    climb.setRightWinchSpeed(-0.2);
+                    climb.setLeftWinchSpeed(0.2);
+                }
+
+                if (startButton) {
+                    endgameMode = false;
+                    climb.setWinchSpeed(0);
+                }
+
+                if (readyClimb) {
+
+                    // add safety to make sure that you don't have them go in opposite directions?
+
+                    // Left winch engage
+                    if (lStickY > Constants.kINPUT_DEADBAND) {
+                        climb.setLeftWinchSpeed(-lStickY);
+                    }
+
+                    if (lStickY < -Constants.kINPUT_DEADBAND) {
+                        pneumatics.setLeftRatchet(true);
+                        climb.setLeftWinchSpeed(0.05);
+                    } else {
+                        pneumatics.setLeftRatchet(false);
+                    }
+
+                    // Right winch engage
+                    if (rStickY > Constants.kINPUT_DEADBAND) {
+                        climb.setRightWinchSpeed(rStickY);
+                    }
+
+                    if (rStickY < -Constants.kINPUT_DEADBAND) {
+                        pneumatics.setRightRatchet(true);
+                        climb.setRightWinchSpeed(-0.05);
+                    } else {
+                        pneumatics.setRightRatchet(false);
+                    }
+                }
+            } catch (SubsystemException e) {
+                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
+                e.printStackTrace();
+
+                boolean isUninitialized =
+                        e.getClass().isInstance(SubsystemUninitializedException.class);
+                if (Climb.getEnabled() && isUninitialized) {
+
+                    climb.init();
+                }
+            }
+        }
+    }
 }
