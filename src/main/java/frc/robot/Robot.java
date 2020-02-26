@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import com.revrobotics.ControlType;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -18,9 +19,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.File;
 import java.util.Scanner;
-
-import com.revrobotics.ControlType;
-
 import org.longmetal.Constants;
 import org.longmetal.exception.SubsystemDisabledException;
 import org.longmetal.exception.SubsystemException;
@@ -387,12 +385,10 @@ public class Robot extends TimedRobot {
 
                     shooter.setShooterRPM(
                             formula.shooterSpeed(
-                                    Vision.getLimelightDistance(
-                                            tY, Vision.Target.POWER_PORT)));
+                                    Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT)));
                     shooterSetPoint =
                             formula.shooterSpeed(
-                                    Vision.getLimelightDistance(
-                                            tY, Vision.Target.POWER_PORT));
+                                    Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT));
 
                     // Singulator directly controlled by left trigger
                     // Hopper is either on or off
