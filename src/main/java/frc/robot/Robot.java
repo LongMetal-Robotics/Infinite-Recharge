@@ -402,7 +402,8 @@ public class Robot extends TimedRobot {
                         shooter.setSingulatorSpeed(0);
                         // intake.setHopperSpeed(0);
                     }
-                } else if (aButton && !shooterStop) { // Sets shooter to lower speed to place into lower port
+                } else if (aButton
+                        && !shooterStop) { // Sets shooter to lower speed to place into lower port
                     shooter.setShooterRPM(1500);
                     shooter.setSingulatorSpeed(0.8);
                     intake.setHopperSpeed(0.8);
