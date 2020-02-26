@@ -18,6 +18,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.File;
 import java.util.Scanner;
+
+import com.revrobotics.ControlType;
+
 import org.longmetal.Constants;
 import org.longmetal.exception.SubsystemDisabledException;
 import org.longmetal.exception.SubsystemException;
@@ -370,8 +373,6 @@ public class Robot extends TimedRobot {
 
         String currentSubsystem = "Subsystem";
 
-        // shooterSetPoint = lTrigger * shooter.maxRPM;
-
         if (!endgameMode) {
 
             currentSubsystem = "Shooter";
@@ -387,11 +388,11 @@ public class Robot extends TimedRobot {
                     shooter.setShooterRPM(
                             formula.shooterSpeed(
                                     Vision.getLimelightDistance(
-                                            1 /*angleY*/, Vision.Target.POWER_PORT)));
+                                            tY, Vision.Target.POWER_PORT)));
                     shooterSetPoint =
                             formula.shooterSpeed(
                                     Vision.getLimelightDistance(
-                                            1 /*angleY*/, Vision.Target.POWER_PORT));
+                                            tY, Vision.Target.POWER_PORT));
 
                     // Singulator directly controlled by left trigger
                     // Hopper is either on or off
@@ -554,6 +555,11 @@ public class Robot extends TimedRobot {
         }
     }
 
+    @Override
+    public void testInit() {
+        SmartDashboard.putNumber("Set RPM", 0);
+    }
+
     /** This function is called periodically during test mode. */
     @Override
     public void testPeriodic() {
@@ -706,6 +712,7 @@ public class Robot extends TimedRobot {
                 endgameMode = true;
             }
         } else {
+
             currentSubsystem = "Climb";
             try {
                 if (rButton) {
@@ -761,5 +768,8 @@ public class Robot extends TimedRobot {
                 }
             }
         }
+
+        double setPoint = SmartDashboard.getNumber("Set RPM", 0);
+        shooter.drumPID.setReference(setPoint, ControlType.kVelocity);
     }
 }
