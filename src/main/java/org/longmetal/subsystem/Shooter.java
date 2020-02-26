@@ -5,8 +5,8 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.ControlType;
 import org.longmetal.Constants;
 import org.longmetal.exception.SubsystemException;
 
@@ -16,8 +16,16 @@ public class Shooter extends Subsystem {
     public CANEncoder drumEncoder;
     private TalonSRX mSingulator; // this is the motor that has the mec wheels attached
 
-    public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM, minRPM,
-        acceptableDiff = 100;
+    public double kP,
+            kI,
+            kD,
+            kIz,
+            kFF,
+            kMaxOutput,
+            kMinOutput,
+            maxRPM,
+            minRPM,
+            acceptableDiff = 100;
 
     public Shooter(boolean setEnabled) {
         super(setEnabled);

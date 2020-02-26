@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.File;
 import java.util.Scanner;
-
 import org.longmetal.Constants;
 import org.longmetal.exception.SubsystemDisabledException;
 import org.longmetal.exception.SubsystemException;
@@ -199,7 +198,7 @@ public class Robot extends TimedRobot {
                         false);
 
         // Display PID Coefficients on SmartDashboard
-        
+
         SmartDashboard.putNumber("P Gain", shooter.kP);
         SmartDashboard.putNumber("I Gain", shooter.kI);
         SmartDashboard.putNumber("D Gain", shooter.kD);
@@ -264,14 +263,30 @@ public class Robot extends TimedRobot {
         double min = SmartDashboard.getNumber("Min Output", 0);
 
         // if PID coefficients on SmartDashboard have changed, write new values to controller
-        if((p != shooter.kP)) { shooter.drumPID.setP(p); shooter.kP = p; }
-        if((i != shooter.kI)) { shooter.drumPID.setI(i); shooter.kI = i; }
-        if((d != shooter.kD)) { shooter.drumPID.setD(d); shooter.kD = d; }
-        if((iz != shooter.kIz)) { shooter.drumPID.setIZone(iz); shooter.kIz = iz; }
-        if((ff != shooter.kFF)) { shooter.drumPID.setFF(ff); shooter.kFF = ff; }
-        if((max != shooter.kMaxOutput) || (min != shooter.kMinOutput)) { 
-            shooter.drumPID.setOutputRange(min, max); 
-            shooter.kMinOutput = min; shooter.kMaxOutput = max; 
+        if ((p != shooter.kP)) {
+            shooter.drumPID.setP(p);
+            shooter.kP = p;
+        }
+        if ((i != shooter.kI)) {
+            shooter.drumPID.setI(i);
+            shooter.kI = i;
+        }
+        if ((d != shooter.kD)) {
+            shooter.drumPID.setD(d);
+            shooter.kD = d;
+        }
+        if ((iz != shooter.kIz)) {
+            shooter.drumPID.setIZone(iz);
+            shooter.kIz = iz;
+        }
+        if ((ff != shooter.kFF)) {
+            shooter.drumPID.setFF(ff);
+            shooter.kFF = ff;
+        }
+        if ((max != shooter.kMaxOutput) || (min != shooter.kMinOutput)) {
+            shooter.drumPID.setOutputRange(min, max);
+            shooter.kMinOutput = min;
+            shooter.kMaxOutput = max;
         }
 
         SmartDashboard.putNumber("Set Point", shooterSetPoint);
@@ -360,7 +375,7 @@ public class Robot extends TimedRobot {
             currentSubsystem = "Shooter";
             try {
                 if (bButton) {
-                    
+
                     shooter.setShooterRPM(shooterSetPoint);
                     // if (RPMInRange) { // RPM Within Valid Range
 
