@@ -320,7 +320,6 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
 
-
         // Left Gamepad trigger, currently used for shooter
         double lTrigger = input.gamepad.getAxis(Axis.LT);
 
@@ -354,8 +353,6 @@ public class Robot extends TimedRobot {
         // Start button, engages Endgame Mode
         boolean startButton = input.gamepad.getButton(Button.START);
 
-
-
         // Limelight line-up while 1 button is held
         if (bButton) {
             limelightTable.getEntry("ledMode").setDouble(3.0);
@@ -371,8 +368,6 @@ public class Robot extends TimedRobot {
                     input.turnStick.getThrottle());
         }
 
-        
-
         String currentSubsystem = "Subsystem";
 
         // shooterSetPoint = lTrigger * shooter.maxRPM;
@@ -381,24 +376,31 @@ public class Robot extends TimedRobot {
 
             currentSubsystem = "Shooter";
             try {
-                // I'm not sure if this is the most efficient way to do this, but I will hopefully streamline it in the future
+                // I'm not sure if this is the most efficient way to do this, but I will hopefully
+                // streamline it in the future
                 if (bButton) {
                     shooterStop = false;
                 }
 
                 if (bButton && !shooterStop) {
 
-                    shooter.setShooterRPM(formula.shooterSpeed(Vision.getLimelightDistance(1/*angleY*/, Vision.Target.POWER_PORT)));
-                    shooterSetPoint = formula.shooterSpeed(Vision.getLimelightDistance(1/*angleY*/, Vision.Target.POWER_PORT));
+                    shooter.setShooterRPM(
+                            formula.shooterSpeed(
+                                    Vision.getLimelightDistance(
+                                            1 /*angleY*/, Vision.Target.POWER_PORT)));
+                    shooterSetPoint =
+                            formula.shooterSpeed(
+                                    Vision.getLimelightDistance(
+                                            1 /*angleY*/, Vision.Target.POWER_PORT));
 
                     // Singulator directly controlled by left trigger
                     // Hopper is either on or off
                     if (lTrigger > Constants.kINPUT_DEADBAND) {
                         shooter.setSingulatorSpeed(lTrigger);
-                        //intake.setHopperSpeed(1);
+                        // intake.setHopperSpeed(1);
                     } else {
                         shooter.setSingulatorSpeed(0);
-                        //intake.setHopperSpeed(0);
+                        // intake.setHopperSpeed(0);
                     }
                 } else if (!shooterStop) {
                     shooter.setShooterRPM(shooter.minRPM);
@@ -409,7 +411,7 @@ public class Robot extends TimedRobot {
                     shooterStop = true;
                     shooter.setShooterRPM(0);
                     shooter.setSingulatorSpeed(0);
-                    //intake.setHopperSpeed(0);
+                    // intake.setHopperSpeed(0);
                 }
 
             } catch (SubsystemException e) {
@@ -434,7 +436,6 @@ public class Robot extends TimedRobot {
                 } else { // Stop intake
                     intake.setIntakeSpeed(0);
                 }
-
 
                 if (bButton && lTrigger > Constants.kINPUT_DEADBAND) {
                     intake.setHopperSpeed(0.8);
