@@ -558,11 +558,9 @@ public class Robot extends TimedRobot {
         }
     }
 
-
-
-
     /** This function is called periodically during test mode. */
-    // For now, testPeriodic() will allow us to test all the controls directly, bypassing our automated features
+    // For now, testPeriodic() will allow us to test all the controls directly, bypassing our
+    // automated features
     @Override
     public void testPeriodic() {
         // Limelight line-up while 1 button is held
@@ -615,7 +613,6 @@ public class Robot extends TimedRobot {
 
         String currentSubsystem = "Subsystem";
 
-
         currentSubsystem = "Shooter";
         try {
             if (lTrigger > Constants.kINPUT_DEADBAND) {
@@ -644,8 +641,6 @@ public class Robot extends TimedRobot {
                 shooter.init();
             }
         }
-
-
 
         currentSubsystem = "Intake";
         try {
@@ -676,8 +671,6 @@ public class Robot extends TimedRobot {
             }
         }
 
-
-
         currentSubsystem = "Control Panel";
         try {
             // Flip up control panel and engage based on FMS values
@@ -701,8 +694,6 @@ public class Robot extends TimedRobot {
                 controlPanel.init();
             }
         }
-
-
 
         currentSubsystem = "Climb";
         try {
