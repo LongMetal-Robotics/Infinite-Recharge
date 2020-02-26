@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.File;
 import java.util.Scanner;
+
 import org.longmetal.Constants;
 import org.longmetal.exception.SubsystemDisabledException;
 import org.longmetal.exception.SubsystemException;
@@ -75,7 +76,7 @@ public class Robot extends TimedRobot {
     NetworkTableEntry tx = limelightTable.getEntry("tx"); // distances
     NetworkTableEntry ty = limelightTable.getEntry("ty"); // height or something
 
-    double tX, tY;
+    double tX, tY, shooterSetPoint;
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -196,6 +197,16 @@ public class Robot extends TimedRobot {
                             }
                         },
                         false);
+
+        // Display PID Coefficients on SmartDashboard
+        
+        SmartDashboard.putNumber("P Gain", shooter.kP);
+        SmartDashboard.putNumber("I Gain", shooter.kI);
+        SmartDashboard.putNumber("D Gain", shooter.kD);
+        SmartDashboard.putNumber("I Zone", shooter.kIz);
+        SmartDashboard.putNumber("Feed Forward", shooter.kFF);
+        SmartDashboard.putNumber("Max Output", shooter.kMaxOutput);
+        SmartDashboard.putNumber("Min Output", shooter.kMinOutput);
     }
 
     /**
@@ -232,8 +243,8 @@ public class Robot extends TimedRobot {
         // Shooter CorrectRPM
         shootLow = formula.shooterSpeed(/*Limelight distance*/ 4) * 0.95;
         shootHigh = formula.shooterSpeed(/* Limelight distance */ 4) * 1.05;
-        shooterCheck = (shooter.getSpeed() > shootLow && shooter.getSpeed() < shootHigh);
-        SmartDashboard.putBoolean("ShooterCheck", shooterCheck);
+        // shooterCheck = (shooter.getSpeed() > shootLow && shooter.getSpeed() < shootHigh);
+        // SmartDashboard.putBoolean("ShooterCheck", shooterCheck);
 
         tX = tx.getDouble(0.0);
         tY = ty.getDouble(0.0);
@@ -242,6 +253,33 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("LimelightY", tY);
 
         manager.checkSendables();
+
+        // read PID coefficients from SmartDashboard
+        double p = SmartDashboard.getNumber("P Gain", 0);
+        double i = SmartDashboard.getNumber("I Gain", 0);
+        double d = SmartDashboard.getNumber("D Gain", 0);
+        double iz = SmartDashboard.getNumber("I Zone", 0);
+        double ff = SmartDashboard.getNumber("Feed Forward", 0);
+        double max = SmartDashboard.getNumber("Max Output", 0);
+        double min = SmartDashboard.getNumber("Min Output", 0);
+
+        // if PID coefficients on SmartDashboard have changed, write new values to controller
+        if((p != shooter.kP)) { shooter.drumPID.setP(p); shooter.kP = p; }
+        if((i != shooter.kI)) { shooter.drumPID.setI(i); shooter.kI = i; }
+        if((d != shooter.kD)) { shooter.drumPID.setD(d); shooter.kD = d; }
+        if((iz != shooter.kIz)) { shooter.drumPID.setIZone(iz); shooter.kIz = iz; }
+        if((ff != shooter.kFF)) { shooter.drumPID.setFF(ff); shooter.kFF = ff; }
+        if((max != shooter.kMaxOutput) || (min != shooter.kMinOutput)) { 
+            shooter.drumPID.setOutputRange(min, max); 
+            shooter.kMinOutput = min; shooter.kMaxOutput = max; 
+        }
+
+        SmartDashboard.putNumber("Set Point", shooterSetPoint);
+        double velocity = shooter.drumEncoder.getVelocity();
+        double velocityDiff = Math.abs(shooterSetPoint - velocity);
+        boolean RPMInRange = velocityDiff <= shooter.acceptableDiff;
+        SmartDashboard.putBoolean("RPM In Range", RPMInRange);
+        SmartDashboard.putNumber("RPM Diff", velocityDiff);
     }
 
     /**
@@ -315,16 +353,23 @@ public class Robot extends TimedRobot {
 
         String currentSubsystem = "Subsystem";
 
+        shooterSetPoint = lTrigger * shooter.maxRPM;
+
         if (!endgameMode) {
 
             currentSubsystem = "Shooter";
             try {
                 if (bButton) {
+                    
+                    shooter.setShooterRPM(shooterSetPoint);
+                    // if (RPMInRange) { // RPM Within Valid Range
+
+                    // }
+
                     // shooter.runShooter(
                     //        formula.shooterPercent(
                     //              5)); // Will set shooter based on limelight distance
                     // Add automatic limelight alignment
-                    shooter.testShooter(0.2);
 
                     // Singulator directly controlled by left trigger
                     // Hopper is either on or off
@@ -335,6 +380,8 @@ public class Robot extends TimedRobot {
                         shooter.setSingulatorSpeed(0);
                         // intake.setHopperSpeed(0);
                     }
+                } else {
+                    shooter.setShooterRPM(shooter.minRPM);
                 }
 
                 /*else {
@@ -343,7 +390,7 @@ public class Robot extends TimedRobot {
 
                 // Stops shooter
                 if (lButton) {
-                    shooter.stop();
+                    shooter.setShooterRPM(0);
                 }
 
             } catch (SubsystemException e) {
