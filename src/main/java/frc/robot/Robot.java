@@ -378,7 +378,7 @@ public class Robot extends TimedRobot {
             try {
                 // I'm not sure if this is the most efficient way to do this, but I will hopefully
                 // streamline it in the future
-                if (bButton) {
+                if (bButton || aButton) {
                     shooterStop = false;
                 }
 
@@ -402,6 +402,10 @@ public class Robot extends TimedRobot {
                         shooter.setSingulatorSpeed(0);
                         // intake.setHopperSpeed(0);
                     }
+                } else if (aButton && !shooterStop) { // Sets shooter to lower speed to place into lower port
+                    shooter.setShooterRPM(1500);
+                    shooter.setSingulatorSpeed(0.8);
+                    intake.setHopperSpeed(0.8);
                 } else if (!shooterStop) {
                     shooter.setShooterRPM(shooter.minRPM);
                 }
