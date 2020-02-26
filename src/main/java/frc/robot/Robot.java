@@ -32,6 +32,7 @@ import org.longmetal.subsystem.Intake;
 import org.longmetal.subsystem.Pneumatics;
 import org.longmetal.subsystem.Shooter;
 import org.longmetal.subsystem.SubsystemManager;
+import org.longmetal.subsystem.Vision;
 import org.longmetal.util.Console;
 import org.longmetal.util.Listener;
 import org.longmetal.util.ShootFormula;
@@ -65,6 +66,7 @@ public class Robot extends TimedRobot {
 
     boolean endgameMode = false;
     boolean shooterCheck = false;
+    boolean shooterStop = false;
     double shootLow = 0;
     double shootHigh = 0;
     boolean readyClimb = false;
@@ -318,20 +320,6 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
 
-        // Limelight line-up while 1 button is held
-        if (input.forwardStick.getRawButton(1)) {
-            limelightTable.getEntry("ledMode").setDouble(3.0);
-            limelightTable.getEntry("camMode").setDouble(0.0);
-            driveTrain.curveRaw(0, (tX / 30) / 2, true);
-        } else {
-            limelightTable.getEntry("ledMode").setDouble(0.0);
-            limelightTable.getEntry("camMode").setDouble(3.0);
-            driveTrain.curve(
-                    input.forwardStick.getY(),
-                    input.forwardStick.getThrottle(),
-                    input.turnStick.getTwist(),
-                    input.turnStick.getThrottle());
-        }
 
         // Left Gamepad trigger, currently used for shooter
         double lTrigger = input.gamepad.getAxis(Axis.LT);
@@ -366,46 +354,62 @@ public class Robot extends TimedRobot {
         // Start button, engages Endgame Mode
         boolean startButton = input.gamepad.getButton(Button.START);
 
+
+
+        // Limelight line-up while 1 button is held
+        if (bButton) {
+            limelightTable.getEntry("ledMode").setDouble(3.0);
+            limelightTable.getEntry("camMode").setDouble(0.0);
+            driveTrain.curveRaw(0, (tX / 30) / 2, true);
+        } else {
+            limelightTable.getEntry("ledMode").setDouble(0.0);
+            limelightTable.getEntry("camMode").setDouble(3.0);
+            driveTrain.curve(
+                    input.forwardStick.getY(),
+                    input.forwardStick.getThrottle(),
+                    input.turnStick.getTwist(),
+                    input.turnStick.getThrottle());
+        }
+
+        
+
         String currentSubsystem = "Subsystem";
 
-        shooterSetPoint = lTrigger * shooter.maxRPM;
+        // shooterSetPoint = lTrigger * shooter.maxRPM;
 
         if (!endgameMode) {
 
             currentSubsystem = "Shooter";
             try {
+                // I'm not sure if this is the most efficient way to do this, but I will hopefully streamline it in the future
                 if (bButton) {
+                    shooterStop = false;
+                }
 
-                    shooter.setShooterRPM(shooterSetPoint);
-                    // if (RPMInRange) { // RPM Within Valid Range
+                if (bButton && !shooterStop) {
 
-                    // }
-
-                    // shooter.runShooter(
-                    //        formula.shooterPercent(
-                    //              5)); // Will set shooter based on limelight distance
-                    // Add automatic limelight alignment
+                    shooter.setShooterRPM(formula.shooterSpeed(Vision.getLimelightDistance(1/*angleY*/, Vision.Target.POWER_PORT)));
+                    shooterSetPoint = formula.shooterSpeed(Vision.getLimelightDistance(1/*angleY*/, Vision.Target.POWER_PORT));
 
                     // Singulator directly controlled by left trigger
                     // Hopper is either on or off
-                    if (bButton && lTrigger > Constants.kINPUT_DEADBAND) {
+                    if (lTrigger > Constants.kINPUT_DEADBAND) {
                         shooter.setSingulatorSpeed(lTrigger);
-                        // intake.setHopperSpeed(0.8);
+                        //intake.setHopperSpeed(1);
                     } else {
                         shooter.setSingulatorSpeed(0);
-                        // intake.setHopperSpeed(0);
+                        //intake.setHopperSpeed(0);
                     }
-                } else {
+                } else if (!shooterStop) {
                     shooter.setShooterRPM(shooter.minRPM);
                 }
 
-                /*else {
-                    shooter.runShooter(Constants.kSHOOTER_MIN);
-                }*/
-
                 // Stops shooter
                 if (lButton) {
+                    shooterStop = true;
                     shooter.setShooterRPM(0);
+                    shooter.setSingulatorSpeed(0);
+                    //intake.setHopperSpeed(0);
                 }
 
             } catch (SubsystemException e) {
@@ -431,12 +435,6 @@ public class Robot extends TimedRobot {
                     intake.setIntakeSpeed(0);
                 }
 
-                // Temporary button mapping... will be automatic
-                if (aButton) {
-                    intake.setHopperSpeed(0.8);
-                } else {
-                    intake.setHopperSpeed(0);
-                }
 
                 if (bButton && lTrigger > Constants.kINPUT_DEADBAND) {
                     intake.setHopperSpeed(0.8);

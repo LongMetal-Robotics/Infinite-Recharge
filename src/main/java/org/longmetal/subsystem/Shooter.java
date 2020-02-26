@@ -64,11 +64,11 @@ public class Shooter extends Subsystem {
         super.init();
     }
 
-    public void testShooter(double lTrigger) throws SubsystemException {
-        check();
-        drum.set(lTrigger);
-        System.out.println(drumEncoder.getVelocity());
-    }
+    // public void testShooter(double lTrigger) throws SubsystemException {
+    //     check();
+    //     drum.set(lTrigger);
+    //     System.out.println(drumEncoder.getVelocity());
+    // }
 
     public void runShooter(double d) throws SubsystemException {
         check();
