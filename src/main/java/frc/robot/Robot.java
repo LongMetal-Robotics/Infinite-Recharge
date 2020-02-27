@@ -642,119 +642,119 @@ public class Robot extends TimedRobot {
                     shooter.setSingulatorSpeed(0);
                 }
 
-        } catch (SubsystemException e) {
-            Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
-            e.printStackTrace();
+            } catch (SubsystemException e) {
+                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
+                e.printStackTrace();
 
-            boolean isUninitialized =
-                    e.getClass().isInstance(SubsystemUninitializedException.class);
-            if (Shooter.getEnabled() && isUninitialized) {
+                boolean isUninitialized =
+                        e.getClass().isInstance(SubsystemUninitializedException.class);
+                if (Shooter.getEnabled() && isUninitialized) {
 
-                shooter.init();
+                    shooter.init();
+                }
             }
+
+            currentSubsystem = "Intake";
+            try {
+                // Sets intake to a speed
+                if (rTrigger > Constants.kINPUT_DEADBAND) {
+                    intake.setIntakeSpeed(rTrigger);
+                } else if (rButton) { // Reverse intake
+                    intake.setIntakeSpeed(-0.3);
+                } else { // Stop intake
+                    intake.setIntakeSpeed(0);
+                }
+
+                if (aButton) {
+                    intake.setHopperSpeed(0.8);
+                } else {
+                    intake.setHopperSpeed(0);
+                }
+
+            } catch (SubsystemException e) {
+                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
+                e.printStackTrace();
+
+                boolean isUninitialized =
+                        e.getClass().isInstance(SubsystemUninitializedException.class);
+                if (currentSubsystem.equals("Intake") && Intake.getEnabled() && isUninitialized) {
+
+                    intake.init();
+                }
+            }
+
+            currentSubsystem = "Control Panel";
+            try {
+                // Flip up control panel and engage based on FMS values
+                if (yButton) {
+                    controlPanel.spin();
+                } else {
+                    controlPanel.stop();
+                }
+
+                // Temporary control for flipping arm up
+                panelListener.update(xButton);
+
+            } catch (SubsystemException e) {
+                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
+                e.printStackTrace();
+
+                boolean isUninitialized =
+                        e.getClass().isInstance(SubsystemUninitializedException.class);
+                if (ControlPanel.getEnabled() && isUninitialized) {
+
+                    controlPanel.init();
+                }
+            }
+
+            currentSubsystem = "Climb";
+            try {
+
+                if (startButton) {
+                    climb.setWinchSpeed(0);
+                    pneumatics.setRatchet(true);
+                }
+
+                // add safety to make sure that you don't have them go in opposite directions?
+
+                // Left winch engage
+                if (lStickY > Constants.kINPUT_DEADBAND) {
+                    climb.setLeftWinchSpeed(-lStickY);
+                }
+
+                if (lStickY < -Constants.kINPUT_DEADBAND) {
+                    pneumatics.setLeftRatchet(true);
+                    climb.setLeftWinchSpeed(0.05);
+                } else {
+                    pneumatics.setLeftRatchet(false);
+                }
+
+                // Right winch engage
+                if (rStickY > Constants.kINPUT_DEADBAND) {
+                    climb.setRightWinchSpeed(rStickY);
+                }
+
+                if (rStickY < -Constants.kINPUT_DEADBAND) {
+                    pneumatics.setRightRatchet(true);
+                    climb.setRightWinchSpeed(-0.05);
+                } else {
+                    pneumatics.setRightRatchet(false);
+                }
+
+            } catch (SubsystemException e) {
+                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
+                e.printStackTrace();
+
+                boolean isUninitialized =
+                        e.getClass().isInstance(SubsystemUninitializedException.class);
+                if (Climb.getEnabled() && isUninitialized) {
+
+                    climb.init();
+                }
+            }
+
+            shooterSetPoint = SmartDashboard.getNumber("Set RPM", 0);
+            shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
         }
-
-        currentSubsystem = "Intake";
-        try {
-            // Sets intake to a speed
-            if (rTrigger > Constants.kINPUT_DEADBAND) {
-                intake.setIntakeSpeed(rTrigger);
-            } else if (rButton) { // Reverse intake
-                intake.setIntakeSpeed(-0.3);
-            } else { // Stop intake
-                intake.setIntakeSpeed(0);
-            }
-
-            if (aButton) {
-                intake.setHopperSpeed(0.8);
-            } else {
-                intake.setHopperSpeed(0);
-            }
-
-        } catch (SubsystemException e) {
-            Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
-            e.printStackTrace();
-
-            boolean isUninitialized =
-                    e.getClass().isInstance(SubsystemUninitializedException.class);
-            if (currentSubsystem.equals("Intake") && Intake.getEnabled() && isUninitialized) {
-
-                intake.init();
-            }
-        }
-
-        currentSubsystem = "Control Panel";
-        try {
-            // Flip up control panel and engage based on FMS values
-            if (yButton) {
-                controlPanel.spin();
-            } else {
-                controlPanel.stop();
-            }
-
-            // Temporary control for flipping arm up
-            panelListener.update(xButton);
-
-        } catch (SubsystemException e) {
-            Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
-            e.printStackTrace();
-
-            boolean isUninitialized =
-                    e.getClass().isInstance(SubsystemUninitializedException.class);
-            if (ControlPanel.getEnabled() && isUninitialized) {
-
-                controlPanel.init();
-            }
-        }
-
-        currentSubsystem = "Climb";
-        try {
-
-            if (startButton) {
-                climb.setWinchSpeed(0);
-                pneumatics.setRatchet(true);
-            }
-
-            // add safety to make sure that you don't have them go in opposite directions?
-
-            // Left winch engage
-            if (lStickY > Constants.kINPUT_DEADBAND) {
-                climb.setLeftWinchSpeed(-lStickY);
-            }
-
-            if (lStickY < -Constants.kINPUT_DEADBAND) {
-                pneumatics.setLeftRatchet(true);
-                climb.setLeftWinchSpeed(0.05);
-            } else {
-                pneumatics.setLeftRatchet(false);
-            }
-
-            // Right winch engage
-            if (rStickY > Constants.kINPUT_DEADBAND) {
-                climb.setRightWinchSpeed(rStickY);
-            }
-
-            if (rStickY < -Constants.kINPUT_DEADBAND) {
-                pneumatics.setRightRatchet(true);
-                climb.setRightWinchSpeed(-0.05);
-            } else {
-                pneumatics.setRightRatchet(false);
-            }
-
-        } catch (SubsystemException e) {
-            Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
-            e.printStackTrace();
-
-            boolean isUninitialized =
-                    e.getClass().isInstance(SubsystemUninitializedException.class);
-            if (Climb.getEnabled() && isUninitialized) {
-
-                climb.init();
-            }
-        }
-
-        shooterSetPoint = SmartDashboard.getNumber("Set RPM", 0);
-        shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
-    }
     }
 }
