@@ -11,7 +11,7 @@ package org.longmetal.util;
 public class ShootFormula {
     public ShootFormula() {}
 
-    public double shooterSpeed(double distance) {
+    public double shooterSpeed(double distance, double factor) {
         double targetHeight = 2.495555;
         double rampHeight = 0.3048;
         double height = targetHeight - rampHeight;
@@ -29,6 +29,6 @@ public class ShootFormula {
 
         motorRPM = drumRPM / 3;
 
-        return motorRPM;
+        return motorRPM * factor;
     }
 }
