@@ -756,4 +756,5 @@ public class Robot extends TimedRobot {
         shooterSetPoint = SmartDashboard.getNumber("Set RPM", 0);
         shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
     }
+    }
 }
