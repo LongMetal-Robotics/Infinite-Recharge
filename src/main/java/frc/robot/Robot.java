@@ -71,6 +71,7 @@ public class Robot extends TimedRobot {
     double shootLow = 0;
     double shootHigh = 0;
     boolean readyClimb = false;
+    double conversionFactor = 0;
 
     NetworkTable limelightTable =
             NetworkTableInstance.getDefault()
@@ -243,8 +244,8 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("ShooterRPM", shooter.getSpeed());
 
         // Shooter CorrectRPM
-        shootLow = formula.shooterSpeed(/*Limelight distance*/ 4) * 0.95;
-        shootHigh = formula.shooterSpeed(/* Limelight distance */ 4) * 1.05;
+        //shootLow = formula.shooterSpeed(/*Limelight distance*/ 4) * 0.95;
+        //shootHigh = formula.shooterSpeed(/* Limelight distance */ 4) * 1.05;
         // shooterCheck = (shooter.getSpeed() > shootLow && shooter.getSpeed() < shootHigh);
         // SmartDashboard.putBoolean("ShooterCheck", shooterCheck);
 
@@ -265,7 +266,7 @@ public class Robot extends TimedRobot {
         double max = SmartDashboard.getNumber("Max Output", 0);
         double min = SmartDashboard.getNumber("Min Output", 0);
 
-        double conversionFactor = SmartDashboard.getNumber("Shoot Factor", 0);
+        conversionFactor = SmartDashboard.getNumber("Shoot Factor", 0);
 
         // if PID coefficients on SmartDashboard have changed, write new values to controller
         if ((p != shooter.kP)) {
@@ -387,7 +388,7 @@ public class Robot extends TimedRobot {
 
                     shooter.setShooterRPM(
                             formula.shooterSpeed(
-                                    Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT)), conversionFactor);
+                                    Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT), conversionFactor));
                     shooterSetPoint =
                             formula.shooterSpeed(
                                     Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT), conversionFactor);
