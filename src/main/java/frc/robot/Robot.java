@@ -387,16 +387,10 @@ public class Robot extends TimedRobot {
 
                 if (bButton && !shooterStop) {
 
-<<<<<<< HEAD
                     shooter.setShooterRPM(
                             formula.shooterSpeed(
                                     Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT),
                                     conversionFactor));
-=======
-                    // shooter.setShooterRPM(
-                    //         formula.shooterSpeed(
-                    //                 Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT)));
->>>>>>> pid-tuning
                     shooterSetPoint =
                             formula.shooterSpeed(
                                     Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT), 1);
@@ -628,24 +622,6 @@ public class Robot extends TimedRobot {
 
         String currentSubsystem = "Subsystem";
 
-<<<<<<< HEAD
-        currentSubsystem = "Shooter";
-        try {
-            if (lTrigger > Constants.kINPUT_DEADBAND) {
-                shooter.runShooter(lTrigger);
-            }
-
-            // Stops shooter
-            if (lButton) {
-                shooter.stop();
-            }
-
-            if (bButton) {
-                shooter.setSingulatorSpeed(0.8);
-            } else {
-                shooter.setSingulatorSpeed(0);
-            }
-=======
         if (!endgameMode) {
 
             currentSubsystem = "Shooter";
@@ -665,7 +641,6 @@ public class Robot extends TimedRobot {
                 } else {
                     shooter.setSingulatorSpeed(0);
                 }
->>>>>>> pid-tuning
 
         } catch (SubsystemException e) {
             Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
