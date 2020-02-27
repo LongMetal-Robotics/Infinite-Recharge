@@ -265,6 +265,8 @@ public class Robot extends TimedRobot {
         double max = SmartDashboard.getNumber("Max Output", 0);
         double min = SmartDashboard.getNumber("Min Output", 0);
 
+        double conversionFactor = SmartDashboard.getNumber("Shoot Factor", 0);
+
         // if PID coefficients on SmartDashboard have changed, write new values to controller
         if ((p != shooter.kP)) {
             shooter.drumPID.setP(p);
@@ -385,10 +387,10 @@ public class Robot extends TimedRobot {
 
                     shooter.setShooterRPM(
                             formula.shooterSpeed(
-                                    Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT)));
+                                    Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT)), conversionFactor);
                     shooterSetPoint =
                             formula.shooterSpeed(
-                                    Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT));
+                                    Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT), conversionFactor);
 
                     // Singulator directly controlled by left trigger
                     // Hopper is either on or off
