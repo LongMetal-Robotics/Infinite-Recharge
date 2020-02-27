@@ -25,7 +25,7 @@ public class Shooter extends Subsystem {
             kMinOutput,
             maxRPM,
             minRPM,
-            acceptableDiff = 100;
+            acceptableDiff = 50;
 
     public Shooter(boolean setEnabled) {
         super(setEnabled);
@@ -40,15 +40,15 @@ public class Shooter extends Subsystem {
         drumEncoder = new CANEncoder(drum);
         drum.set(0);
 
-        kP = 6e-5;
-        kI = 0;
-        kD = 0;
+        kP = 0.00075;
+        kI = 0.000001;
+        kD = 0.000023;
         kIz = 0;
         kFF = 0.000015;
         kMaxOutput = 1;
         kMinOutput = 0;
         maxRPM = 5000;
-        minRPM = 100;
+        minRPM = 0;
 
         drumPID = drum.getPIDController();
         drumPID.setP(kP);

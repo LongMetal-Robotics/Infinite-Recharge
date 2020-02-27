@@ -78,7 +78,8 @@ public class Robot extends TimedRobot {
     NetworkTableEntry tx = limelightTable.getEntry("tx"); // distances
     NetworkTableEntry ty = limelightTable.getEntry("ty"); // height or something
 
-    double tX, tY, shooterSetPoint;
+    double tX, tY, shooterSetPoint, velocity;
+    boolean RPMInRange = false;
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -293,9 +294,9 @@ public class Robot extends TimedRobot {
         }
 
         SmartDashboard.putNumber("Set Point", shooterSetPoint);
-        double velocity = shooter.drumEncoder.getVelocity();
+        velocity = shooter.drumEncoder.getVelocity();
         double velocityDiff = Math.abs(shooterSetPoint - velocity);
-        boolean RPMInRange = velocityDiff <= shooter.acceptableDiff;
+        RPMInRange = velocityDiff <= shooter.acceptableDiff;
         SmartDashboard.putBoolean("RPM In Range", RPMInRange);
         SmartDashboard.putNumber("RPM Diff", velocityDiff);
     }
@@ -383,12 +384,13 @@ public class Robot extends TimedRobot {
 
                 if (bButton && !shooterStop) {
 
-                    shooter.setShooterRPM(
-                            formula.shooterSpeed(
-                                    Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT)));
+                    // shooter.setShooterRPM(
+                    //         formula.shooterSpeed(
+                    //                 Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT)));
                     shooterSetPoint =
                             formula.shooterSpeed(
                                     Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT));
+                    SmartDashboard.putNumber("SetPoint", shooterSetPoint);
 
                     // Singulator directly controlled by left trigger
                     // Hopper is either on or off
@@ -400,7 +402,7 @@ public class Robot extends TimedRobot {
                         // intake.setHopperSpeed(0);
                     }
                 } else if (!shooterStop) {
-                    shooter.setShooterRPM(shooter.minRPM);
+                    // shooter.setShooterRPM(shooter.minRPM);
                 }
 
                 // Stops shooter
@@ -613,16 +615,17 @@ public class Robot extends TimedRobot {
 
             currentSubsystem = "Shooter";
             try {
-                if (lTrigger > Constants.kINPUT_DEADBAND) {
-                    shooter.runShooter(lTrigger);
-                }
+                // if (lTrigger > Constants.kINPUT_DEADBAND) {
+                //     shooter.runShooter(lTrigger);
+                // }
 
                 // Stops shooter
-                if (lButton) {
-                    shooter.stop();
-                }
+                // if (lButton) {
+                //     shooter.stop();
+                // }
 
-                if (bButton) {
+                // if (bButton) {
+                if (RPMInRange && velocity > 1500) {
                     shooter.setSingulatorSpeed(0.8);
                 } else {
                     shooter.setSingulatorSpeed(0);
@@ -765,7 +768,7 @@ public class Robot extends TimedRobot {
             }
         }
 
-        double setPoint = SmartDashboard.getNumber("Set RPM", 0);
-        shooter.drumPID.setReference(setPoint, ControlType.kVelocity);
+        shooterSetPoint = SmartDashboard.getNumber("Set RPM", 0);
+        shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
     }
 }
