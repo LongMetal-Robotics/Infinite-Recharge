@@ -16,16 +16,7 @@ public class Shooter extends Subsystem {
     public CANEncoder drumEncoder;
     private TalonSRX mSingulator; // this is the motor that has the mec wheels attached
 
-    public double kP,
-            kI,
-            kD,
-            kIz,
-            kFF,
-            kMaxOutput,
-            kMinOutput,
-            maxRPM,
-            minRPM,
-            acceptableDiff = 50;
+    public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM, minRPM, acceptableDiff = 50;
 
     public Shooter(boolean setEnabled) {
         super(setEnabled);
