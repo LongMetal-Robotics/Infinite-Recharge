@@ -244,8 +244,8 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("ShooterRPM", shooter.getSpeed());
 
         // Shooter CorrectRPM
-        //shootLow = formula.shooterSpeed(/*Limelight distance*/ 4) * 0.95;
-        //shootHigh = formula.shooterSpeed(/* Limelight distance */ 4) * 1.05;
+        // shootLow = formula.shooterSpeed(/*Limelight distance*/ 4) * 0.95;
+        // shootHigh = formula.shooterSpeed(/* Limelight distance */ 4) * 1.05;
         // shooterCheck = (shooter.getSpeed() > shootLow && shooter.getSpeed() < shootHigh);
         // SmartDashboard.putBoolean("ShooterCheck", shooterCheck);
 
@@ -389,7 +389,7 @@ public class Robot extends TimedRobot {
                     shooter.setShooterRPM(
                             formula.shooterSpeed(
                                     Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT),
-                            conversionFactor));
+                                    conversionFactor));
                     shooterSetPoint =
                             formula.shooterSpeed(
                                     Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT),
