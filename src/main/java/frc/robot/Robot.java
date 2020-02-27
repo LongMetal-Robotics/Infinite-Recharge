@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import com.revrobotics.ControlType;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -70,6 +71,7 @@ public class Robot extends TimedRobot {
     double shootLow = 0;
     double shootHigh = 0;
     boolean readyClimb = false;
+    double conversionFactor = 0;
 
     NetworkTable limelightTable =
             NetworkTableInstance.getDefault()
@@ -242,8 +244,8 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("ShooterRPM", shooter.getSpeed());
 
         // Shooter CorrectRPM
-        shootLow = formula.shooterSpeed(/*Limelight distance*/ 4) * 0.95;
-        shootHigh = formula.shooterSpeed(/* Limelight distance */ 4) * 1.05;
+        //shootLow = formula.shooterSpeed(/*Limelight distance*/ 4) * 0.95;
+        //shootHigh = formula.shooterSpeed(/* Limelight distance */ 4) * 1.05;
         // shooterCheck = (shooter.getSpeed() > shootLow && shooter.getSpeed() < shootHigh);
         // SmartDashboard.putBoolean("ShooterCheck", shooterCheck);
 
@@ -263,6 +265,8 @@ public class Robot extends TimedRobot {
         double ff = SmartDashboard.getNumber("Feed Forward", 0);
         double max = SmartDashboard.getNumber("Max Output", 0);
         double min = SmartDashboard.getNumber("Min Output", 0);
+
+        conversionFactor = SmartDashboard.getNumber("Shoot Factor", 0);
 
         // if PID coefficients on SmartDashboard have changed, write new values to controller
         if ((p != shooter.kP)) {
@@ -370,8 +374,6 @@ public class Robot extends TimedRobot {
 
         String currentSubsystem = "Subsystem";
 
-        // shooterSetPoint = lTrigger * shooter.maxRPM;
-
         if (!endgameMode) {
 
             currentSubsystem = "Shooter";
@@ -386,12 +388,12 @@ public class Robot extends TimedRobot {
 
                     shooter.setShooterRPM(
                             formula.shooterSpeed(
-                                    Vision.getLimelightDistance(
-                                            1 /*angleY*/, Vision.Target.POWER_PORT)));
+                                    Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT),
+                            conversionFactor));
                     shooterSetPoint =
                             formula.shooterSpeed(
-                                    Vision.getLimelightDistance(
-                                            1 /*angleY*/, Vision.Target.POWER_PORT));
+                                    Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT),
+                                    conversionFactor);
 
                     // Singulator directly controlled by left trigger
                     // Hopper is either on or off
@@ -557,6 +559,11 @@ public class Robot extends TimedRobot {
         } else {
             return "Generic Subsystem Problem";
         }
+    }
+
+    @Override
+    public void testInit() {
+        SmartDashboard.putNumber("Set RPM", 0);
     }
 
     /** This function is called periodically during test mode. */
@@ -741,5 +748,8 @@ public class Robot extends TimedRobot {
                 climb.init();
             }
         }
+
+        double setPoint = SmartDashboard.getNumber("Set RPM", 0);
+        shooter.drumPID.setReference(setPoint, ControlType.kVelocity);
     }
 }
