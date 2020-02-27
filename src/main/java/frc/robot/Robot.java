@@ -387,10 +387,12 @@ public class Robot extends TimedRobot {
 
                     shooter.setShooterRPM(
                             formula.shooterSpeed(
-                                    Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT)), conversionFactor);
+                                    Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT)),
+                            conversionFactor);
                     shooterSetPoint =
                             formula.shooterSpeed(
-                                    Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT), conversionFactor);
+                                    Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT),
+                                    conversionFactor);
 
                     // Singulator directly controlled by left trigger
                     // Hopper is either on or off
