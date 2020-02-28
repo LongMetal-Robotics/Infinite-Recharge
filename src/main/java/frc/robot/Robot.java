@@ -68,6 +68,7 @@ public class Robot extends TimedRobot {
     boolean endgameMode = false;
     boolean shooterCheck = false;
     boolean shooterStop = true;
+    boolean panelUp = false;
     double shootLow = 0;
     double shootHigh = 0;
     boolean readyClimb = false;
@@ -143,6 +144,7 @@ public class Robot extends TimedRobot {
                             public void run() {
                                 try {
                                     pneumatics.flipArmUp();
+                                    panelUp = true;
                                 } catch (SubsystemException e) {
                                     Console.log(e.getMessage());
                                 }
@@ -152,6 +154,7 @@ public class Robot extends TimedRobot {
                             public void run() {
                                 try {
                                     pneumatics.flipArmDown();
+                                    panelUp = false;
                                 } catch (SubsystemException e) {
                                     Console.log(e.getMessage());
                                 }
@@ -363,6 +366,14 @@ public class Robot extends TimedRobot {
             limelightTable.getEntry("ledMode").setDouble(3.0);
             limelightTable.getEntry("camMode").setDouble(0.0);
             driveTrain.curveRaw(0, (tX / 30) / 2, true);
+        } else if (readyClimb || panelUp) { // When panel or climb up, drive slower
+            limelightTable.getEntry("ledMode").setDouble(0.0);
+            limelightTable.getEntry("camMode").setDouble(3.0);
+            driveTrain.curve(
+                    input.forwardStick.getY(),
+                    input.forwardStick.getThrottle() * 0.1,
+                    input.turnStick.getTwist(),
+                    input.turnStick.getThrottle() * 0.5);
         } else {
             limelightTable.getEntry("ledMode").setDouble(0.0);
             limelightTable.getEntry("camMode").setDouble(3.0);
