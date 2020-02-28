@@ -67,7 +67,7 @@ public class Robot extends TimedRobot {
 
     boolean endgameMode = false;
     boolean shooterCheck = false;
-    boolean shooterStop = false;
+    boolean shooterStop = true;
     double shootLow = 0;
     double shootHigh = 0;
     boolean readyClimb = false;
@@ -386,21 +386,32 @@ public class Robot extends TimedRobot {
                 }
 
                 if (bButton && !shooterStop) {
+                    SmartDashboard.getNumber("Factor", conversionFactor);
 
-                    shooter.setShooterRPM(
-                            formula.shooterSpeed(
-                                    Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT),
-                                    conversionFactor));
                     shooterSetPoint =
                             formula.shooterSpeed(
-                                    Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT), 1);
+                                    Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT), conversionFactor);
+
+                    shooter.setShooterRPM(shooterSetPoint);
+
+                    SmartDashboard.putNumber("Distance", Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT));
+                    
                     SmartDashboard.putNumber("SetPoint", shooterSetPoint);
+
+
+                    /*if (RPMInRange && velocity > 1500) {
+                        shooter.setSingulatorSpeed(0.8);
+                    } else {
+                        shooter.setSingulatorSpeed(0);
+                    }*/
+
 
                     // Singulator directly controlled by left trigger
                     // Hopper is either on or off
                     if (lTrigger > Constants.kINPUT_DEADBAND) {
-                        shooter.setSingulatorSpeed(lTrigger);
-                        // intake.setHopperSpeed(1);
+                        shooter.setSingulatorSpeed(0.9);
+                        // intake.setHopperSpeed(lTrigger);
+                        // These don't work for some reason, so they're duplicated in the intake section
                     } else {
                         shooter.setSingulatorSpeed(0);
                         // intake.setHopperSpeed(0);
@@ -408,10 +419,16 @@ public class Robot extends TimedRobot {
                 } else if (aButton
                         && !shooterStop) { // Sets shooter to lower speed to place into lower port
                     shooter.setShooterRPM(1500);
-                    shooter.setSingulatorSpeed(0.8);
-                    intake.setHopperSpeed(0.8);
+
+                    if (RPMInRange) {
+                        shooter.setSingulatorSpeed(0.8);
+                        intake.setHopperSpeed(0.8);
+                    } else {
+                        shooter.setSingulatorSpeed(0);
+                        intake.setHopperSpeed(0);
+                    }
                 } else if (!shooterStop) {
-                    // shooter.setShooterRPM(shooter.minRPM);
+                    shooter.setShooterRPM(shooter.minRPM);
                 }
 
                 // Stops shooter
@@ -446,7 +463,7 @@ public class Robot extends TimedRobot {
                 }
 
                 if (bButton && lTrigger > Constants.kINPUT_DEADBAND) {
-                    intake.setHopperSpeed(0.8);
+                    intake.setHopperSpeed(lTrigger);
                 } else {
                     intake.setHopperSpeed(0);
                 }
