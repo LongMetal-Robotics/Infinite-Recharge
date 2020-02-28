@@ -390,14 +390,15 @@ public class Robot extends TimedRobot {
 
                     shooterSetPoint =
                             formula.shooterSpeed(
-                                    Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT), conversionFactor);
+                                    Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT),
+                                    conversionFactor);
 
                     shooter.setShooterRPM(shooterSetPoint);
 
-                    SmartDashboard.putNumber("Distance", Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT));
-                    
-                    SmartDashboard.putNumber("SetPoint", shooterSetPoint);
+                    SmartDashboard.putNumber(
+                            "Distance", Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT));
 
+                    SmartDashboard.putNumber("SetPoint", shooterSetPoint);
 
                     /*if (RPMInRange && velocity > 1500) {
                         shooter.setSingulatorSpeed(0.8);
@@ -405,13 +406,13 @@ public class Robot extends TimedRobot {
                         shooter.setSingulatorSpeed(0);
                     }*/
 
-
                     // Singulator directly controlled by left trigger
                     // Hopper is either on or off
                     if (lTrigger > Constants.kINPUT_DEADBAND) {
                         shooter.setSingulatorSpeed(0.9);
                         // intake.setHopperSpeed(lTrigger);
-                        // These don't work for some reason, so they're duplicated in the intake section
+                        // These don't work for some reason, so they're duplicated in the intake
+                        // section
                     } else {
                         shooter.setSingulatorSpeed(0);
                         // intake.setHopperSpeed(0);
