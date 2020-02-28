@@ -358,7 +358,7 @@ public class Robot extends TimedRobot {
         // Start button, engages Endgame Mode
         boolean startButton = input.gamepad.getButton(Button.START);
 
-        // Limelight line-up while 1 button is held
+        // Limelight line-up while B button is held
         if (bButton) {
             limelightTable.getEntry("ledMode").setDouble(3.0);
             limelightTable.getEntry("camMode").setDouble(0.0);
