@@ -5,6 +5,8 @@ import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+
 import org.longmetal.Constants;
 import org.longmetal.exception.SubsystemException;
 import org.longmetal.util.Console;
@@ -12,8 +14,7 @@ import org.longmetal.util.Console;
 public class Pneumatics extends Subsystem {
     // instance variables
     private DoubleSolenoid rotator; // to rotate the spinner up and down?
-    private Solenoid drumSpin1;
-    private Solenoid drumSpin2;
+    private DoubleSolenoid drumSpin;
 
     private Compressor compressor;
     private boolean armUp = false;
@@ -30,10 +31,8 @@ public class Pneumatics extends Subsystem {
         // Solenoid to flip up arm
         rotator = new DoubleSolenoid(Constants.kC_PANEL1, Constants.kC_PANEL2);
 
-        drumSpin1 = new Solenoid(1);
-        drumSpin2 = new Solenoid(2);
-        drumSpin1.set(false);
-        drumSpin2.set(false);
+        drumSpin = new DoubleSolenoid(Constants.kC_CLIMB1, Constants.kC_CLIMB2);
+        drumSpin.set(kOff);
 
         super.init();
     }
@@ -52,19 +51,18 @@ public class Pneumatics extends Subsystem {
         Console.log("armUp = " + armUp);
     }
 
-    public void setLeftRatchet(boolean on) throws SubsystemException {
-        check();
-        drumSpin1.set(on);
-    }
+    // public void setLeftRatchet(boolean on) throws SubsystemException {
+    //     check();
+    //     drumSpin1.set(on);
+    // }
 
-    public void setRightRatchet(boolean on) throws SubsystemException {
-        check();
-        drumSpin2.set(on);
-    }
+    // public void setRightRatchet(boolean on) throws SubsystemException {
+    //     check();
+    //     drumSpin2.set(on);
+    // }
 
     public void setRatchet(boolean on) throws SubsystemException {
         check();
-        setLeftRatchet(on);
-        setRightRatchet(on);
+        drumSpin.set(on ? kReverse : kForward);
     }
 }

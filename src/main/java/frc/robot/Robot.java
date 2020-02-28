@@ -300,11 +300,15 @@ public class Robot extends TimedRobot {
         }
 
         SmartDashboard.putNumber("Set Point", shooterSetPoint);
+        SmartDashboard.putNumber("Shoot Factor", 0);
         velocity = shooter.drumEncoder.getVelocity();
         double velocityDiff = Math.abs(shooterSetPoint - velocity);
         RPMInRange = velocityDiff <= shooter.acceptableDiff;
         SmartDashboard.putBoolean("RPM In Range", RPMInRange);
         SmartDashboard.putNumber("RPM Diff", velocityDiff);
+
+        limelightTable.getEntry("ledMode").setDouble(3.0);
+        limelightTable.getEntry("camMode").setDouble(0.0);
     }
 
     /**
@@ -363,20 +367,14 @@ public class Robot extends TimedRobot {
 
         // Limelight line-up while B button is held
         if (bButton) {
-            limelightTable.getEntry("ledMode").setDouble(3.0);
-            limelightTable.getEntry("camMode").setDouble(0.0);
             driveTrain.curveRaw(0, (tX / 30) / 2, true);
         } else if (readyClimb || panelUp) { // When panel or climb up, drive slower
-            limelightTable.getEntry("ledMode").setDouble(0.0);
-            limelightTable.getEntry("camMode").setDouble(3.0);
             driveTrain.curve(
                     input.forwardStick.getY(),
                     input.forwardStick.getThrottle() * 0.1,
                     input.turnStick.getTwist(),
                     input.turnStick.getThrottle() * 0.5);
         } else {
-            limelightTable.getEntry("ledMode").setDouble(0.0);
-            limelightTable.getEntry("camMode").setDouble(3.0);
             driveTrain.curve(
                     input.forwardStick.getY(),
                     input.forwardStick.getThrottle(),
@@ -397,14 +395,17 @@ public class Robot extends TimedRobot {
                 }
 
                 if (bButton && !shooterStop) {
-                    SmartDashboard.getNumber("Factor", conversionFactor);
+                    //SmartDashboard.getNumber("Factor", conversionFactor);
 
                     shooterSetPoint =
                             formula.shooterSpeed(
                                     Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT),
                                     conversionFactor);
+                    
+                                    SmartDashboard.putNumber("Set", shooterSetPoint);
 
                     shooter.setShooterRPM(shooterSetPoint);
+                    // shooter.setShooterRPM(0);
 
                     SmartDashboard.putNumber(
                             "Distance", Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT));
@@ -476,11 +477,13 @@ public class Robot extends TimedRobot {
 
                 if (bButton && lTrigger > Constants.kINPUT_DEADBAND) {
                     intake.setHopperSpeed(lTrigger);
+                /*} else if (xButton) {
+                    intake.setHopperSpeed(0.8);*/
                 } else {
                     intake.setHopperSpeed(0);
                 }
 
-                intakeListener.update(intakeLimit.get());
+                // intakeListener.update(intakeLimit.get());
 
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
@@ -530,14 +533,14 @@ public class Robot extends TimedRobot {
                     // Release climb upwards, disengage solenoids
                     pneumatics.setRatchet(true);
                     readyClimb = true;
-                    climb.setRightWinchSpeed(-0.2);
-                    climb.setLeftWinchSpeed(0.2);
+                    climb.setRightWinchSpeed(0.2);
+                    climb.setLeftWinchSpeed(-0.2);
                 }
 
-                if (startButton) {
-                    endgameMode = false;
-                    climb.setWinchSpeed(0);
-                }
+                // if (startButton) {
+                //     endgameMode = false;
+                //     climb.setWinchSpeed(0);
+                // }
 
                 if (readyClimb) {
 
@@ -546,26 +549,28 @@ public class Robot extends TimedRobot {
                     // Left winch engage
                     if (lStickY > Constants.kINPUT_DEADBAND) {
                         climb.setLeftWinchSpeed(-lStickY);
+                        climb.setRightWinchSpeed(lStickY);
                     }
 
                     if (lStickY < -Constants.kINPUT_DEADBAND) {
-                        pneumatics.setLeftRatchet(true);
-                        climb.setLeftWinchSpeed(0.05);
+                        pneumatics.setRatchet(true);
+                        climb.setLeftWinchSpeed(-0.2);
+                        climb.setRightWinchSpeed(0.2);
                     } else {
-                        pneumatics.setLeftRatchet(false);
+                        pneumatics.setRatchet(false);
                     }
 
                     // Right winch engage
-                    if (rStickY > Constants.kINPUT_DEADBAND) {
-                        climb.setRightWinchSpeed(rStickY);
-                    }
+                    // if (rStickY > Constants.kINPUT_DEADBAND) {
+                    //     climb.setRightWinchSpeed(-rStickY);
+                    // }
 
-                    if (rStickY < -Constants.kINPUT_DEADBAND) {
-                        pneumatics.setRightRatchet(true);
-                        climb.setRightWinchSpeed(-0.05);
-                    } else {
-                        pneumatics.setRightRatchet(false);
-                    }
+                    // if (rStickY < -Constants.kINPUT_DEADBAND) {
+                    //     pneumatics.setRatchet(true);
+                    //     climb.setRightWinchSpeed(-0.2);
+                    // } else {
+                    //     pneumatics.setRatchet(false);
+                    // }
                 }
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
@@ -603,12 +608,8 @@ public class Robot extends TimedRobot {
     public void testPeriodic() {
         // Limelight line-up while 1 button is held
         if (input.forwardStick.getRawButton(1)) {
-            limelightTable.getEntry("ledMode").setDouble(3.0);
-            limelightTable.getEntry("camMode").setDouble(0.0);
             driveTrain.curveRaw(0, (tX / 30) / 2, true);
         } else {
-            limelightTable.getEntry("ledMode").setDouble(0.0);
-            limelightTable.getEntry("camMode").setDouble(3.0);
             driveTrain.curve(
                     input.forwardStick.getY(),
                     input.forwardStick.getThrottle(),
@@ -752,10 +753,10 @@ public class Robot extends TimedRobot {
                 }
 
                 if (lStickY < -Constants.kINPUT_DEADBAND) {
-                    pneumatics.setLeftRatchet(true);
+                    pneumatics.setRatchet(true);
                     climb.setLeftWinchSpeed(0.05);
                 } else {
-                    pneumatics.setLeftRatchet(false);
+                    pneumatics.setRatchet(false);
                 }
 
                 // Right winch engage
@@ -764,10 +765,10 @@ public class Robot extends TimedRobot {
                 }
 
                 if (rStickY < -Constants.kINPUT_DEADBAND) {
-                    pneumatics.setRightRatchet(true);
+                    pneumatics.setRatchet(true);
                     climb.setRightWinchSpeed(-0.05);
                 } else {
-                    pneumatics.setRightRatchet(false);
+                    pneumatics.setRatchet(false);
                 }
 
             } catch (SubsystemException e) {

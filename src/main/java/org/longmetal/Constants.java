@@ -30,10 +30,10 @@ public class Constants {
     // PDP = CAN ID 13
 
     // Solenoid Channels
-    public static final int kC_PANEL1 = 0;
     public static final int kC_CLIMB1 = 4;
     public static final int kC_CLIMB2 = 5;
-    public static final int kC_PANEL2 = 3;
+    public static final int kC_PANEL1 = 0;
+    public static final int kC_PANEL2 = 1;
 
     // Input
     // Gamepad Input Ports/Axis/Buttons
