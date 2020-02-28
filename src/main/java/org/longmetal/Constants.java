@@ -31,8 +31,8 @@ public class Constants {
 
     // Solenoid Channels
     public static final int kC_PANEL1 = 0;
-    public static final int kC_CLIMB1 = 1;
-    public static final int kC_CLIMB2 = 2;
+    public static final int kC_CLIMB1 = 4;
+    public static final int kC_CLIMB2 = 5;
     public static final int kC_PANEL2 = 3;
 
     // Input

@@ -25,6 +25,7 @@ public class Pneumatics extends Subsystem {
     public void init() {
         compressor = new Compressor(Constants.kP_PCM);
         compressor.start();
+        compressor.setClosedLoopControl(true);
 
         // Solenoid to flip up arm
         rotator = new DoubleSolenoid(Constants.kC_PANEL1, Constants.kC_PANEL2);
