@@ -395,14 +395,14 @@ public class Robot extends TimedRobot {
                 }
 
                 if (bButton && !shooterStop) {
-                    //SmartDashboard.getNumber("Factor", conversionFactor);
+                    // SmartDashboard.getNumber("Factor", conversionFactor);
 
                     shooterSetPoint =
                             formula.shooterSpeed(
                                     Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT),
                                     conversionFactor);
-                    
-                                    SmartDashboard.putNumber("Set", shooterSetPoint);
+
+                    SmartDashboard.putNumber("Set", shooterSetPoint);
 
                     shooter.setShooterRPM(shooterSetPoint);
                     // shooter.setShooterRPM(0);
@@ -477,7 +477,7 @@ public class Robot extends TimedRobot {
 
                 if (bButton && lTrigger > Constants.kINPUT_DEADBAND) {
                     intake.setHopperSpeed(lTrigger);
-                /*} else if (xButton) {
+                    /*} else if (xButton) {
                     intake.setHopperSpeed(0.8);*/
                 } else {
                     intake.setHopperSpeed(0);

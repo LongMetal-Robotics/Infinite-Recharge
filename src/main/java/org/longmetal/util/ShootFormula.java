@@ -29,6 +29,8 @@ public class ShootFormula {
 
         motorRPM = drumRPM / 3;
 
-        return motorRPM /** factor*/;
+        return motorRPM
+        /** factor */
+        ;
     }
 }

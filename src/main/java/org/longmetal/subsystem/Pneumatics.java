@@ -4,9 +4,6 @@ import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-
 import org.longmetal.Constants;
 import org.longmetal.exception.SubsystemException;
 import org.longmetal.util.Console;
