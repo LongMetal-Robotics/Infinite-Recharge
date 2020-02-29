@@ -56,7 +56,8 @@ public class Robot extends TimedRobot {
     DigitalInput intakeLimit;
     Timer timer;
     Listener intakeListener;
-    Listener panelListener;
+    Listener panelListenerTurns;
+    Listener panelListenerColor;
     ShootFormula formula;
     Pneumatics pneumatics;
 
@@ -127,7 +128,6 @@ public class Robot extends TimedRobot {
         pneumatics = new Pneumatics(true);
         intakeListener =
                 new Listener(
-                        null,
                         new Runnable() {
                             public void run() {
                                 try {
@@ -137,14 +137,18 @@ public class Robot extends TimedRobot {
                                 }
                             }
                         },
+                        null,
                         true);
-        panelListener =
+        panelListenerTurns =
                 new Listener(
                         new Runnable() {
                             public void run() {
                                 try {
                                     pneumatics.flipArmUp();
                                     panelUp = true;
+                                    // controlPanel.turnsMode();
+                                    // pneumatics.flipArmDown();
+                                    // panelUp = false;
                                 } catch (SubsystemException e) {
                                     Console.log(e.getMessage());
                                 }
@@ -160,9 +164,39 @@ public class Robot extends TimedRobot {
                                 }
                             }
                         },
+                        // null,
                         false);
+        
+        panelListenerColor =
+        new Listener(
+                new Runnable() {
+                    public void run() {
+                        try {
+                            pneumatics.flipArmUp();
+                            panelUp = true;
+                            // controlPanel.colorMode();
+                            // pneumatics.flipArmDown();
+                            // panelUp = false;
 
-        timer.start();
+                        } catch (SubsystemException e) {
+                            Console.log(e.getMessage());
+                        }
+                    }
+                },
+                new Runnable() {
+                    public void run() {
+                        try {
+                            pneumatics.flipArmDown();
+                            panelUp = false;
+                        } catch (SubsystemException e) {
+                            Console.log(e.getMessage());
+                        }
+                    }
+                },
+                // null,
+                false);
+
+        // timer.start();
 
         chooserQuinnDrive = new SendableChooser<>();
         chooserQuinnDrive.setDefaultOption("Disabled", false);
@@ -365,6 +399,9 @@ public class Robot extends TimedRobot {
         // Start button, engages Endgame Mode
         boolean startButton = input.gamepad.getButton(Button.START);
 
+        // Back button, disengages Endgame Mode
+        boolean backButton = input.gamepad.getButton(Button.BACK);
+
         // Limelight line-up while B button is held
         if (bButton) {
             driveTrain.curveRaw(0, (tX / 30) / 2, true);
@@ -399,7 +436,7 @@ public class Robot extends TimedRobot {
 
                     shooterSetPoint =
                             formula.shooterSpeed(
-                                    Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT),
+                                    Vision.getLimelightDistance(tY/*, Vision.Target.POWER_PORT*/),
                                     conversionFactor);
 
                     SmartDashboard.putNumber("Set", shooterSetPoint);
@@ -408,7 +445,7 @@ public class Robot extends TimedRobot {
                     // shooter.setShooterRPM(0);
 
                     SmartDashboard.putNumber(
-                            "Distance", Vision.getLimelightDistance(tY, Vision.Target.POWER_PORT));
+                            "Distance", Vision.getLimelightDistance(tY/*, Vision.Target.POWER_PORT*/));
 
                     SmartDashboard.putNumber("SetPoint", shooterSetPoint);
 
@@ -483,7 +520,7 @@ public class Robot extends TimedRobot {
                     intake.setHopperSpeed(0);
                 }
 
-                // intakeListener.update(intakeLimit.get());
+                intakeListener.update(intakeLimit.get());
 
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
@@ -507,8 +544,10 @@ public class Robot extends TimedRobot {
                     controlPanel.stop();
                 }
 
+
+
                 // Temporary control for flipping arm up
-                panelListener.update(xButton);
+                panelListenerTurns.update(xButton);
 
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
@@ -533,44 +572,41 @@ public class Robot extends TimedRobot {
                     // Release climb upwards, disengage solenoids
                     pneumatics.setRatchet(true);
                     readyClimb = true;
-                    climb.setRightWinchSpeed(0.2);
                     climb.setLeftWinchSpeed(-0.2);
+                    climb.setRightWinchSpeed(0.2);
                 }
 
-                // if (startButton) {
-                //     endgameMode = false;
-                //     climb.setWinchSpeed(0);
-                // }
+                if (backButton) {
+                    endgameMode = false;
+                    climb.setWinchSpeed(0);
+                }
 
                 if (readyClimb) {
 
-                    // add safety to make sure that you don't have them go in opposite directions?
+                    // Sticks up
+                    if (lStickY < -Constants.kINPUT_DEADBAND || rStickY < -Constants.kINPUT_DEADBAND) {
+                        // Disengage ratchet
+                        pneumatics.setRatchet(false);
 
-                    // Left winch engage
-                    if (lStickY > Constants.kINPUT_DEADBAND) {
-                        climb.setLeftWinchSpeed(-lStickY);
-                        climb.setRightWinchSpeed(lStickY);
-                    }
-
-                    if (lStickY < -Constants.kINPUT_DEADBAND) {
-                        pneumatics.setRatchet(true);
+                        // Let out both winches
                         climb.setLeftWinchSpeed(-0.2);
                         climb.setRightWinchSpeed(0.2);
                     } else {
-                        pneumatics.setRatchet(false);
+                        // Engage ratchet
+                        pneumatics.setRatchet(true);
+
+                        // Left stick down
+                        // Reel in left climb (raise robot)
+                        if (lStickY > Constants.kINPUT_DEADBAND) {
+                            climb.setLeftWinchSpeed(lStickY);
+                        }
+
+                        // Right stick down
+                        // Reel in right climb (raise robot)
+                        if (rStickY > Constants.kINPUT_DEADBAND) {
+                            climb.setRightWinchSpeed(-rStickY);
+                        }
                     }
-
-                    // Right winch engage
-                    // if (rStickY > Constants.kINPUT_DEADBAND) {
-                    //     climb.setRightWinchSpeed(-rStickY);
-                    // }
-
-                    // if (rStickY < -Constants.kINPUT_DEADBAND) {
-                    //     pneumatics.setRatchet(true);
-                    //     climb.setRightWinchSpeed(-0.2);
-                    // } else {
-                    //     pneumatics.setRatchet(false);
-                    // }
                 }
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
@@ -723,7 +759,7 @@ public class Robot extends TimedRobot {
                 }
 
                 // Temporary control for flipping arm up
-                panelListener.update(xButton);
+                panelListenerTurns.update(xButton);
 
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");

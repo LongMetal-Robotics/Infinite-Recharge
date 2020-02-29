@@ -19,8 +19,8 @@ public class Climb extends Subsystem {
         winch2 = new CANSparkMax(Constants.kP_WINCH2, MotorType.kBrushless);
         winch1.set(0);
         winch2.set(0);
-        winch1.setOpenLoopRampRate(1);
-        winch2.setOpenLoopRampRate(1);
+        // winch1.setOpenLoopRampRate(1);
+        // winch2.setOpenLoopRampRate(1);
 
         super.init();
     }
@@ -38,6 +38,6 @@ public class Climb extends Subsystem {
     public void setWinchSpeed(double speed) throws SubsystemException {
         check();
         setLeftWinchSpeed(speed);
-        setRightWinchSpeed(speed);
+        setRightWinchSpeed(-speed);
     }
 }

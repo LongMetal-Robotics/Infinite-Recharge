@@ -7,7 +7,7 @@ public class Vision {
     public static final double powerPortHeight = 2.30; // Center of target (m)
     public static final double loadingBayHeight = 0.42; // Center of target (m)
 
-    public static double getLimelightDistance(double angleY, Target target) {
+    public static double getLimelightDistance(double angleY/*, Target target*/) {
         double targetHeight = powerPortHeight;
         // switch (target) {
         //     case POWER_PORT:
@@ -27,8 +27,8 @@ public class Vision {
         return distance;
     }
 
-    public enum Target {
-        POWER_PORT,
-        LOADING_BAY
-    }
+    // public enum Target {
+    //     POWER_PORT,
+    //     LOADING_BAY
+    // }
 }

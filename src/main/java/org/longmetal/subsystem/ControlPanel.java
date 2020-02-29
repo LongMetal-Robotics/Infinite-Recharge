@@ -9,11 +9,13 @@ import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.util.Color;
 import org.longmetal.Constants;
 import org.longmetal.exception.SubsystemException;
+import edu.wpi.first.wpilibj.Timer;
 
 public class ControlPanel extends Subsystem {
     // instance variables
     private TalonSRX spinner; // spinner motor
     private ColorSensorV3 csensor; // color sensor object
+    private Timer timer;
 
     private static PanelColor lastColor = PanelColor.Unknown;
     private static PanelColor initColor = PanelColor.Unknown;
@@ -21,18 +23,19 @@ public class ControlPanel extends Subsystem {
     private static int accumulated = -1;
     private ColorMatch m_colorMatcher;
 
+
+
     public ControlPanel(boolean setEnabled) {
         super(setEnabled);
-        // if (setEnabled) { // I'm dumb and they way I wrote the inheritance, it wouldn't work (it
-        //     // wouldn't call the right init).
-        //     init();
-        // }
     }
 
     public void init() {
         // Spinner
         spinner = new TalonSRX(Constants.kP_PANEL);
         spinner.setNeutralMode(NeutralMode.Brake); // sets brake mode so we stop on color
+        timer = new Timer();
+        timer.start();
+
 
         // Color sensor
         // csensor = new ColorSensorV3(Port.kOnboard);
@@ -46,6 +49,14 @@ public class ControlPanel extends Subsystem {
 
         super.init();
     }
+
+    // public void colorMode() {
+  
+    // }
+
+    // public void turnsMode() {
+    //         initRotate(4);
+    // }
 
     private PanelColor currentColor() {
         Color detectedColor = csensor.getColor(); // current color from sensor
