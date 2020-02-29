@@ -6,10 +6,10 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import org.longmetal.Constants;
 import org.longmetal.exception.SubsystemException;
-import edu.wpi.first.wpilibj.Timer;
 
 public class ControlPanel extends Subsystem {
     // instance variables
@@ -23,8 +23,6 @@ public class ControlPanel extends Subsystem {
     private static int accumulated = -1;
     private ColorMatch m_colorMatcher;
 
-
-
     public ControlPanel(boolean setEnabled) {
         super(setEnabled);
     }
@@ -35,7 +33,6 @@ public class ControlPanel extends Subsystem {
         spinner.setNeutralMode(NeutralMode.Brake); // sets brake mode so we stop on color
         timer = new Timer();
         timer.start();
-
 
         // Color sensor
         // csensor = new ColorSensorV3(Port.kOnboard);
@@ -51,7 +48,7 @@ public class ControlPanel extends Subsystem {
     }
 
     // public void colorMode() {
-  
+
     // }
 
     // public void turnsMode() {

@@ -166,35 +166,35 @@ public class Robot extends TimedRobot {
                         },
                         // null,
                         false);
-        
-        panelListenerColor =
-        new Listener(
-                new Runnable() {
-                    public void run() {
-                        try {
-                            pneumatics.flipArmUp();
-                            panelUp = true;
-                            // controlPanel.colorMode();
-                            // pneumatics.flipArmDown();
-                            // panelUp = false;
 
-                        } catch (SubsystemException e) {
-                            Console.log(e.getMessage());
-                        }
-                    }
-                },
-                new Runnable() {
-                    public void run() {
-                        try {
-                            pneumatics.flipArmDown();
-                            panelUp = false;
-                        } catch (SubsystemException e) {
-                            Console.log(e.getMessage());
-                        }
-                    }
-                },
-                // null,
-                false);
+        panelListenerColor =
+                new Listener(
+                        new Runnable() {
+                            public void run() {
+                                try {
+                                    pneumatics.flipArmUp();
+                                    panelUp = true;
+                                    // controlPanel.colorMode();
+                                    // pneumatics.flipArmDown();
+                                    // panelUp = false;
+
+                                } catch (SubsystemException e) {
+                                    Console.log(e.getMessage());
+                                }
+                            }
+                        },
+                        new Runnable() {
+                            public void run() {
+                                try {
+                                    pneumatics.flipArmDown();
+                                    panelUp = false;
+                                } catch (SubsystemException e) {
+                                    Console.log(e.getMessage());
+                                }
+                            }
+                        },
+                        // null,
+                        false);
 
         // timer.start();
 
@@ -436,7 +436,7 @@ public class Robot extends TimedRobot {
 
                     shooterSetPoint =
                             formula.shooterSpeed(
-                                    Vision.getLimelightDistance(tY/*, Vision.Target.POWER_PORT*/),
+                                    Vision.getLimelightDistance(tY /*, Vision.Target.POWER_PORT*/),
                                     conversionFactor);
 
                     SmartDashboard.putNumber("Set", shooterSetPoint);
@@ -445,7 +445,8 @@ public class Robot extends TimedRobot {
                     // shooter.setShooterRPM(0);
 
                     SmartDashboard.putNumber(
-                            "Distance", Vision.getLimelightDistance(tY/*, Vision.Target.POWER_PORT*/));
+                            "Distance",
+                            Vision.getLimelightDistance(tY /*, Vision.Target.POWER_PORT*/));
 
                     SmartDashboard.putNumber("SetPoint", shooterSetPoint);
 
@@ -544,8 +545,6 @@ public class Robot extends TimedRobot {
                     controlPanel.stop();
                 }
 
-
-
                 // Temporary control for flipping arm up
                 panelListenerTurns.update(xButton);
 
@@ -584,7 +583,8 @@ public class Robot extends TimedRobot {
                 if (readyClimb) {
 
                     // Sticks up
-                    if (lStickY < -Constants.kINPUT_DEADBAND || rStickY < -Constants.kINPUT_DEADBAND) {
+                    if (lStickY < -Constants.kINPUT_DEADBAND
+                            || rStickY < -Constants.kINPUT_DEADBAND) {
                         // Disengage ratchet
                         pneumatics.setRatchet(false);
 
