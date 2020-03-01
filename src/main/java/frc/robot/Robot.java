@@ -828,9 +828,9 @@ public class Robot extends TimedRobot {
     }
 
     private void updateVision(boolean enable) {
-        if (enable) {   // If `enable` is `true`, turn on the LEDs
+        if (enable) { // If `enable` is `true`, turn on the LEDs
             limelightTable.getEntry("pipeline").setNumber(Constants.PIPELINE_VISION);
-        } else if (!enable) {   // If `enable` is `false`, turn off the LEDs
+        } else if (!enable) { // If `enable` is `false`, turn off the LEDs
             limelightTable.getEntry("pipeline").setNumber(Constants.PIPELINE_DRIVE);
         } // If it's neither (`null`), don't change anything
 
