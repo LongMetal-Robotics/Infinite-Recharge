@@ -287,12 +287,6 @@ public class Robot extends TimedRobot {
         // shooterCheck = (shooter.getSpeed() > shootLow && shooter.getSpeed() < shootHigh);
         // SmartDashboard.putBoolean("ShooterCheck", shooterCheck);
 
-        tX = tx.getDouble(0.0);
-        tY = ty.getDouble(0.0);
-
-        SmartDashboard.putNumber("LimelightX", tX);
-        SmartDashboard.putNumber("LimelightY", tY);
-
         manager.checkSendables();
 
         // read PID coefficients from SmartDashboard
@@ -341,6 +335,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putBoolean("RPM In Range", RPMInRange);
         SmartDashboard.putNumber("RPM Diff", velocityDiff);
 
+        // Turn on the LEDs and enable vision processing
         limelightTable.getEntry("ledMode").setDouble(3.0);
         limelightTable.getEntry("camMode").setDouble(0.0);
     }
@@ -404,14 +399,17 @@ public class Robot extends TimedRobot {
 
         // Limelight line-up while B button is held
         if (bButton) {
+            updateVision(true);
             driveTrain.curveRaw(0, (tX / 30) / 2, true);
         } else if (readyClimb || panelUp) { // When panel or climb up, drive slower
+            updateVision(false);
             driveTrain.curve(
                     input.forwardStick.getY(),
                     input.forwardStick.getThrottle() * 0.1,
                     input.turnStick.getTwist(),
                     input.turnStick.getThrottle() * 0.5);
         } else {
+            updateVision(false);
             driveTrain.curve(
                     input.forwardStick.getY(),
                     input.forwardStick.getThrottle(),
@@ -434,6 +432,7 @@ public class Robot extends TimedRobot {
                 if (bButton && !shooterStop) {
                     // SmartDashboard.getNumber("Factor", conversionFactor);
 
+                    updateVision(true);
                     shooterSetPoint =
                             formula.shooterSpeed(
                                     Vision.getLimelightDistance(tY /*, Vision.Target.POWER_PORT*/),
@@ -469,6 +468,7 @@ public class Robot extends TimedRobot {
                     }
                 } else if (aButton
                         && !shooterStop) { // Sets shooter to lower speed to place into lower port
+                    updateVision(false);
                     shooter.setShooterRPM(1500);
 
                     if (RPMInRange) {
@@ -479,6 +479,7 @@ public class Robot extends TimedRobot {
                         intake.setHopperSpeed(0);
                     }
                 } else if (!shooterStop) {
+                    updateVision(false);
                     shooter.setShooterRPM(shooter.minRPM);
                 }
 
@@ -644,8 +645,10 @@ public class Robot extends TimedRobot {
     public void testPeriodic() {
         // Limelight line-up while 1 button is held
         if (input.forwardStick.getRawButton(1)) {
+            updateVision(true);
             driveTrain.curveRaw(0, (tX / 30) / 2, true);
         } else {
+            updateVision(false);
             driveTrain.curve(
                     input.forwardStick.getY(),
                     input.forwardStick.getThrottle(),
@@ -822,5 +825,19 @@ public class Robot extends TimedRobot {
             shooterSetPoint = SmartDashboard.getNumber("Set RPM", 0);
             shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
         }
+    }
+
+    private void updateVision(boolean enable) {
+        if (enable) {   // If `enable` is `true`, turn on the LEDs
+            limelightTable.getEntry("pipeline").setNumber(Constants.PIPELINE_VISION);
+        } else if (!enable) {   // If `enable` is `false`, turn off the LEDs
+            limelightTable.getEntry("pipeline").setNumber(Constants.PIPELINE_DRIVE);
+        } // If it's neither (`null`), don't change anything
+
+        tX = tx.getDouble(0.0);
+        tY = ty.getDouble(0.0);
+
+        SmartDashboard.putNumber("LimelightX", tX);
+        SmartDashboard.putNumber("LimelightY", tY);
     }
 }

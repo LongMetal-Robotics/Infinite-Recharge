@@ -109,4 +109,8 @@ public class Constants {
 
     public static final String ENABLED = "Enabled";
     public static final String DISABLED = "Disabled";
+
+    // Limelight
+    public static final int PIPELINE_VISION = 0;
+    public static final int PIPELINE_DRIVE = 1;
 }
