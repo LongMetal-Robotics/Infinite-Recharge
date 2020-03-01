@@ -30,8 +30,8 @@ public class Constants {
     // PDP = CAN ID 13
 
     // Solenoid Channels
-    public static final int kC_CLIMB1 = 4;
-    public static final int kC_CLIMB2 = 5;
+    public static final int kC_CLIMB1 = 5;
+    public static final int kC_CLIMB2 = 4;
     public static final int kC_PANEL1 = 0;
     public static final int kC_PANEL2 = 1;
 
@@ -113,4 +113,6 @@ public class Constants {
     // Limelight
     public static final int PIPELINE_VISION = 0;
     public static final int PIPELINE_DRIVE = 1;
+    public static final double LL_ON = 3.0;
+    public static final double LL_OFF = 0.0;
 }

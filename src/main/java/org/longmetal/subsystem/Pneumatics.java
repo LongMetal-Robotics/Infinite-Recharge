@@ -61,6 +61,6 @@ public class Pneumatics extends Subsystem {
 
     public void setRatchet(boolean on) throws SubsystemException {
         check();
-        drumSpin.set(on ? kForward : kReverse);
+        drumSpin.set(on ? kReverse : kForward);
     }
 }

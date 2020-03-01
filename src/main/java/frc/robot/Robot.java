@@ -248,6 +248,8 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Feed Forward", shooter.kFF);
         SmartDashboard.putNumber("Max Output", shooter.kMaxOutput);
         SmartDashboard.putNumber("Min Output", shooter.kMinOutput);
+
+        updateVision(false);
     }
 
     /**
@@ -336,7 +338,6 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("RPM Diff", velocityDiff);
 
         // Turn on the LEDs and enable vision processing
-        limelightTable.getEntry("ledMode").setDouble(3.0);
         limelightTable.getEntry("camMode").setDouble(0.0);
     }
 
@@ -570,11 +571,12 @@ public class Robot extends TimedRobot {
             try {
                 if (rButton) {
                     // Release climb upwards, disengage solenoids
-                    pneumatics.setRatchet(true);
+                    pneumatics.setRatchet(false);
                     readyClimb = true;
-                    climb.setLeftWinchSpeed(-0.2);
-                    climb.setRightWinchSpeed(0.2);
+                    climb.setLeftWinchSpeed(0.2);
+                    climb.setRightWinchSpeed(-0.2);
                 }
+
 
                 if (backButton) {
                     endgameMode = false;
@@ -590,8 +592,8 @@ public class Robot extends TimedRobot {
                         pneumatics.setRatchet(false);
 
                         // Let out both winches
-                        climb.setLeftWinchSpeed(-0.2);
-                        climb.setRightWinchSpeed(0.2);
+                        climb.setLeftWinchSpeed(0.2);
+                        climb.setRightWinchSpeed(-0.2);
                     } else {
                         // Engage ratchet
                         pneumatics.setRatchet(true);
@@ -599,13 +601,17 @@ public class Robot extends TimedRobot {
                         // Left stick down
                         // Reel in left climb (raise robot)
                         if (lStickY > Constants.kINPUT_DEADBAND) {
-                            climb.setLeftWinchSpeed(lStickY);
+                            climb.setLeftWinchSpeed(-lStickY);
+                        } else {
+                            climb.setLeftWinchSpeed(0);
                         }
 
                         // Right stick down
                         // Reel in right climb (raise robot)
                         if (rStickY > Constants.kINPUT_DEADBAND) {
-                            climb.setRightWinchSpeed(-rStickY);
+                            climb.setRightWinchSpeed(rStickY);
+                        } else {
+                            climb.setRightWinchSpeed(0);
                         }
                     }
                 }
@@ -828,9 +834,11 @@ public class Robot extends TimedRobot {
     }
 
     private void updateVision(boolean enable) {
-        if (enable) { // If `enable` is `true`, turn on the LEDs
+        if (enable) { // If `enable` is `true`, turn on the LEDs and vision processing
+            limelightTable.getEntry("ledMode").setDouble(Constants.LL_ON);
             limelightTable.getEntry("pipeline").setNumber(Constants.PIPELINE_VISION);
-        } else if (!enable) { // If `enable` is `false`, turn off the LEDs
+        } else if (!enable) { // If `enable` is `false`, turn off the LEDs and vision processing
+            limelightTable.getEntry("ledMode").setDouble(Constants.LL_OFF);
             limelightTable.getEntry("pipeline").setNumber(Constants.PIPELINE_DRIVE);
         } // If it's neither (`null`), don't change anything
 
