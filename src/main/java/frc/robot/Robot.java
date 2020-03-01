@@ -577,7 +577,6 @@ public class Robot extends TimedRobot {
                     climb.setRightWinchSpeed(-0.2);
                 }
 
-
                 if (backButton) {
                     endgameMode = false;
                     climb.setWinchSpeed(0);
