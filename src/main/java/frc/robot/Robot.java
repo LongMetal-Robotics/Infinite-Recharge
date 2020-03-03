@@ -358,12 +358,13 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during autonomous. */
     @Override
     public void autonomousPeriodic() {
-        boolean targetAcquired = false; //initially there should be no targets
-        while(!targetAcquired) //while we don't see any,
+        boolean targetAcquired = false; // initially there should be no targets
+        while (!targetAcquired) // while we don't see any,
         {
             driveTrain.curve(0.2, 0.2, 0.0, 0.0);
 
-            //float tv = limelightTable->GetNumber("tv"); //converts networkTable to a regular float?
+            // float tv = limelightTable->GetNumber("tv"); //converts networkTable to a regular
+            // float?
             /*if(tv != 0.0) //we see a target on the field
             {
                 driveTrain.curve(0.0, 0.0, 0.0, 0.0); // stops the driving
@@ -601,13 +602,13 @@ public class Robot extends TimedRobot {
                     // Sticks up
                     if (lStickY < -Constants.kINPUT_DEADBAND
                             || rStickY < -Constants.kINPUT_DEADBAND) {
-                        
+
                         // Disengage ratchet
                         pneumatics.setRatchet(false);
 
+                        // Add 0.5 second or 1 second delay after ratchet disengages, before motors
+                        // go
 
-                        // Add 0.5 second or 1 second delay after ratchet disengages, before motors go
-                        
                         if (lStickY < -Constants.kINPUT_DEADBAND) {
                             // Let out left winch
                             climb.setLeftWinchSpeed(-lStickY / 2);
@@ -617,7 +618,7 @@ public class Robot extends TimedRobot {
                             // Let out right winch
                             climb.setRightWinchSpeed(rStickY / 2);
                         }
-                       
+
                     } else {
                         // Engage ratchet
                         pneumatics.setRatchet(true);
