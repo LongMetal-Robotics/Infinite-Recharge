@@ -451,13 +451,11 @@ public class Robot extends TimedRobot {
                     updateVision(true);
                     shooterSetPoint =
                             formula.shooterSpeed(
-                                    Vision.getLimelightDistance(tY /*, Vision.Target.POWER_PORT*/),
-                                    conversionFactor);
+                                    Vision.getLimelightDistance(tY /*, Vision.Target.POWER_PORT*/));
 
-                    SmartDashboard.putNumber("Set", shooterSetPoint);
+                    // SmartDashboard.putNumber("Set", shooterSetPoint);
 
                     shooter.setShooterRPM(shooterSetPoint);
-                    // shooter.setShooterRPM(0);
 
                     SmartDashboard.putNumber(
                             "Distance",
@@ -466,7 +464,7 @@ public class Robot extends TimedRobot {
                     SmartDashboard.putNumber("SetPoint", shooterSetPoint);
 
                     /*if (RPMInRange && velocity > 1500) {
-                        shooter.setSingulatorSpeed(0.8);
+                        shooter.setSingulatorSpeed(1);
                     } else {
                         shooter.setSingulatorSpeed(0);
                     }*/
@@ -474,7 +472,7 @@ public class Robot extends TimedRobot {
                     // Singulator directly controlled by left trigger
                     // Hopper is either on or off
                     if (lTrigger > Constants.kINPUT_DEADBAND) {
-                        shooter.setSingulatorSpeed(0.9);
+                        shooter.setSingulatorSpeed(lTrigger);
                         // intake.setHopperSpeed(lTrigger);
                         // These don't work for some reason, so they're duplicated in the intake
                         // section
@@ -488,8 +486,8 @@ public class Robot extends TimedRobot {
                     shooter.setShooterRPM(1500);
 
                     if (RPMInRange) {
-                        shooter.setSingulatorSpeed(0.8);
-                        intake.setHopperSpeed(0.8);
+                        shooter.setSingulatorSpeed(1);
+                        intake.setHopperSpeed(1);
                     } else {
                         shooter.setSingulatorSpeed(0);
                         intake.setHopperSpeed(0);
@@ -531,7 +529,7 @@ public class Robot extends TimedRobot {
                 }
 
                 if (bButton && lTrigger > Constants.kINPUT_DEADBAND) {
-                    intake.setHopperSpeed(lTrigger);
+                    intake.setHopperSpeed(1);
                     /*} else if (xButton) {
                     intake.setHopperSpeed(0.8);*/
                 } else {
@@ -606,18 +604,18 @@ public class Robot extends TimedRobot {
                         // Disengage ratchet
                         pneumatics.setRatchet(false);
 
-                        // Add 0.5 second or 1 second delay after ratchet disengages, before motors
-                        // go
-
-                        if (lStickY < -Constants.kINPUT_DEADBAND) {
-                            // Let out left winch
-                            climb.setLeftWinchSpeed(-lStickY / 2);
-                        }
-
-                        if (rStickY < -Constants.kINPUT_DEADBAND) {
-                            // Let out right winch
-                            climb.setRightWinchSpeed(rStickY / 2);
-                        }
+                        // Add 0.5 second  delay after ratchet disengages, before motors go
+                        //if (timer.hasElapsed(0.5)) {
+                            if (lStickY < -Constants.kINPUT_DEADBAND) {
+                                // Let out left winch
+                                climb.setLeftWinchSpeed(-lStickY / 2);
+                            }
+    
+                            if (rStickY < -Constants.kINPUT_DEADBAND) {
+                                // Let out right winch
+                                climb.setRightWinchSpeed(rStickY / 2);
+                            }
+                        //}
 
                     } else {
                         // Engage ratchet
