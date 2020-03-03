@@ -605,17 +605,17 @@ public class Robot extends TimedRobot {
                         pneumatics.setRatchet(false);
 
                         // Add 0.5 second  delay after ratchet disengages, before motors go
-                        //if (timer.hasElapsed(0.5)) {
-                            if (lStickY < -Constants.kINPUT_DEADBAND) {
-                                // Let out left winch
-                                climb.setLeftWinchSpeed(-lStickY / 2);
-                            }
-    
-                            if (rStickY < -Constants.kINPUT_DEADBAND) {
-                                // Let out right winch
-                                climb.setRightWinchSpeed(rStickY / 2);
-                            }
-                        //}
+                        // if (timer.hasElapsed(0.5)) {
+                        if (lStickY < -Constants.kINPUT_DEADBAND) {
+                            // Let out left winch
+                            climb.setLeftWinchSpeed(-lStickY / 2);
+                        }
+
+                        if (rStickY < -Constants.kINPUT_DEADBAND) {
+                            // Let out right winch
+                            climb.setRightWinchSpeed(rStickY / 2);
+                        }
+                        // }
 
                     } else {
                         // Engage ratchet
