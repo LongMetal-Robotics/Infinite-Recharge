@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import com.revrobotics.ControlType;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -18,9 +19,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.File;
 import java.util.Scanner;
-
-import com.revrobotics.ControlType;
-
 import org.longmetal.Constants;
 import org.longmetal.exception.SubsystemDisabledException;
 import org.longmetal.exception.SubsystemException;
@@ -450,7 +448,6 @@ public class Robot extends TimedRobot {
                 shooterSetPoint = 0;
                 // I'm not sure if this is the most efficient way to do this, but I will hopefully
                 // streamline it in the future
-                
 
                 // Stops shooter
                 if (lButton) {
@@ -471,7 +468,9 @@ public class Robot extends TimedRobot {
                         if (tY != 0) {
                             shooterSetPoint =
                                     formula.shooterSpeed(
-                                            Vision.getLimelightDistance(tY /*, Vision.Target.POWER_PORT*/)) * 2.35;
+                                                    Vision.getLimelightDistance(
+                                                            tY /*, Vision.Target.POWER_PORT*/))
+                                            * 2.35;
                         }
 
                         SmartDashboard.putNumber(
@@ -518,7 +517,6 @@ public class Robot extends TimedRobot {
                     // shooter.setShooterRPM(shooterSetPoint);
                     lastShooterSetPoint = shooterSetPoint;
                 }
-                
 
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
