@@ -600,13 +600,19 @@ public class Robot extends TimedRobot {
                     // Release climb upwards, disengage solenoids
                     pneumatics.setRatchet(false);
                     readyClimb = true;
-                    climb.setLeftWinchSpeed(Constants.CLIMB_SPEED);
-                    climb.setRightWinchSpeed(Constants.CLIMB_SPEED);
+                    if (!climb.getWinchEnabled() && !climb.getWaitingWinchEnabled()) { // Winch is not enabled and we aren't waiting for it
+                        climb.delayedEnableWinch();
+                    } else if (climb.getWinchEnabled()) { // The winch is enabled! Let's climb!
+                        climb.setLeftWinchSpeed(Constants.CLIMB_SPEED);
+                        climb.setRightWinchSpeed(Constants.CLIMB_SPEED);
+                    } // We're waiting for the winch to be enabled. There's nothing to do here
                 }
 
                 if (backButton) {
                     endgameMode = false;
+                    pneumatics.setRatchet(true);
                     climb.setWinchSpeed(0);
+                    climb.setWinchEnabled(false);
                 }
 
                 if (readyClimb) {
@@ -617,23 +623,26 @@ public class Robot extends TimedRobot {
 
                         // Disengage ratchet
                         pneumatics.setRatchet(false);
+                        
+                        if (!climb.getWinchEnabled() && !climb.getWaitingWinchEnabled()) {
+                            climb.delayedEnableWinch();
+                        } else if (climb.getWinchEnabled()) {
 
-                        // Add 0.5 second  delay after ratchet disengages, before motors go
-                        // if (timer.hasElapsed(0.5)) {
-                        if (lStickY < -Constants.kINPUT_DEADBAND) {
-                            // Let out left winch
-                            climb.setLeftWinchSpeed(-lStickY / 2);
-                        }
+                            if (lStickY < -Constants.kINPUT_DEADBAND) {
+                                // Let out left winch
+                                climb.setLeftWinchSpeed(-lStickY / 2);
+                            }
 
-                        if (rStickY < -Constants.kINPUT_DEADBAND) {
-                            // Let out right winch
-                            climb.setRightWinchSpeed(-rStickY / 2);
+                            if (rStickY < -Constants.kINPUT_DEADBAND) {
+                                // Let out right winch
+                                climb.setRightWinchSpeed(-rStickY / 2);
+                            }
                         }
-                        // }
 
                     } else {
                         // Engage ratchet
                         pneumatics.setRatchet(true);
+                        climb.setWinchEnabled(false);
 
                         // Left stick down
                         // Reel in left climb (raise robot)

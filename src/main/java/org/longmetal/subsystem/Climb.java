@@ -5,12 +5,15 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import org.longmetal.Constants;
 import org.longmetal.exception.SubsystemException;
+import org.longmetal.util.Delay;
 
 public class Climb extends Subsystem {
     private CANSparkMax winch1;
     private CANSparkMax winch2;
     private CANEncoder encoder1;
     private CANEncoder encoder2;
+    private boolean winchEnabled = false;
+    private boolean waitingWinchEnabled = false;
 
     public Climb(boolean isEnabled) {
         super(isEnabled);
@@ -62,5 +65,29 @@ public class Climb extends Subsystem {
         check();
         encoder1.setPosition(0);
         encoder2.setPosition(0);
+    }
+
+    public void setWinchEnabled(boolean enabled) {
+        winchEnabled = enabled;
+    }
+
+    public boolean getWinchEnabled() {
+        return winchEnabled;
+    }
+
+    public void delayedEnableWinch() {
+        waitingWinchEnabled = true;
+        Delay.delay(new Runnable(){
+        
+            @Override
+            public void run() {
+                setWinchEnabled(true);
+                waitingWinchEnabled = false;
+            }
+        }, Constants.CLIMB_DELAY);
+    }
+
+    public boolean getWaitingWinchEnabled() {
+        return waitingWinchEnabled;
     }
 }
