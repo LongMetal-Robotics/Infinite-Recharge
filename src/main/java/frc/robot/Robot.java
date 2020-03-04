@@ -587,7 +587,7 @@ public class Robot extends TimedRobot {
                     pneumatics.setRatchet(false);
                     readyClimb = true;
                     climb.setLeftWinchSpeed(Constants.CLIMB_SPEED);
-                    climb.setRightWinchSpeed(-Constants.CLIMB_SPEED);
+                    climb.setRightWinchSpeed(Constants.CLIMB_SPEED);
                 }
 
                 if (backButton) {
@@ -613,7 +613,7 @@ public class Robot extends TimedRobot {
 
                         if (rStickY < -Constants.kINPUT_DEADBAND) {
                             // Let out right winch
-                            climb.setRightWinchSpeed(rStickY / 2);
+                            climb.setRightWinchSpeed(-rStickY / 2);
                         }
                         // }
 
@@ -632,7 +632,7 @@ public class Robot extends TimedRobot {
                         // Right stick down
                         // Reel in right climb (raise robot)
                         if (rStickY > Constants.kINPUT_DEADBAND) {
-                            climb.setRightWinchSpeed(rStickY);
+                            climb.setRightWinchSpeed(-rStickY);
                         } else {
                             climb.setRightWinchSpeed(0);
                         }
@@ -829,12 +829,12 @@ public class Robot extends TimedRobot {
 
                 // Right winch engage
                 if (rStickY > Constants.kINPUT_DEADBAND) {
-                    climb.setRightWinchSpeed(rStickY);
+                    climb.setRightWinchSpeed(-rStickY);
                 }
 
                 if (rStickY < -Constants.kINPUT_DEADBAND) {
                     pneumatics.setRatchet(true);
-                    climb.setRightWinchSpeed(-0.05);
+                    climb.setRightWinchSpeed(0.05);
                 } else {
                     pneumatics.setRatchet(false);
                 }
