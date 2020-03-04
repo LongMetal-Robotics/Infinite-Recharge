@@ -12,27 +12,29 @@ public class Delay {
     }
 
     /**
-     * Delay running a Runnable for a certain amount of time.
-     * If {@code setEnabled(false)} is called within the delay, the runnable will not run.
-     * 
-     * @param exec  The Runnable to delay
+     * Delay running a Runnable for a certain amount of time. If {@code setEnabled(false)} is called
+     * within the delay, the runnable will not run.
+     *
+     * @param exec The Runnable to delay
      * @param delay The time to delay running it (in ms)
      */
     public static void delay(Runnable exec, int delay) {
-        Thread thread = new Thread(new Runnable() {
+        Thread thread =
+                new Thread(
+                        new Runnable() {
 
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(delay);
-                    if (Delay.enabled) {
-                        exec.run();
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+                            @Override
+                            public void run() {
+                                try {
+                                    Thread.sleep(delay);
+                                    if (Delay.enabled) {
+                                        exec.run();
+                                    }
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
         thread.start();
     }
 }

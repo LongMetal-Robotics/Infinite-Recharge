@@ -345,7 +345,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
-        Delay.setEnabled(false);    // VERY IMPORTANT: Stops all delays from running when the robot is disabled
+        Delay.setEnabled(
+                false); // VERY IMPORTANT: Stops all delays from running when the robot is disabled
     }
 
     /**
