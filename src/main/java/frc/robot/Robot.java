@@ -18,6 +18,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.File;
 import java.util.Scanner;
+
+import com.revrobotics.ControlType;
+
 import org.longmetal.Constants;
 import org.longmetal.exception.SubsystemDisabledException;
 import org.longmetal.exception.SubsystemException;
@@ -72,7 +75,7 @@ public class Robot extends TimedRobot {
     double shootLow = 0;
     double shootHigh = 0;
     boolean readyClimb = false;
-    double conversionFactor = 0;
+    double conversionFactor = 2.4;
 
     NetworkTable limelightTable =
             NetworkTableInstance.getDefault()
@@ -81,7 +84,7 @@ public class Robot extends TimedRobot {
     NetworkTableEntry ty = limelightTable.getEntry("ty"); // height or something
     NetworkTableEntry tv = limelightTable.getEntry("tv"); // targets found
 
-    double tX, tY, shooterSetPoint, velocity;
+    double tX, tY, lastShooterSetPoint, shooterSetPoint, velocity;
     boolean RPMInRange = false;
 
     /**
@@ -372,6 +375,12 @@ public class Robot extends TimedRobot {
         }
     }
 
+    @Override
+    public void teleopInit() {
+        shooterSetPoint = 0;
+        lastShooterSetPoint = 0;
+    }
+
     /** This function is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
@@ -438,72 +447,78 @@ public class Robot extends TimedRobot {
 
             currentSubsystem = "Shooter";
             try {
+                shooterSetPoint = 0;
                 // I'm not sure if this is the most efficient way to do this, but I will hopefully
                 // streamline it in the future
-                if (bButton || aButton) {
-                    shooterStop = false;
-                }
-
-                if (bButton && !shooterStop) {
-                    // SmartDashboard.getNumber("Factor", conversionFactor);
-
-                    updateVision(true);
-                    shooterSetPoint =
-                            formula.shooterSpeed(
-                                    Vision.getLimelightDistance(tY /*, Vision.Target.POWER_PORT*/));
-
-                    // DEBUG: Output the set point
-                    SmartDashboard.putNumber("Set", shooterSetPoint);
-
-                    shooter.setShooterRPM(shooterSetPoint);
-
-                    SmartDashboard.putNumber(
-                            "Distance",
-                            Vision.getLimelightDistance(tY /*, Vision.Target.POWER_PORT*/));
-
-                    SmartDashboard.putNumber("SetPoint", shooterSetPoint);
-
-                    /*if (RPMInRange && velocity > 1500) {
-                        shooter.setSingulatorSpeed(1);
-                    } else {
-                        shooter.setSingulatorSpeed(0);
-                    }*/
-
-                    // Singulator directly controlled by left trigger
-                    // Hopper is either on or off
-                    if (lTrigger > Constants.kINPUT_DEADBAND) {
-                        shooter.setSingulatorSpeed(lTrigger);
-                        // intake.setHopperSpeed(lTrigger);
-                        // These don't work for some reason, so they're duplicated in the intake
-                        // section
-                    } else {
-                        shooter.setSingulatorSpeed(0);
-                        // intake.setHopperSpeed(0);
-                    }
-                } else if (aButton
-                        && !shooterStop) { // Sets shooter to lower speed to place into lower port
-                    updateVision(false);
-                    shooter.setShooterRPM(1500);
-
-                    if (RPMInRange) {
-                        shooter.setSingulatorSpeed(1);
-                        intake.setHopperSpeed(1);
-                    } else {
-                        shooter.setSingulatorSpeed(0);
-                        intake.setHopperSpeed(0);
-                    }
-                } else if (!shooterStop) {
-                    updateVision(false);
-                    shooter.setShooterRPM(shooter.minRPM);
-                }
+                
 
                 // Stops shooter
                 if (lButton) {
                     shooterStop = true;
+                    // intake.setHopperSpeed(0);
+                } else if (bButton || aButton) {
+                    shooterStop = false;
+                }
+
+                if (shooterStop) {
                     shooter.setShooterRPM(0);
                     shooter.setSingulatorSpeed(0);
-                    // intake.setHopperSpeed(0);
+                } else {
+                    if (bButton) {
+                        // SmartDashboard.getNumber("Factor", conversionFactor);
+
+                        updateVision(true);
+                        if (tY != 0) {
+                            shooterSetPoint =
+                                    formula.shooterSpeed(
+                                            Vision.getLimelightDistance(tY /*, Vision.Target.POWER_PORT*/)) * 2.35;
+                        }
+
+                        SmartDashboard.putNumber(
+                                "Distance",
+                                Vision.getLimelightDistance(tY /*, Vision.Target.POWER_PORT*/));
+
+                        /*if (RPMInRange && velocity > 1500) {
+                            shooter.setSingulatorSpeed(1);
+                        } else {
+                            shooter.setSingulatorSpeed(0);
+                        }*/
+
+                        // Singulator directly controlled by left trigger
+                        // Hopper is either on or off
+                        if (lTrigger > Constants.kINPUT_DEADBAND) {
+                            shooter.setSingulatorSpeed(lTrigger);
+                            // intake.setHopperSpeed(lTrigger);
+                            // These don't work for some reason, so they're duplicated in the intake
+                            // section
+                        } else {
+                            shooter.setSingulatorSpeed(0);
+                            // intake.setHopperSpeed(0);
+                        }
+                    } else if (aButton) { // Sets shooter to lower speed to place into lower port
+                        updateVision(false);
+                        shooterSetPoint = 1500;
+
+                        if (RPMInRange) {
+                            shooter.setSingulatorSpeed(1);
+                            intake.setHopperSpeed(1);
+                        } else {
+                            shooter.setSingulatorSpeed(0);
+                            intake.setHopperSpeed(0);
+                        }
+                    } else {
+                        updateVision(false);
+                        shooterSetPoint = shooter.minRPM;
+                    }
                 }
+
+                SmartDashboard.putNumber("Set", shooterSetPoint);
+                if (shooterSetPoint != lastShooterSetPoint) {
+                    shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
+                    // shooter.setShooterRPM(shooterSetPoint);
+                    lastShooterSetPoint = shooterSetPoint;
+                }
+                
 
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
@@ -561,7 +576,7 @@ public class Robot extends TimedRobot {
                 }
 
                 // Temporary control for flipping arm up
-                panelListenerTurns.update(xButton);
+                panelListenerTurns.update(!xButton);
 
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
@@ -851,8 +866,8 @@ public class Robot extends TimedRobot {
                 }
             }
 
-            // shooterSetPoint = SmartDashboard.getNumber("Set RPM", 0);
-            // shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
+            shooterSetPoint = SmartDashboard.getNumber("Set RPM", 0);
+            shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
         }
     }
 
