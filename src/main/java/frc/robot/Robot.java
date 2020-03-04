@@ -453,7 +453,8 @@ public class Robot extends TimedRobot {
                             formula.shooterSpeed(
                                     Vision.getLimelightDistance(tY /*, Vision.Target.POWER_PORT*/));
 
-                    // SmartDashboard.putNumber("Set", shooterSetPoint);
+                    // DEBUG: Output the set point
+                    SmartDashboard.putNumber("Set", shooterSetPoint);
 
                     shooter.setShooterRPM(shooterSetPoint);
 
@@ -851,8 +852,8 @@ public class Robot extends TimedRobot {
                 }
             }
 
-            shooterSetPoint = SmartDashboard.getNumber("Set RPM", 0);
-            shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
+            // shooterSetPoint = SmartDashboard.getNumber("Set RPM", 0);
+            // shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
         }
     }
 
