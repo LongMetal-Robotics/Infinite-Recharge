@@ -35,6 +35,7 @@ import org.longmetal.subsystem.Shooter;
 import org.longmetal.subsystem.SubsystemManager;
 import org.longmetal.subsystem.Vision;
 import org.longmetal.util.Console;
+import org.longmetal.util.Delay;
 import org.longmetal.util.Listener;
 import org.longmetal.util.ShootFormula;
 
@@ -342,6 +343,11 @@ public class Robot extends TimedRobot {
         limelightTable.getEntry("camMode").setDouble(0.0);
     }
 
+    @Override
+    public void disabledInit() {
+        Delay.setEnabled(false);    // VERY IMPORTANT: Stops all delays from running when the robot is disabled
+    }
+
     /**
      * This autonomous (along with the chooser code above) shows how to select between different
      * autonomous modes using the dashboard. The sendable chooser code works with the Java
@@ -353,7 +359,9 @@ public class Robot extends TimedRobot {
      * chooser code above as well.
      */
     @Override
-    public void autonomousInit() {}
+    public void autonomousInit() {
+        Delay.setEnabled(true); // Allows Delay to be used
+    }
 
     /** This function is called periodically during autonomous. */
     @Override
@@ -371,6 +379,11 @@ public class Robot extends TimedRobot {
                 //method to make the robot drive towards / align to the target
             }*/
         }
+    }
+
+    @Override
+    public void teleopInit() {
+        Delay.setEnabled(true); // Allows Delay to be used
     }
 
     /** This function is called periodically during operator control. */
