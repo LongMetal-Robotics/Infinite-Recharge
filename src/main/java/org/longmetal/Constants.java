@@ -44,7 +44,8 @@ public class Constants {
     // Normally, down is positive. We want up to be positive.
 
     // Input
-    public static final double kINPUT_DEADBAND = 0.1; // If the value hasn't changed by more than this much we'll ignore it
+    public static final double kINPUT_DEADBAND =
+            0.1; // If the value hasn't changed by more than this much we'll ignore it
 
     // Drive joysticks
     public static final int kP_LEFT_STICK = 0; // Left joystick port
@@ -109,5 +110,4 @@ public class Constants {
     // String literals for multiple reuses
     public static final String kENABLED = "Enabled";
     public static final String kDISABLED = "Disabled";
-
 }
