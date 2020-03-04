@@ -38,9 +38,7 @@ public class LMMath {
         }
     }
 
-    /**
-     * Returns the minimum of a and b
-     */
+    /** Returns the minimum of a and b */
     public static Number min(Number a, Number b) {
         if (a.doubleValue() < b.doubleValue()) {
             return a;
@@ -49,9 +47,7 @@ public class LMMath {
         }
     }
 
-    /**
-     * Returns the maximum of a and b
-     */
+    /** Returns the maximum of a and b */
     public static Number max(Number a, Number b) {
         if (a.doubleValue() > b.doubleValue()) {
             return a;

@@ -89,6 +89,7 @@ public class DriveTrain {
 
     /**
      * Setup straight driving for a distance
+     *
      * @param distance The distance to drive (in feet)
      */
     public void setupDistance(double distance) {
@@ -100,6 +101,7 @@ public class DriveTrain {
 
     /**
      * Drive for the distance set up by setupDistance. Includes drift correction.
+     *
      * @return whether the robot is running the distance. If false, it has completed its maneuver
      */
     public boolean runDistance() {
@@ -110,7 +112,8 @@ public class DriveTrain {
         // double averageDistance = (leftEncoder.getPosition() + rightEncoder.getPosition()) / 2;
         boolean run = autoDrive && autoDistance > 0 && minDistance < autoDistance;
         if (run) {
-            driveTrain.curvatureDrive(0.4, sideDifference * Constants.DRIFT_CORRECTION_FACTOR, false);
+            driveTrain.curvatureDrive(
+                    0.4, sideDifference * Constants.DRIFT_CORRECTION_FACTOR, false);
         } else {
             autoDistance = 0;
             autoDrive = false;
