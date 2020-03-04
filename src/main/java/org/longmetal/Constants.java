@@ -106,6 +106,7 @@ public class Constants {
     public static final String CLIMB_STATE_KEY = "Climb Enabled";
     public static final String PANEL_STATE_KEY = "Panel Enabled";
     public static final String PANEL_KEY = "Enable Panel";
+    public static final double CLIMB_SPEED = 0.3;
 
     public static final String ENABLED = "Enabled";
     public static final String DISABLED = "Disabled";

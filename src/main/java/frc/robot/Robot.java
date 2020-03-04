@@ -573,8 +573,8 @@ public class Robot extends TimedRobot {
                     // Release climb upwards, disengage solenoids
                     pneumatics.setRatchet(false);
                     readyClimb = true;
-                    climb.setLeftWinchSpeed(0.2);
-                    climb.setRightWinchSpeed(-0.2);
+                    climb.setLeftWinchSpeed(Constants.CLIMB_SPEED);
+                    climb.setRightWinchSpeed(-Constants.CLIMB_SPEED);
                 }
 
 
@@ -592,8 +592,8 @@ public class Robot extends TimedRobot {
                         pneumatics.setRatchet(false);
 
                         // Let out both winches
-                        climb.setLeftWinchSpeed(0.2);
-                        climb.setRightWinchSpeed(-0.2);
+                        climb.setLeftWinchSpeed(Constants.CLIMB_SPEED);
+                        climb.setRightWinchSpeed(-Constants.CLIMB_SPEED);
                     } else {
                         // Engage ratchet
                         pneumatics.setRatchet(true);
