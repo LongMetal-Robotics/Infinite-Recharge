@@ -80,6 +80,7 @@ public class Robot extends TimedRobot {
                     .getTable("limelight"); // takes in values from limelight
     NetworkTableEntry tx = limelightTable.getEntry("tx"); // distances
     NetworkTableEntry ty = limelightTable.getEntry("ty"); // height or something
+    NetworkTableEntry tv = limelightTable.getEntry("tv"); // targets found
 
     double tX, tY, shooterSetPoint, velocity;
     boolean RPMInRange = false;
@@ -196,7 +197,7 @@ public class Robot extends TimedRobot {
                         // null,
                         false);
 
-        // timer.start();
+        timer.start();
 
         chooserQuinnDrive = new SendableChooser<>();
         chooserQuinnDrive.setDefaultOption("Disabled", false);
@@ -356,7 +357,21 @@ public class Robot extends TimedRobot {
 
     /** This function is called periodically during autonomous. */
     @Override
-    public void autonomousPeriodic() {}
+    public void autonomousPeriodic() {
+        boolean targetAcquired = false; // initially there should be no targets
+        while (!targetAcquired) // while we don't see any,
+        {
+            driveTrain.curve(0.2, 0.2, 0.0, 0.0);
+
+            // float tv = limelightTable->GetNumber("tv"); //converts networkTable to a regular
+            // float?
+            /*if(tv != 0.0) //we see a target on the field
+            {
+                driveTrain.curve(0.0, 0.0, 0.0, 0.0); // stops the driving
+                //method to make the robot drive towards / align to the target
+            }*/
+        }
+    }
 
     /** This function is called periodically during operator control. */
     @Override
@@ -436,13 +451,11 @@ public class Robot extends TimedRobot {
                     updateVision(true);
                     shooterSetPoint =
                             formula.shooterSpeed(
-                                    Vision.getLimelightDistance(tY /*, Vision.Target.POWER_PORT*/),
-                                    conversionFactor);
+                                    Vision.getLimelightDistance(tY /*, Vision.Target.POWER_PORT*/));
 
-                    SmartDashboard.putNumber("Set", shooterSetPoint);
+                    // SmartDashboard.putNumber("Set", shooterSetPoint);
 
                     shooter.setShooterRPM(shooterSetPoint);
-                    // shooter.setShooterRPM(0);
 
                     SmartDashboard.putNumber(
                             "Distance",
@@ -451,7 +464,7 @@ public class Robot extends TimedRobot {
                     SmartDashboard.putNumber("SetPoint", shooterSetPoint);
 
                     /*if (RPMInRange && velocity > 1500) {
-                        shooter.setSingulatorSpeed(0.8);
+                        shooter.setSingulatorSpeed(1);
                     } else {
                         shooter.setSingulatorSpeed(0);
                     }*/
@@ -459,7 +472,7 @@ public class Robot extends TimedRobot {
                     // Singulator directly controlled by left trigger
                     // Hopper is either on or off
                     if (lTrigger > Constants.kINPUT_DEADBAND) {
-                        shooter.setSingulatorSpeed(0.9);
+                        shooter.setSingulatorSpeed(lTrigger);
                         // intake.setHopperSpeed(lTrigger);
                         // These don't work for some reason, so they're duplicated in the intake
                         // section
@@ -473,8 +486,8 @@ public class Robot extends TimedRobot {
                     shooter.setShooterRPM(1500);
 
                     if (RPMInRange) {
-                        shooter.setSingulatorSpeed(0.8);
-                        intake.setHopperSpeed(0.8);
+                        shooter.setSingulatorSpeed(1);
+                        intake.setHopperSpeed(1);
                     } else {
                         shooter.setSingulatorSpeed(0);
                         intake.setHopperSpeed(0);
@@ -516,7 +529,7 @@ public class Robot extends TimedRobot {
                 }
 
                 if (bButton && lTrigger > Constants.kINPUT_DEADBAND) {
-                    intake.setHopperSpeed(lTrigger);
+                    intake.setHopperSpeed(1);
                     /*} else if (xButton) {
                     intake.setHopperSpeed(0.8);*/
                 } else {
@@ -577,7 +590,6 @@ public class Robot extends TimedRobot {
                     climb.setRightWinchSpeed(-Constants.CLIMB_SPEED);
                 }
 
-
                 if (backButton) {
                     endgameMode = false;
                     climb.setWinchSpeed(0);
@@ -588,12 +600,23 @@ public class Robot extends TimedRobot {
                     // Sticks up
                     if (lStickY < -Constants.kINPUT_DEADBAND
                             || rStickY < -Constants.kINPUT_DEADBAND) {
+
                         // Disengage ratchet
                         pneumatics.setRatchet(false);
 
-                        // Let out both winches
-                        climb.setLeftWinchSpeed(Constants.CLIMB_SPEED);
-                        climb.setRightWinchSpeed(-Constants.CLIMB_SPEED);
+                        // Add 0.5 second  delay after ratchet disengages, before motors go
+                        // if (timer.hasElapsed(0.5)) {
+                        if (lStickY < -Constants.kINPUT_DEADBAND) {
+                            // Let out left winch
+                            climb.setLeftWinchSpeed(-lStickY / 2);
+                        }
+
+                        if (rStickY < -Constants.kINPUT_DEADBAND) {
+                            // Let out right winch
+                            climb.setRightWinchSpeed(rStickY / 2);
+                        }
+                        // }
+
                     } else {
                         // Engage ratchet
                         pneumatics.setRatchet(true);
