@@ -600,7 +600,10 @@ public class Robot extends TimedRobot {
                     // Release climb upwards, disengage solenoids
                     pneumatics.setRatchet(false);
                     readyClimb = true;
-                    if (!climb.getWinchEnabled() && !climb.getWaitingWinchEnabled()) { // Winch is not enabled and we aren't waiting for it
+                    if (!climb.getWinchEnabled()
+                            && !climb
+                                    .getWaitingWinchEnabled()) { // Winch is not enabled and we
+                                                                 // aren't waiting for it
                         climb.delayedEnableWinch();
                     } else if (climb.getWinchEnabled()) { // The winch is enabled! Let's climb!
                         climb.setLeftWinchSpeed(Constants.CLIMB_SPEED);
@@ -623,7 +626,7 @@ public class Robot extends TimedRobot {
 
                         // Disengage ratchet
                         pneumatics.setRatchet(false);
-                        
+
                         if (!climb.getWinchEnabled() && !climb.getWaitingWinchEnabled()) {
                             climb.delayedEnableWinch();
                         } else if (climb.getWinchEnabled()) {

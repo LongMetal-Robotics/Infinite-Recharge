@@ -77,14 +77,16 @@ public class Climb extends Subsystem {
 
     public void delayedEnableWinch() {
         waitingWinchEnabled = true;
-        Delay.delay(new Runnable(){
-        
-            @Override
-            public void run() {
-                setWinchEnabled(true);
-                waitingWinchEnabled = false;
-            }
-        }, Constants.CLIMB_DELAY);
+        Delay.delay(
+                new Runnable() {
+
+                    @Override
+                    public void run() {
+                        setWinchEnabled(true);
+                        waitingWinchEnabled = false;
+                    }
+                },
+                Constants.CLIMB_DELAY);
     }
 
     public boolean getWaitingWinchEnabled() {
