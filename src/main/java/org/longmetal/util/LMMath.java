@@ -37,4 +37,26 @@ public class LMMath {
             return value; // Return the actual value
         }
     }
+
+    /**
+     * Returns the minimum of a and b
+     */
+    public static Number min(Number a, Number b) {
+        if (a.doubleValue() < b.doubleValue()) {
+            return a;
+        } else {
+            return b;
+        }
+    }
+
+    /**
+     * Returns the maximum of a and b
+     */
+    public static Number max(Number a, Number b) {
+        if (a.doubleValue() > b.doubleValue()) {
+            return a;
+        } else {
+            return b;
+        }
+    }
 }

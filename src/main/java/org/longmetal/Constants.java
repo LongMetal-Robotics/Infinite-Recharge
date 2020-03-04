@@ -52,6 +52,11 @@ public class Constants {
     public static final double kSPEED_MODIFIER = 0.7; // Speed modifier (on throttle)
     public static final double kTHROTTLE_SHIFT = 1.05; // Shift throttle up
     public static final double kCURVE_MODIFIER = -0.25; // Curve modifier
+    public static final double GEARBOX_TO_FEET = 12 / (Math.PI * 7.65); // Convert between rotations of output shaft to feet
+                                                                        // The circumference of the wheels are ~24.03" [pi*7.65 (diameter)]
+    public static final double GEARBOX_RATIO = 1 / 10.75; // The drive gearboxes are 10.75:1
+    public static final double MOTOR_TO_FEET = GEARBOX_RATIO * GEARBOX_TO_FEET; // The ratio of motor rotations to feet
+    public static final double DRIFT_CORRECTION_FACTOR = 0.05;
 
     // Drive joysticks
     public static final int kP_LEFT_STICK = 0; // Left joystick port
