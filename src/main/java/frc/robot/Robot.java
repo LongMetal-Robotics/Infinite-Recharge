@@ -36,6 +36,7 @@ import org.longmetal.subsystem.SubsystemManager;
 import org.longmetal.subsystem.Vision;
 import org.longmetal.util.Console;
 import org.longmetal.util.Delay;
+import org.longmetal.util.LMMath;
 import org.longmetal.util.Listener;
 import org.longmetal.util.ShootFormula;
 
@@ -474,12 +475,11 @@ public class Robot extends TimedRobot {
                         // SmartDashboard.getNumber("Factor", conversionFactor);
 
                         updateVision(true);
-                        if (tY != 0) {
-                            shooterSetPoint =
-                                    formula.shooterSpeed(
-                                                    Vision.getLimelightDistance(
-                                                            tY /*, Vision.Target.POWER_PORT*/))
-                                            * 2.35;
+                        if (tY >= 10) {
+                            shooterSetPoint = (double)LMMath.limit(formula.shooterSpeed(
+                                Vision.getLimelightDistance(
+                                        tY /*, Vision.Target.POWER_PORT*/)) * 2.35,
+                                    shooter.minRPM, shooter.maxRPM);
                         }
 
                         SmartDashboard.putNumber(
@@ -496,12 +496,12 @@ public class Robot extends TimedRobot {
                         // Hopper is either on or off
                         if (lTrigger > Constants.kINPUT_DEADBAND) {
                             shooter.setSingulatorSpeed(lTrigger);
-                            // intake.setHopperSpeed(lTrigger);
+                            intake.setHopperSpeed(1);
                             // These don't work for some reason, so they're duplicated in the intake
                             // section
                         } else {
                             shooter.setSingulatorSpeed(0);
-                            // intake.setHopperSpeed(0);
+                            intake.setHopperSpeed(0);
                         }
                     } else if (aButton) { // Sets shooter to lower speed to place into lower port
                         updateVision(false);
@@ -544,19 +544,21 @@ public class Robot extends TimedRobot {
                 // Sets intake to a speed
                 if (rTrigger > Constants.kINPUT_DEADBAND) {
                     intake.setIntakeSpeed(rTrigger);
+                    intake.setHopperSpeed(rTrigger);
                 } else if (rButton) { // Reverse intake
                     intake.setIntakeSpeed(-0.3);
                 } else { // Stop intake
                     intake.setIntakeSpeed(0);
-                }
-
-                if (bButton && lTrigger > Constants.kINPUT_DEADBAND) {
-                    intake.setHopperSpeed(1);
-                    /*} else if (xButton) {
-                    intake.setHopperSpeed(0.8);*/
-                } else {
                     intake.setHopperSpeed(0);
                 }
+
+                // if (bButton && lTrigger > Constants.kINPUT_DEADBAND) {
+                //     intake.setHopperSpeed(1);
+                //     /*} else if (xButton) {
+                //     intake.setHopperSpeed(0.8);*/
+                // } else {
+                //     intake.setHopperSpeed(0);
+                // }
 
                 intakeListener.update(intakeLimit.get());
 
