@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import com.revrobotics.ControlType;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -18,9 +19,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.File;
 import java.util.Scanner;
-
-import com.revrobotics.ControlType;
-
 import org.longmetal.Constants;
 import org.longmetal.exception.SubsystemDisabledException;
 import org.longmetal.exception.SubsystemException;
@@ -329,31 +327,26 @@ public class Robot extends TimedRobot {
             try {
                 intake.setIntakeSpeed(1.0);
                 intake.setHopperSpeed(0.8);
-            } 
-            catch (SubsystemException e) {
+            } catch (SubsystemException e) {
                 System.out.println("ERROR: Intake could not be turned on.");
             }
             driveTrain.curve(-0.2, -0.2, 0.0, 0.0);
-        }
-        else{
+        } else {
             try {
                 intake.setIntakeSpeed(0.0);
                 intake.setHopperSpeed(0.0);
-            } 
-            catch (SubsystemException e) {
+            } catch (SubsystemException e) {
                 System.out.println("ERROR: Intake could not be turned off.");
             }
-            
+
             driveTrain.curve(0.0, 0.0, 0.0, 0.0);
             hasCollected = true;
         }
-        
-        while(hasCollected)
-        {
+
+        while (hasCollected) {
             updateVision(true);
             driveTrain.curveRaw(0, (tX / 30) / 2, true);
-            if(tX < 0.05)
-            {
+            if (tX < 0.05) {
                 updateVision(false);
                 driveTrain.curve(0.0, 0.0, 0.0, 0.0);
                 hasTurned = true;
@@ -363,8 +356,7 @@ public class Robot extends TimedRobot {
 
         String currentSubsystem = "Subsystem";
 
-        while(hasTurned)
-        {
+        while (hasTurned) {
             currentSubsystem = "Shooter";
             try {
                 // if (lTrigger > Constants.kINPUT_DEADBAND) {
@@ -400,12 +392,10 @@ public class Robot extends TimedRobot {
             shooterSetPoint = SmartDashboard.getNumber("Set RPM", 0);
             shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
 
-            if(timer.get() > 14.5)
-                break;
+            if (timer.get() > 14.5) break;
         }
 
-        if(timer.get() > 14.5)
-        {
+        if (timer.get() > 14.5) {
             driveTrain.curve(0.0, 0.0, 0.0, 0.0);
             try {
                 intake.setHopperSpeed(0.0);
