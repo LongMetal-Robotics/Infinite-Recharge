@@ -476,10 +476,15 @@ public class Robot extends TimedRobot {
 
                         updateVision(true);
                         if (tY >= 10) {
-                            shooterSetPoint = (double)LMMath.limit(formula.shooterSpeed(
-                                Vision.getLimelightDistance(
-                                        tY /*, Vision.Target.POWER_PORT*/)) * 2.35,
-                                    shooter.minRPM, shooter.maxRPM);
+                            shooterSetPoint =
+                                    (double)
+                                            LMMath.limit(
+                                                    formula.shooterSpeed(
+                                                                    Vision.getLimelightDistance(
+                                                                            tY /*, Vision.Target.POWER_PORT*/))
+                                                            * 2.35,
+                                                    shooter.minRPM,
+                                                    shooter.maxRPM);
                         }
 
                         SmartDashboard.putNumber(
