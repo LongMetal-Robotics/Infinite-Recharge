@@ -18,6 +18,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.File;
 import java.util.Scanner;
+
+import com.revrobotics.ControlType;
+
 import org.longmetal.Constants;
 import org.longmetal.exception.SubsystemDisabledException;
 import org.longmetal.exception.SubsystemException;
@@ -310,14 +313,118 @@ public class Robot extends TimedRobot {
      * chooser code above as well.
      */
     @Override
-    public void autonomousInit() {}
+    public void autonomousInit() {
+        timer.reset();
+        timer.start();
+    }
 
     /** This function is called periodically during autonomous. */
     @Override
-    public void autonomousPeriodic() {}
+    public void autonomousPeriodic() {
+        boolean hasCollected = false;
+        boolean hasTurned = false;
 
-    /** This function is called periodically during operator control. */
+        if (timer.get() < 4.0) //
+        {
+            try {
+                intake.setIntakeSpeed(1.0);
+                intake.setHopperSpeed(0.8);
+            } 
+            catch (SubsystemException e) {
+                System.out.println("ERROR: Intake could not be turned on.");
+            }
+            driveTrain.curve(-0.2, -0.2, 0.0, 0.0);
+        }
+        else{
+            try {
+                intake.setIntakeSpeed(0.0);
+                intake.setHopperSpeed(0.0);
+            } 
+            catch (SubsystemException e) {
+                System.out.println("ERROR: Intake could not be turned off.");
+            }
+            
+            driveTrain.curve(0.0, 0.0, 0.0, 0.0);
+            hasCollected = true;
+        }
+        
+        while(hasCollected)
+        {
+            updateVision(true);
+            driveTrain.curveRaw(0, (tX / 30) / 2, true);
+            if(tX < 0.05)
+            {
+                updateVision(false);
+                driveTrain.curve(0.0, 0.0, 0.0, 0.0);
+                hasTurned = true;
+                break;
+            }
+        }
+
+        String currentSubsystem = "Subsystem";
+
+        while(hasTurned)
+        {
+            currentSubsystem = "Shooter";
+            try {
+                // if (lTrigger > Constants.kINPUT_DEADBAND) {
+                //     shooter.runShooter(lTrigger);
+                // }
+
+                // Stops shooter
+                // if (lButton) {
+                //     shooter.stop();
+                // }
+
+                // if (bButton) {
+                if (RPMInRange && velocity > 1500) {
+                    shooter.setSingulatorSpeed(0.8);
+                    intake.setHopperSpeed(0.8);
+                } else {
+                    shooter.setSingulatorSpeed(0);
+                    intake.setHopperSpeed(0.0);
+                }
+
+            } catch (SubsystemException e) {
+                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
+                e.printStackTrace();
+
+                boolean isUninitialized =
+                        e.getClass().isInstance(SubsystemUninitializedException.class);
+                if (Shooter.getEnabled() && isUninitialized) {
+
+                    shooter.init();
+                }
+            }
+
+            shooterSetPoint = SmartDashboard.getNumber("Set RPM", 0);
+            shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
+
+            if(timer.get() > 14.5)
+                break;
+        }
+
+        if(timer.get() > 14.5)
+        {
+            driveTrain.curve(0.0, 0.0, 0.0, 0.0);
+            try {
+                intake.setHopperSpeed(0.0);
+                shooter.setSingulatorSpeed(0);
+            } catch (SubsystemException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+
     @Override
+    public void teleopInit() {
+        shooterSetPoint = 0;
+        lastShooterSetPoint = 0;
+    }
+
+    @Override
+    /** This function is called periodically during operator control. */
     public void teleopPeriodic() {
 
         // Left Gamepad trigger, currently used for shooter
