@@ -43,12 +43,14 @@ public class Intake extends Subsystem {
         check();
         mHopper.set(ControlMode.PercentOutput, -d);
 
-        Delay.delay(new Runnable(){
-        
-            @Override
-            public void run() {
-                mHopper.set(ControlMode.PercentOutput, 0);
-            }
-        }, 3000);
+        Delay.delay(
+                new Runnable() {
+
+                    @Override
+                    public void run() {
+                        mHopper.set(ControlMode.PercentOutput, 0);
+                    }
+                },
+                3000);
     }
 }
