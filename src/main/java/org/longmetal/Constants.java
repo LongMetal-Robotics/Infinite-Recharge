@@ -13,8 +13,8 @@ public class Constants {
     public static final int kP_REAR_RIGHT = 4;
 
     // Climb CAN IDs
-    public static final int kP_WINCH1 = 5;
-    public static final int kP_WINCH2 = 6;
+    public static final int kP_LWINCH = 5;
+    public static final int kP_RWINCH = 6;
 
     // Manipulator CAN IDs
     public static final int kP_SHOOTER = 7;
@@ -30,10 +30,10 @@ public class Constants {
     // PDP = CAN ID 13
 
     // Solenoid Channels
+    public static final int kC_CLIMB1 = 5;
+    public static final int kC_CLIMB2 = 4;
     public static final int kC_PANEL1 = 0;
-    public static final int kC_CLIMB1 = 1;
-    public static final int kC_CLIMB2 = 2;
-    public static final int kC_PANEL2 = 3;
+    public static final int kC_PANEL2 = 1;
 
     // Input
     // Gamepad Input Ports/Axis/Buttons
@@ -63,13 +63,10 @@ public class Constants {
     // Drive joysticks
     public static final int kP_LEFT_STICK = 0; // Left joystick port
     public static final int kP_RIGHT_STICK = 1; // Right joystick port
-
     public static final int kFORWARD_BUTTON = 5; // Forward button
     public static final int kREVERSE_BUTTON = 3; // Reverse button
 
     // Shooter
-    public static final String kSHOOTER_STATE_KEY = "Shooter Enabled"; // SmartDashboard value key
-    public static final String kSHOOTER_ENABLER_KEY = "Enable Shooter";
     public static final double kSHOOTER_MIN = 0.1; // Min shooter speed
     public static final double kSHOOTER_MAX =
             0.75; // Max shooter speed (to protect against excessive amperage or safety I guess)
@@ -85,24 +82,27 @@ public class Constants {
     // Control Panel
     public static final double kCONTROL_PANEL_SPEED = 0.4; // Control Panel Speed
 
-    // Preferences
-    public static final String kSHOOTER_KEY = "SHOOTER";
-    public static final String kINTAKE_KEY = "INTAKE";
-    public static final String kPANEL_KEY = "PANEL";
-    public static final String kCLIMB_KEY = "CLIMB";
-
-    // String literals for multiple reuses
-    public static final String kENABLED = "Enabled";
-    public static final String kDISABLED = "Disabled";
-
-    // Control Panel
+    // Control Panel + Climb
     public static final double k_SPINRATE = 0.2;
+    public static final double CLIMB_SPEED = 0.3;
 
     // Colors
     public static final Color kBlueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
     public static final Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
     public static final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
     public static final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
+
+    // Limelight
+    public static final int PIPELINE_VISION = 0;
+    public static final int PIPELINE_DRIVE = 1;
+    public static final double LL_ON = 3.0;
+    public static final double LL_OFF = 0.0;
+
+    // Preferences
+    public static final String kSHOOTER_KEY = "SHOOTER";
+    public static final String kINTAKE_KEY = "INTAKE";
+    public static final String kPANEL_KEY = "PANEL";
+    public static final String kCLIMB_KEY = "CLIMB";
 
     // Subsystem Management
     public static final String SHOOTER_KEY = "Enable Shooter";
@@ -114,6 +114,7 @@ public class Constants {
     public static final String PANEL_STATE_KEY = "Panel Enabled";
     public static final String PANEL_KEY = "Enable Panel";
 
-    public static final String ENABLED = "Enabled";
-    public static final String DISABLED = "Disabled";
+    // String literals for multiple reuses
+    public static final String kENABLED = "Enabled";
+    public static final String kDISABLED = "Disabled";
 }

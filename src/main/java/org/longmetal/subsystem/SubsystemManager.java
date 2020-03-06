@@ -14,29 +14,29 @@ public class SubsystemManager {
     public SubsystemManager() {
         Preferences preferences = Preferences.getInstance();
 
-        int i = 0;
+        // int i = 0;
 
-        for (Subsystem subsystem : Subsystem.values()) {
-            boolean subsystemEnableValue = preferences.getBoolean(subsystem.name(), false);
+        // for (Subsystem subsystem : Subsystem.values()) {
+        //     boolean subsystemEnableValue = preferences.getBoolean(subsystem.name(), false);
 
-            Runnable enableSubsystem =
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            SubsystemManager.setSubsystem(subsystem, true);
-                        }
-                    };
-            Runnable disableSubsystem =
-                    new Runnable() {
+        //     Runnable enableSubsystem =
+        //             new Runnable() {
+        //                 @Override
+        //                 public void run() {
+        //                     SubsystemManager.setSubsystem(subsystem, true);
+        //                 }
+        //             };
+        //     Runnable disableSubsystem =
+        //             new Runnable() {
 
-                        @Override
-                        public void run() {
-                            SubsystemManager.setSubsystem(subsystem, false);
-                        }
-                    };
+        //                 @Override
+        //                 public void run() {
+        //                     SubsystemManager.setSubsystem(subsystem, false);
+        //                 }
+        //             };
 
-            // subsystemEnable;
-        }
+        //     // subsystemEnable;
+        // }
 
         // Shooter
         boolean shooterEnableValue =
@@ -64,11 +64,11 @@ public class SubsystemManager {
             // is always first but the
             // initially selected option indicates whether the subsystem is actually enabled or not
             // based on previously-saved preferences
-            shooterEnable.setDefaultOption(Constants.ENABLED, enableShooter);
-            shooterEnable.addOption(Constants.DISABLED, disableShooter);
+            shooterEnable.setDefaultOption(Constants.kENABLED, enableShooter);
+            shooterEnable.addOption(Constants.kDISABLED, disableShooter);
         } else {
-            shooterEnable.addOption(Constants.ENABLED, enableShooter);
-            shooterEnable.setDefaultOption(Constants.DISABLED, disableShooter);
+            shooterEnable.addOption(Constants.kENABLED, enableShooter);
+            shooterEnable.setDefaultOption(Constants.kDISABLED, disableShooter);
         }
         SmartDashboard.putData(Constants.SHOOTER_KEY, shooterEnable);
         SmartDashboard.putBoolean(Constants.kSHOOTER_KEY, shooterEnableValue);
@@ -98,11 +98,11 @@ public class SubsystemManager {
 
         intakeEnable = new SendableChooser<>();
         if (intakeEnableValue) {
-            intakeEnable.setDefaultOption(Constants.ENABLED, enableIntake);
-            intakeEnable.addOption(Constants.DISABLED, disableIntake);
+            intakeEnable.setDefaultOption(Constants.kENABLED, enableIntake);
+            intakeEnable.addOption(Constants.kDISABLED, disableIntake);
         } else {
-            intakeEnable.addOption(Constants.ENABLED, enableIntake);
-            intakeEnable.setDefaultOption(Constants.DISABLED, disableIntake);
+            intakeEnable.addOption(Constants.kENABLED, enableIntake);
+            intakeEnable.setDefaultOption(Constants.kDISABLED, disableIntake);
         }
         SmartDashboard.putData(Constants.INTAKE_KEY, intakeEnable);
         SmartDashboard.putBoolean(Constants.kINTAKE_KEY, intakeEnableValue);
@@ -133,11 +133,11 @@ public class SubsystemManager {
 
         climbEnable = new SendableChooser<>();
         if (climbEnableValue) {
-            climbEnable.setDefaultOption(Constants.ENABLED, enableClimb);
-            climbEnable.addOption(Constants.DISABLED, disableClimb);
+            climbEnable.setDefaultOption(Constants.kENABLED, enableClimb);
+            climbEnable.addOption(Constants.kDISABLED, disableClimb);
         } else {
-            climbEnable.addOption(Constants.ENABLED, enableClimb);
-            climbEnable.setDefaultOption(Constants.DISABLED, disableClimb);
+            climbEnable.addOption(Constants.kENABLED, enableClimb);
+            climbEnable.setDefaultOption(Constants.kDISABLED, disableClimb);
         }
         SmartDashboard.putData(Constants.CLIMB_KEY, climbEnable);
         SmartDashboard.putBoolean(Constants.kCLIMB_KEY, climbEnableValue);
@@ -168,11 +168,11 @@ public class SubsystemManager {
 
         panelEnable = new SendableChooser<>();
         if (panelEnableValue) {
-            panelEnable.setDefaultOption(Constants.ENABLED, enablePanel);
-            panelEnable.addOption(Constants.DISABLED, disablePanel);
+            panelEnable.setDefaultOption(Constants.kENABLED, enablePanel);
+            panelEnable.addOption(Constants.kDISABLED, disablePanel);
         } else {
-            panelEnable.addOption(Constants.ENABLED, enablePanel);
-            panelEnable.setDefaultOption(Constants.DISABLED, disablePanel);
+            panelEnable.addOption(Constants.kENABLED, enablePanel);
+            panelEnable.setDefaultOption(Constants.kDISABLED, disablePanel);
         }
         SmartDashboard.putData(Constants.PANEL_KEY, panelEnable);
         SmartDashboard.putBoolean(Constants.kPANEL_KEY, panelEnableValue);
