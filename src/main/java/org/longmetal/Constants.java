@@ -76,7 +76,7 @@ public class Constants {
     public static final double kCONTROL_PANEL_SPEED = 0.4; // Control Panel Speed
 
     // Control Panel + Climb
-    public static final double k_SPINRATE = 0.2;
+    public static final double k_SPINRATE = 0.5;
     public static final double CLIMB_SPEED = 0.3;
 
     // Colors

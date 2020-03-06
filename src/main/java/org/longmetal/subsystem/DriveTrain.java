@@ -16,7 +16,7 @@ public class DriveTrain {
     public CANSparkMax mRearLeft, mFrontLeft, mRearRight, mFrontRight;
     public SpeedControllerGroup leftMotors, rightMotors;
 
-    private boolean reverseDrive = false;
+    private boolean reverseDrive = true;
     private double MAX_SPEED_MULT = 0.5;
 
     public DriveTrain() {

@@ -429,6 +429,8 @@ public class Robot extends TimedRobot {
         // Back button, disengages Endgame Mode
         boolean backButton = input.gamepad.getButton(Button.BACK);
 
+        boolean hopperOn = false;
+
         // Limelight line-up while B button is held
         if (bButton) {
             updateVision(true);
@@ -482,7 +484,7 @@ public class Robot extends TimedRobot {
                                                     formula.shooterSpeed(
                                                                     Vision.getLimelightDistance(
                                                                             tY /*, Vision.Target.POWER_PORT*/))
-                                                            * 2.35,
+                                                            * 2.4,
                                                     shooter.minRPM,
                                                     shooter.maxRPM);
                         }
@@ -501,12 +503,14 @@ public class Robot extends TimedRobot {
                         // Hopper is either on or off
                         if (lTrigger > Constants.kINPUT_DEADBAND) {
                             shooter.setSingulatorSpeed(lTrigger);
+                            hopperOn = true;
                             intake.setHopperSpeed(1);
                             // These don't work for some reason, so they're duplicated in the intake
                             // section
                         } else {
-                            shooter.setSingulatorSpeed(0);
+                            shooter.setSingulatorSpeed(-0.1);
                             intake.setHopperSpeed(0);
+                            hopperOn = false;
                         }
                     } else if (aButton) { // Sets shooter to lower speed to place into lower port
                         updateVision(false);
@@ -514,10 +518,12 @@ public class Robot extends TimedRobot {
 
                         if (RPMInRange) {
                             shooter.setSingulatorSpeed(1);
+                            hopperOn = true;
                             intake.setHopperSpeed(1);
                         } else {
-                            shooter.setSingulatorSpeed(0);
+                            shooter.setSingulatorSpeed(-0.1);
                             intake.setHopperSpeed(0);
+                            hopperOn = false;
                         }
                     } else {
                         updateVision(false);
@@ -549,12 +555,12 @@ public class Robot extends TimedRobot {
                 // Sets intake to a speed
                 if (rTrigger > Constants.kINPUT_DEADBAND) {
                     intake.setIntakeSpeed(rTrigger);
-                    intake.setHopperSpeed(rTrigger);
+                    // intake.setHopperSpeed(rTrigger);
                 } else if (rButton) { // Reverse intake
                     intake.setIntakeSpeed(-0.3);
                 } else { // Stop intake
                     intake.setIntakeSpeed(0);
-                    intake.setHopperSpeed(0);
+                    // intake.setHopperSpeed(0);
                 }
 
                 // if (bButton && lTrigger > Constants.kINPUT_DEADBAND) {
@@ -565,7 +571,14 @@ public class Robot extends TimedRobot {
                 //     intake.setHopperSpeed(0);
                 // }
 
-                intakeListener.update(intakeLimit.get());
+                if (backButton) {
+                    intake.setHopperSpeed(1);
+                } else if (!hopperOn) {
+                    intake.setHopperSpeed(0);
+                }
+
+
+                // intakeListener.update(intakeLimit.get());
 
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
@@ -615,8 +628,8 @@ public class Robot extends TimedRobot {
                     // Release climb upwards, disengage solenoids
                     pneumatics.setRatchet(false);
                     readyClimb = true;
-                    climb.setLeftWinchSpeed(Constants.CLIMB_SPEED);
-                    climb.setRightWinchSpeed(-Constants.CLIMB_SPEED);
+                    climb.setLeftWinchSpeed(-Constants.CLIMB_SPEED);
+                    climb.setRightWinchSpeed(Constants.CLIMB_SPEED);
                 }
 
                 if (backButton) {
@@ -637,12 +650,12 @@ public class Robot extends TimedRobot {
                         // if (timer.hasElapsed(0.5)) {
                         if (lStickY < -Constants.kINPUT_DEADBAND) {
                             // Let out left winch
-                            climb.setLeftWinchSpeed(-lStickY / 2);
+                            climb.setLeftWinchSpeed(lStickY / 2);
                         }
 
                         if (rStickY < -Constants.kINPUT_DEADBAND) {
                             // Let out right winch
-                            climb.setRightWinchSpeed(rStickY / 2);
+                            climb.setRightWinchSpeed(-rStickY / 2);
                         }
                         // }
 
@@ -653,7 +666,7 @@ public class Robot extends TimedRobot {
                         // Left stick down
                         // Reel in left climb (raise robot)
                         if (lStickY > Constants.kINPUT_DEADBAND) {
-                            climb.setLeftWinchSpeed(-lStickY);
+                            climb.setLeftWinchSpeed(lStickY);
                         } else {
                             climb.setLeftWinchSpeed(0);
                         }
@@ -661,7 +674,7 @@ public class Robot extends TimedRobot {
                         // Right stick down
                         // Reel in right climb (raise robot)
                         if (rStickY > Constants.kINPUT_DEADBAND) {
-                            climb.setRightWinchSpeed(rStickY);
+                            climb.setRightWinchSpeed(-rStickY);
                         } else {
                             climb.setRightWinchSpeed(0);
                         }

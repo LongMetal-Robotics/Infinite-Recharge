@@ -40,7 +40,6 @@ public class Shooter extends Subsystem {
         kMinOutput = 0;
         maxRPM = 5000;
         minRPM = 0;
-
         drumPID = drum.getPIDController();
         drumPID.setP(kP);
         drumPID.setI(kI);
@@ -48,7 +47,6 @@ public class Shooter extends Subsystem {
         drumPID.setIZone(kIz);
         drumPID.setFF(kFF);
         drumPID.setOutputRange(kMinOutput, kMaxOutput);
-
         mSingulator = new TalonSRX(Constants.kP_SINGULATOR);
         drum.setOpenLoopRampRate(1);
 
