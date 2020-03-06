@@ -435,6 +435,19 @@ public class Robot extends TimedRobot {
         if (bButton) {
             updateVision(true);
             driveTrain.curveRaw(0, (tX / 30) / 2, true);
+        } else if (aButton) {
+            updateVision(false);
+            driveTrain.curveRaw(0.5, 0, false);
+
+            Delay.delay(
+                    new Runnable() {
+
+                        @Override
+                        public void run() {
+                            driveTrain.curveRaw(0, 0, true);
+                        }
+                    },
+                    Constants.kLOW_PORT_REVERSE_TIME);
         } else if (readyClimb || panelUp) { // When panel or climb up, drive slower
             updateVision(false);
             driveTrain.curve(
@@ -470,8 +483,13 @@ public class Robot extends TimedRobot {
                 }
 
                 if (shooterStop) {
-                    shooter.setShooterRPM(0);
-                    shooter.setSingulatorSpeed(0);
+                    if (backButton) {
+                        shooter.setShooterRPM(-400);
+                        shooter.setSingulatorSpeed(-0.2);
+                    } else {
+                        shooter.setShooterRPM(0);
+                        shooter.setSingulatorSpeed(-0.1);
+                    }
                 } else {
                     if (bButton) {
                         // SmartDashboard.getNumber("Factor", conversionFactor);
@@ -505,8 +523,6 @@ public class Robot extends TimedRobot {
                             shooter.setSingulatorSpeed(lTrigger);
                             hopperOn = true;
                             intake.setHopperSpeed(1);
-                            // These don't work for some reason, so they're duplicated in the intake
-                            // section
                         } else {
                             shooter.setSingulatorSpeed(-0.1);
                             intake.setHopperSpeed(0);
@@ -527,7 +543,7 @@ public class Robot extends TimedRobot {
                         }
                     } else {
                         updateVision(false);
-                        shooterSetPoint = shooter.minRPM;
+                        shooterSetPoint = Constants.kSHOOTER_MIN;
                     }
                 }
 
@@ -779,7 +795,7 @@ public class Robot extends TimedRobot {
                 if (RPMInRange && velocity > 1500) {
                     shooter.setSingulatorSpeed(0.8);
                 } else {
-                    shooter.setSingulatorSpeed(0);
+                    shooter.setSingulatorSpeed(-0.1);
                 }
 
             } catch (SubsystemException e) {

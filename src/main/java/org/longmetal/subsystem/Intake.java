@@ -51,6 +51,6 @@ public class Intake extends Subsystem {
                         mHopper.set(ControlMode.PercentOutput, 0);
                     }
                 },
-                3000);
+                6000);
     }
 }
