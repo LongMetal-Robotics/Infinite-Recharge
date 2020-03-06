@@ -404,31 +404,20 @@ public class Robot extends TimedRobot {
             }
         }
 
-        String currentSubsystem = "Subsystem";
 
         while (hasTurned) {
-            currentSubsystem = "Shooter";
             try {
-                // if (lTrigger > Constants.kINPUT_DEADBAND) {
-                //     shooter.runShooter(lTrigger);
-                // }
-
-                // Stops shooter
-                // if (lButton) {
-                //     shooter.stop();
-                // }
-
                 // if (bButton) {
                 if (RPMInRange && velocity > 1500) {
                     shooter.setSingulatorSpeed(0.8);
-                    intake.setHopperSpeed(0.8);
+                    intake.setHopperSpeed(1);
                 } else {
                     shooter.setSingulatorSpeed(0);
                     intake.setHopperSpeed(0.0);
                 }
 
             } catch (SubsystemException e) {
-                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
+                Console.error("Shooter Problem: " + problemName(e) + ". Stack Trace:");
                 e.printStackTrace();
 
                 boolean isUninitialized =
@@ -445,7 +434,7 @@ public class Robot extends TimedRobot {
             if (timer.get() > 14.5) break;
         }
 
-        if (timer.get() > 14.5) {
+        if (timer.get() > 14.5) { // Stops robot to prepare for tele-op
             driveTrain.curve(0.0, 0.0, 0.0, 0.0);
             try {
                 intake.setHopperSpeed(0.0);
@@ -455,6 +444,13 @@ public class Robot extends TimedRobot {
                 e.printStackTrace();
             }
         }
+
+
+
+        //
+        //
+        //
+        // I think this is a separate auto mode than the above code, but I don't know yet how to separate them with a switcher
         boolean targetAcquired = false; // initially there should be no targets
         while (!targetAcquired) // while we don't see any,
         {
