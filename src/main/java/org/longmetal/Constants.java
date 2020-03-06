@@ -60,13 +60,14 @@ public class Constants {
     public static final double kCURVE_MODIFIER = -0.25; // Curve modifier
 
     // Shooter
-    public static final double kSHOOTER_MIN = 0.1; // Min shooter speed
+    public static final double kSHOOTER_MIN = 1000; // Min shooter speed
     public static final double kSHOOTER_MAX =
-            0.75; // Max shooter speed (to protect against excessive amperage or safety I guess)
+            5000; // Max shooter speed (to protect against excessive amperage or safety I guess)
     public static final double kSHOOTER_SPEED_MODIFIER = 1; // Decrease shooter speed
     // Effect of modifiers on finals speeds
     public static final double kSHOOTER_X_MODIFIER = 0.5;
     public static final double kSHOOTER_Y_MODIFIER = 0.5;
+    public static final int kLOW_PORT_REVERSE_TIME = 2000;
 
     // Singulator / Transport
     public static final double kSINGULATOR_SPEED = 0.6; // singulator speed
