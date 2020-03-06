@@ -404,7 +404,6 @@ public class Robot extends TimedRobot {
             }
         }
 
-
         while (hasTurned) {
             try {
                 // if (bButton) {
@@ -445,12 +444,11 @@ public class Robot extends TimedRobot {
             }
         }
 
-
-
         //
         //
         //
-        // I think this is a separate auto mode than the above code, but I don't know yet how to separate them with a switcher
+        // I think this is a separate auto mode than the above code, but I don't know yet how to
+        // separate them with a switcher
         boolean targetAcquired = false; // initially there should be no targets
         while (!targetAcquired) // while we don't see any,
         {
