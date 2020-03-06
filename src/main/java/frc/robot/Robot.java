@@ -244,9 +244,9 @@ public class Robot extends TimedRobot {
 
         // Display PID Coefficients on SmartDashboard
 
-        SmartDashboard.putNumber("P Gain", shooter.kP);
-        SmartDashboard.putNumber("I Gain", shooter.kI);
-        SmartDashboard.putNumber("D Gain", shooter.kD);
+        SmartDashboard.putNumber("I Gain", driveTrain.kI);
+        SmartDashboard.putNumber("P Gain", driveTrain.kP);
+        SmartDashboard.putNumber("D Gain", driveTrain.kD);
 
         updateVision(false);
     }
@@ -333,7 +333,7 @@ public class Robot extends TimedRobot {
     }
 
     public void enabledPeriodic() {
-        driveTrain.alignmentCalc = driveTrain.alignmentController.calculate(tX);
+        driveTrain.alignmentCalc = (double)LMMath.limit(-1 * driveTrain.alignmentController.calculate(tX), -0.5, 0.5);
     }
 
     /**
@@ -486,15 +486,15 @@ public class Robot extends TimedRobot {
 
                         updateVision(true);
                         if (tY >= 10) {
-                            shooterSetPoint =
-                                    (double)
-                                            LMMath.limit(
-                                                    formula.shooterSpeed(
-                                                                    Vision.getLimelightDistance(
-                                                                            tY /*, Vision.Target.POWER_PORT*/))
-                                                            * 2.4,
-                                                    shooter.minRPM,
-                                                    shooter.maxRPM);
+                            // shooterSetPoint =
+                            //         (double)
+                            //                 LMMath.limit(
+                            //                         formula.shooterSpeed(
+                            //                                         Vision.getLimelightDistance(
+                            //                                                 tY /*, Vision.Target.POWER_PORT*/))
+                            //                                 * 2.4,
+                            //                         shooter.minRPM,
+                            //                         shooter.maxRPM);
                         }
 
                         SmartDashboard.putNumber(

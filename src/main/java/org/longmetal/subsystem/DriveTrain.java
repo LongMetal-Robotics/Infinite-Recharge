@@ -18,7 +18,7 @@ public class DriveTrain {
     public SpeedControllerGroup leftMotors, rightMotors;
 
     public PIDController alignmentController;
-    public double kP = 0, kI = 0, kD = 0, alignmentCalc = 0;
+    public double kP = 0.02, kI = 0.0001, kD = 0.00004, alignmentCalc = 0;
 
     private boolean reverseDrive = true;
     private double MAX_SPEED_MULT = 0.5;
