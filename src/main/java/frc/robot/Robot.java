@@ -333,7 +333,8 @@ public class Robot extends TimedRobot {
     }
 
     public void enabledPeriodic() {
-        driveTrain.alignmentCalc = (double)LMMath.limit(-1 * driveTrain.alignmentController.calculate(tX), -0.5, 0.5);
+        driveTrain.alignmentCalc =
+                (double) LMMath.limit(-1 * driveTrain.alignmentController.calculate(tX), -0.5, 0.5);
     }
 
     /**
@@ -491,7 +492,8 @@ public class Robot extends TimedRobot {
                             //                 LMMath.limit(
                             //                         formula.shooterSpeed(
                             //                                         Vision.getLimelightDistance(
-                            //                                                 tY /*, Vision.Target.POWER_PORT*/))
+                            //                                                 tY /*,
+                            // Vision.Target.POWER_PORT*/))
                             //                                 * 2.4,
                             //                         shooter.minRPM,
                             //                         shooter.maxRPM);
