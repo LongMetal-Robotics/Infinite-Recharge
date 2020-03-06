@@ -247,10 +247,6 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("P Gain", shooter.kP);
         SmartDashboard.putNumber("I Gain", shooter.kI);
         SmartDashboard.putNumber("D Gain", shooter.kD);
-        SmartDashboard.putNumber("I Zone", shooter.kIz);
-        SmartDashboard.putNumber("Feed Forward", shooter.kFF);
-        SmartDashboard.putNumber("Max Output", shooter.kMaxOutput);
-        SmartDashboard.putNumber("Min Output", shooter.kMinOutput);
 
         updateVision(false);
     }
@@ -298,38 +294,21 @@ public class Robot extends TimedRobot {
         double p = SmartDashboard.getNumber("P Gain", 0);
         double i = SmartDashboard.getNumber("I Gain", 0);
         double d = SmartDashboard.getNumber("D Gain", 0);
-        double iz = SmartDashboard.getNumber("I Zone", 0);
-        double ff = SmartDashboard.getNumber("Feed Forward", 0);
-        double max = SmartDashboard.getNumber("Max Output", 0);
-        double min = SmartDashboard.getNumber("Min Output", 0);
 
         conversionFactor = SmartDashboard.getNumber("Shoot Factor", 0);
 
         // if PID coefficients on SmartDashboard have changed, write new values to controller
-        if ((p != shooter.kP)) {
-            shooter.drumPID.setP(p);
-            shooter.kP = p;
+        if ((p != driveTrain.kP)) {
+            driveTrain.alignmentController.setP(p);
+            driveTrain.kP = p;
         }
-        if ((i != shooter.kI)) {
-            shooter.drumPID.setI(i);
-            shooter.kI = i;
+        if ((i != driveTrain.kI)) {
+            driveTrain.alignmentController.setI(i);
+            driveTrain.kI = i;
         }
-        if ((d != shooter.kD)) {
-            shooter.drumPID.setD(d);
-            shooter.kD = d;
-        }
-        if ((iz != shooter.kIz)) {
-            shooter.drumPID.setIZone(iz);
-            shooter.kIz = iz;
-        }
-        if ((ff != shooter.kFF)) {
-            shooter.drumPID.setFF(ff);
-            shooter.kFF = ff;
-        }
-        if ((max != shooter.kMaxOutput) || (min != shooter.kMinOutput)) {
-            shooter.drumPID.setOutputRange(min, max);
-            shooter.kMinOutput = min;
-            shooter.kMaxOutput = max;
+        if ((d != driveTrain.kD)) {
+            driveTrain.alignmentController.setD(d);
+            driveTrain.kD = d;
         }
 
         SmartDashboard.putNumber("Set Point", shooterSetPoint);
@@ -349,6 +328,14 @@ public class Robot extends TimedRobot {
         Delay.setEnabled(false);
     }
 
+    public void enabledInit() {
+        Delay.setEnabled(true);
+    }
+
+    public void enabledPeriodic() {
+        driveTrain.alignmentCalc = driveTrain.alignmentController.calculate(tX);
+    }
+
     /**
      * This autonomous (along with the chooser code above) shows how to select between different
      * autonomous modes using the dashboard. The sendable chooser code works with the Java
@@ -361,12 +348,13 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        Delay.setEnabled(true);
+        enabledInit();
     }
 
     /** This function is called periodically during autonomous. */
     @Override
     public void autonomousPeriodic() {
+        enabledPeriodic();
         boolean targetAcquired = false; // initially there should be no targets
         while (!targetAcquired) // while we don't see any,
         {
@@ -384,7 +372,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        Delay.setEnabled(true);
+        enabledInit();
         shooterSetPoint = 0;
         lastShooterSetPoint = 0;
     }
@@ -392,6 +380,7 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
+        enabledPeriodic();
 
         // Left Gamepad trigger, currently used for shooter
         double lTrigger = input.gamepad.getAxis(Axis.LT);
@@ -434,7 +423,8 @@ public class Robot extends TimedRobot {
         // Limelight line-up while B button is held
         if (bButton) {
             updateVision(true);
-            driveTrain.curveRaw(0, (tX / 30) / 2, true);
+            // driveTrain.curveRaw(0, (tX / 30) / 2, true);
+            driveTrain.curveRaw(0, driveTrain.alignmentCalc, true);
         } else if (aButton) {
             updateVision(false);
             driveTrain.curveRaw(0.5, 0, false);
