@@ -438,14 +438,14 @@ public class Robot extends TimedRobot {
             driveTrain.curveRaw(0.5, 0, false);
 
             Delay.delay(
-                new Runnable() {
+                    new Runnable() {
 
-                    @Override
-                    public void run() {
-                        driveTrain.curveRaw(0, 0, true);
-                    }
-                },
-                Constants.kLOW_PORT_REVERSE_TIME);
+                        @Override
+                        public void run() {
+                            driveTrain.curveRaw(0, 0, true);
+                        }
+                    },
+                    Constants.kLOW_PORT_REVERSE_TIME);
         } else if (readyClimb || panelUp) { // When panel or climb up, drive slower
             updateVision(false);
             driveTrain.curve(
