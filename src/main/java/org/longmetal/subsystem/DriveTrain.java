@@ -3,9 +3,8 @@ package org.longmetal.subsystem;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
-import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import org.longmetal.Constants;
 
@@ -19,10 +18,7 @@ public class DriveTrain {
     public SpeedControllerGroup leftMotors, rightMotors;
 
     public PIDController alignmentController;
-    public double kP = 0,
-        kI = 0,
-        kD = 0,
-        alignmentCalc = 0;
+    public double kP = 0, kI = 0, kD = 0, alignmentCalc = 0;
 
     private boolean reverseDrive = true;
     private double MAX_SPEED_MULT = 0.5;
