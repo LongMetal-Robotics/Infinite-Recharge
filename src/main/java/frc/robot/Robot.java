@@ -593,7 +593,6 @@ public class Robot extends TimedRobot {
                     intake.setHopperSpeed(0);
                 }
 
-
                 // intakeListener.update(intakeLimit.get());
 
             } catch (SubsystemException e) {
