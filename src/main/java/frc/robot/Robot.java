@@ -63,7 +63,16 @@ public class Robot extends TimedRobot {
     ShootFormula formula;
     Pneumatics pneumatics;
 
-    enum AutoMode {DO_NOTHING, DRIVE_BACK, SHOOT1, SHOOT2, SHOOT3, COLLECT1, COLLECT2, COLLECT3}
+    enum AutoMode {
+        DO_NOTHING,
+        DRIVE_BACK,
+        SHOOT1,
+        SHOOT2,
+        SHOOT3,
+        COLLECT1,
+        COLLECT2,
+        COLLECT3
+    }
 
     SendableChooser<Boolean> chooserQuinnDrive;
     SendableChooser<AutoMode> autoModeChooser;
@@ -255,7 +264,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Feed Forward", shooter.kFF);
         SmartDashboard.putNumber("Max Output", shooter.kMaxOutput);
         SmartDashboard.putNumber("Min Output", shooter.kMinOutput);
-        
+
         autoModeChooser = new SendableChooser<AutoMode>();
         autoModeChooser.setDefaultOption("Do Nothing", AutoMode.DO_NOTHING);
         autoModeChooser.addOption("Drive Back", AutoMode.DRIVE_BACK);
@@ -381,17 +390,16 @@ public class Robot extends TimedRobot {
         Delay.setEnabled(true); // I think these do the same thing, but we need to fix it either way
 
         AutoMode autoModeEnum = autoModeChooser.getSelected();
-        
 
         switch (autoModeEnum) {
             case DO_NOTHING:
                 autoMode = 0;
                 break;
-            
+
             case DRIVE_BACK:
                 autoMode = 1;
                 break;
-            
+
             case SHOOT1:
                 autoMode = 11;
                 break;
@@ -446,11 +454,11 @@ public class Robot extends TimedRobot {
                 } catch (SubsystemException e) {
                     System.out.println("ERROR: Intake could not be turned off.");
                 }
-    
+
                 driveTrain.curve(0.0, 0.0, 0.0, 0.0);
                 hasCollected = true;
             }
-    
+
             if (hasCollected) {
                 updateVision(true);
                 driveTrain.curveRaw(0, (tX / 30) / 2, true);
@@ -461,7 +469,7 @@ public class Robot extends TimedRobot {
                     hasTurned = true;
                 }
             }
-    
+
             if (hasTurned) {
                 try {
                     // if (bButton) {
@@ -472,25 +480,25 @@ public class Robot extends TimedRobot {
                         shooter.setSingulatorSpeed(0);
                         intake.setHopperSpeed(0.0);
                     }
-    
+
                 } catch (SubsystemException e) {
                     Console.error("Shooter Problem: " + problemName(e) + ". Stack Trace:");
                     e.printStackTrace();
-    
+
                     boolean isUninitialized =
                             e.getClass().isInstance(SubsystemUninitializedException.class);
                     if (Shooter.getEnabled() && isUninitialized) {
-    
+
                         shooter.init();
                     }
                 }
-    
+
                 shooterSetPoint = SmartDashboard.getNumber("Set RPM", 0);
                 shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
-    
+
                 if (timer.get() > 14.5) hasTurned = false;
             }
-    
+
             if (timer.get() > 14.5) { // Stops robot to prepare for tele-op
                 driveTrain.curve(0.0, 0.0, 0.0, 0.0);
                 try {
@@ -514,9 +522,6 @@ public class Robot extends TimedRobot {
         } else {
             Console.log("Auto error");
         }
-        
-
-        
 
         //
         //
