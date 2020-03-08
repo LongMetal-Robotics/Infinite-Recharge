@@ -25,6 +25,7 @@ import org.longmetal.exception.SubsystemException;
 import org.longmetal.exception.SubsystemUninitializedException;
 import org.longmetal.input.Gamepad.Axis;
 import org.longmetal.input.Gamepad.Button;
+import org.longmetal.input.DriveStick;
 import org.longmetal.input.Input;
 import org.longmetal.subsystem.Climb;
 import org.longmetal.subsystem.ControlPanel;
@@ -448,14 +449,14 @@ public class Robot extends TimedRobot {
                         }
                     },
                     Constants.kLOW_PORT_REVERSE_TIME);
-        } else if (readyClimb || panelUp) { // When panel or climb up, drive slower
+        } /*else if (readyClimb || panelUp) { // When panel or climb up, drive slower
             updateVision(false);
             driveTrain.curve(
                     input.forwardStick.getY(),
-                    input.forwardStick.getThrottle() * 0.1,
+                    input.forwardStick.getThrottle() * 0.2,
                     input.turnStick.getTwist(),
                     input.turnStick.getThrottle() * 0.5);
-        } else {
+        }*/ else {
             updateVision(false);
             driveTrain.curve(
                     input.forwardStick.getY(),
@@ -484,10 +485,10 @@ public class Robot extends TimedRobot {
 
                 if (shooterStop) {
                     if (backButton) {
-                        shooter.setShooterRPM(-400);
+                        shooter.runShooter(-0.1);
                         shooter.setSingulatorSpeed(-0.2);
                     } else {
-                        shooter.setShooterRPM(0);
+                        shooter.runShooter(0);
                         shooter.setSingulatorSpeed(-0.1);
                     }
                 } else {
@@ -544,6 +545,7 @@ public class Robot extends TimedRobot {
                     } else {
                         updateVision(false);
                         shooterSetPoint = Constants.kSHOOTER_MIN;
+                        shooter.setSingulatorSpeed(-0.1);
                     }
                 }
 
@@ -587,13 +589,13 @@ public class Robot extends TimedRobot {
                 //     intake.setHopperSpeed(0);
                 // }
 
-                if (backButton) {
+                if (lStickY < -0.5) {
                     intake.setHopperSpeed(1);
                 } else if (!hopperOn) {
                     intake.setHopperSpeed(0);
                 }
 
-                // intakeListener.update(intakeLimit.get());
+                intakeListener.update(intakeLimit.get());
 
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
