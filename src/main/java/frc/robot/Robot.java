@@ -127,7 +127,7 @@ public class Robot extends TimedRobot {
                 new Listener(
                         new Runnable() {
                             public void run() {
-                                intake.runHopper(Constants.kTRANSPORT_SPEED);    
+                                intake.runHopper(Constants.kTRANSPORT_SPEED);
                             }
                         },
                         null,
@@ -136,17 +136,17 @@ public class Robot extends TimedRobot {
                 new Listener(
                         new Runnable() {
                             public void run() {
-                                    pneumatics.flipArmUp();
-                                    panelUp = true;
-                                    // controlPanel.turnsMode();
-                                    // pneumatics.flipArmDown();
-                                    // panelUp = false;
+                                pneumatics.flipArmUp();
+                                panelUp = true;
+                                // controlPanel.turnsMode();
+                                // pneumatics.flipArmDown();
+                                // panelUp = false;
                             }
                         },
                         new Runnable() {
                             public void run() {
-                                    pneumatics.flipArmDown();
-                                    panelUp = false;
+                                pneumatics.flipArmDown();
+                                panelUp = false;
                             }
                         },
                         // null,
@@ -156,17 +156,17 @@ public class Robot extends TimedRobot {
                 new Listener(
                         new Runnable() {
                             public void run() {
-                                    pneumatics.flipArmUp();
-                                    panelUp = true;
-                                    // controlPanel.colorMode();
-                                    // pneumatics.flipArmDown();
-                                    // panelUp = false;
+                                pneumatics.flipArmUp();
+                                panelUp = true;
+                                // controlPanel.colorMode();
+                                // pneumatics.flipArmDown();
+                                // panelUp = false;
                             }
                         },
                         new Runnable() {
                             public void run() {
-                                    pneumatics.flipArmDown();
-                                    panelUp = false;
+                                pneumatics.flipArmDown();
+                                panelUp = false;
                             }
                         },
                         // null,
@@ -437,190 +437,189 @@ public class Robot extends TimedRobot {
 
         if (!endgameMode) {
 
-                shooterSetPoint = 0;
-                // I'm not sure if this is the most efficient way to do this, but I will hopefully
-                // streamline it in the future
+            shooterSetPoint = 0;
+            // I'm not sure if this is the most efficient way to do this, but I will hopefully
+            // streamline it in the future
 
-                // Stops shooter
-                if (lButton) {
-                    shooterStop = true;
-                    // intake.setHopperSpeed(0);
-                } else if (bButton || aButton) {
-                    shooterStop = false;
+            // Stops shooter
+            if (lButton) {
+                shooterStop = true;
+                // intake.setHopperSpeed(0);
+            } else if (bButton || aButton) {
+                shooterStop = false;
+            }
+
+            if (shooterStop) {
+                if (backButton) {
+                    shooter.runShooter(-0.1);
+                    shooter.setSingulatorSpeed(-0.2);
+                } else {
+                    shooter.runShooter(0);
+                    shooter.setSingulatorSpeed(-0.1);
                 }
+            } else {
+                if (bButton) {
+                    // SmartDashboard.getNumber("Factor", conversionFactor);
 
-                if (shooterStop) {
-                    if (backButton) {
-                        shooter.runShooter(-0.1);
-                        shooter.setSingulatorSpeed(-0.2);
+                    updateVision(true);
+                    if (tY >= 10) {
+                        shooterSetPoint =
+                                (double)
+                                        LMMath.limit(
+                                                formula.shooterSpeed(
+                                                                Vision.getLimelightDistance(
+                                                                        tY /*, Vision.Target.POWER_PORT*/))
+                                                        * 2.4,
+                                                shooter.minRPM,
+                                                shooter.maxRPM);
+                    }
+
+                    SmartDashboard.putNumber(
+                            "Distance",
+                            Vision.getLimelightDistance(tY /*, Vision.Target.POWER_PORT*/));
+
+                    /*if (RPMInRange && velocity > 1500) {
+                        shooter.setSingulatorSpeed(1);
                     } else {
-                        shooter.runShooter(0);
+                        shooter.setSingulatorSpeed(0);
+                    }*/
+
+                    // Singulator directly controlled by left trigger
+                    // Hopper is either on or off
+                    if (lTrigger > Constants.kINPUT_DEADBAND) {
+                        shooter.setSingulatorSpeed(lTrigger);
+                        hopperOn = true;
+                        intake.setHopperSpeed(1);
+                    } else {
                         shooter.setSingulatorSpeed(-0.1);
+                        intake.setHopperSpeed(0);
+                        hopperOn = false;
+                    }
+                } else if (aButton) { // Sets shooter to lower speed to place into lower port
+                    updateVision(false);
+                    shooterSetPoint = 1500;
+
+                    if (RPMInRange) {
+                        shooter.setSingulatorSpeed(1);
+                        hopperOn = true;
+                        intake.setHopperSpeed(1);
+                    } else {
+                        shooter.setSingulatorSpeed(-0.1);
+                        intake.setHopperSpeed(0);
+                        hopperOn = false;
                     }
                 } else {
-                    if (bButton) {
-                        // SmartDashboard.getNumber("Factor", conversionFactor);
-
-                        updateVision(true);
-                        if (tY >= 10) {
-                            shooterSetPoint =
-                                    (double)
-                                            LMMath.limit(
-                                                    formula.shooterSpeed(
-                                                                    Vision.getLimelightDistance(
-                                                                            tY /*, Vision.Target.POWER_PORT*/))
-                                                            * 2.4,
-                                                    shooter.minRPM,
-                                                    shooter.maxRPM);
-                        }
-
-                        SmartDashboard.putNumber(
-                                "Distance",
-                                Vision.getLimelightDistance(tY /*, Vision.Target.POWER_PORT*/));
-
-                        /*if (RPMInRange && velocity > 1500) {
-                            shooter.setSingulatorSpeed(1);
-                        } else {
-                            shooter.setSingulatorSpeed(0);
-                        }*/
-
-                        // Singulator directly controlled by left trigger
-                        // Hopper is either on or off
-                        if (lTrigger > Constants.kINPUT_DEADBAND) {
-                            shooter.setSingulatorSpeed(lTrigger);
-                            hopperOn = true;
-                            intake.setHopperSpeed(1);
-                        } else {
-                            shooter.setSingulatorSpeed(-0.1);
-                            intake.setHopperSpeed(0);
-                            hopperOn = false;
-                        }
-                    } else if (aButton) { // Sets shooter to lower speed to place into lower port
-                        updateVision(false);
-                        shooterSetPoint = 1500;
-
-                        if (RPMInRange) {
-                            shooter.setSingulatorSpeed(1);
-                            hopperOn = true;
-                            intake.setHopperSpeed(1);
-                        } else {
-                            shooter.setSingulatorSpeed(-0.1);
-                            intake.setHopperSpeed(0);
-                            hopperOn = false;
-                        }
-                    } else {
-                        updateVision(false);
-                        shooterSetPoint = Constants.kSHOOTER_MIN;
-                        shooter.setSingulatorSpeed(-0.1);
-                    }
+                    updateVision(false);
+                    shooterSetPoint = Constants.kSHOOTER_MIN;
+                    shooter.setSingulatorSpeed(-0.1);
                 }
+            }
 
-                SmartDashboard.putNumber("Set", shooterSetPoint);
-                if (shooterSetPoint != lastShooterSetPoint) {
-                    shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
-                    // shooter.setShooterRPM(shooterSetPoint);
-                    lastShooterSetPoint = shooterSetPoint;
-                }
+            SmartDashboard.putNumber("Set", shooterSetPoint);
+            if (shooterSetPoint != lastShooterSetPoint) {
+                shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
+                // shooter.setShooterRPM(shooterSetPoint);
+                lastShooterSetPoint = shooterSetPoint;
+            }
 
-                // Sets intake to a speed
-                if (rTrigger > Constants.kINPUT_DEADBAND) {
-                    intake.setIntakeSpeed(rTrigger);
-                    // intake.setHopperSpeed(rTrigger);
-                } else if (rButton) { // Reverse intake
-                    intake.setIntakeSpeed(-0.3);
-                } else { // Stop intake
-                    intake.setIntakeSpeed(0);
-                    // intake.setHopperSpeed(0);
-                }
+            // Sets intake to a speed
+            if (rTrigger > Constants.kINPUT_DEADBAND) {
+                intake.setIntakeSpeed(rTrigger);
+                // intake.setHopperSpeed(rTrigger);
+            } else if (rButton) { // Reverse intake
+                intake.setIntakeSpeed(-0.3);
+            } else { // Stop intake
+                intake.setIntakeSpeed(0);
+                // intake.setHopperSpeed(0);
+            }
 
-                // if (bButton && lTrigger > Constants.kINPUT_DEADBAND) {
-                //     intake.setHopperSpeed(1);
-                //     /*} else if (xButton) {
-                //     intake.setHopperSpeed(0.8);*/
-                // } else {
-                //     intake.setHopperSpeed(0);
-                // }
+            // if (bButton && lTrigger > Constants.kINPUT_DEADBAND) {
+            //     intake.setHopperSpeed(1);
+            //     /*} else if (xButton) {
+            //     intake.setHopperSpeed(0.8);*/
+            // } else {
+            //     intake.setHopperSpeed(0);
+            // }
 
-                if (lStickY < -0.5) {
-                    intake.setHopperSpeed(1);
-                } else if (!hopperOn) {
-                    intake.setHopperSpeed(0);
-                }
+            if (lStickY < -0.5) {
+                intake.setHopperSpeed(1);
+            } else if (!hopperOn) {
+                intake.setHopperSpeed(0);
+            }
 
-                intakeListener.update(intakeLimit.get());
+            intakeListener.update(intakeLimit.get());
 
-                // Flip up control panel and engage based on FMS values
-                if (yButton) {
-                    // For now, this button will just spin the motor for testing purposes
-                    controlPanel.spin();
-                } else {
-                    controlPanel.stop();
-                }
+            // Flip up control panel and engage based on FMS values
+            if (yButton) {
+                // For now, this button will just spin the motor for testing purposes
+                controlPanel.spin();
+            } else {
+                controlPanel.stop();
+            }
 
-                // Temporary control for flipping arm up
-                panelListenerTurns.update(!xButton);
+            // Temporary control for flipping arm up
+            panelListenerTurns.update(!xButton);
 
             // Puts the robot into endgame mode, disabling all manipulator subsystems
             if (startButton) {
                 endgameMode = true;
             }
         } else {
-                if (rButton) {
-                    // Release climb upwards, disengage solenoids
+            if (rButton) {
+                // Release climb upwards, disengage solenoids
+                pneumatics.setRatchet(false);
+                readyClimb = true;
+                climb.setLeftWinchSpeed(-Constants.CLIMB_SPEED);
+                climb.setRightWinchSpeed(Constants.CLIMB_SPEED);
+            }
+
+            if (backButton) {
+                endgameMode = false;
+                climb.setWinchSpeed(0);
+            }
+
+            if (readyClimb) {
+
+                // Sticks up
+                if (lStickY < -Constants.kINPUT_DEADBAND || rStickY < -Constants.kINPUT_DEADBAND) {
+
+                    // Disengage ratchet
                     pneumatics.setRatchet(false);
-                    readyClimb = true;
-                    climb.setLeftWinchSpeed(-Constants.CLIMB_SPEED);
-                    climb.setRightWinchSpeed(Constants.CLIMB_SPEED);
-                }
 
-                if (backButton) {
-                    endgameMode = false;
-                    climb.setWinchSpeed(0);
-                }
+                    // Add 0.5 second  delay after ratchet disengages, before motors go
+                    // if (timer.hasElapsed(0.5)) {
+                    if (lStickY < -Constants.kINPUT_DEADBAND) {
+                        // Let out left winch
+                        climb.setLeftWinchSpeed(lStickY / 2);
+                    }
 
-                if (readyClimb) {
+                    if (rStickY < -Constants.kINPUT_DEADBAND) {
+                        // Let out right winch
+                        climb.setRightWinchSpeed(-rStickY / 2);
+                    }
+                    // }
 
-                    // Sticks up
-                    if (lStickY < -Constants.kINPUT_DEADBAND
-                            || rStickY < -Constants.kINPUT_DEADBAND) {
+                } else {
+                    // Engage ratchet
+                    pneumatics.setRatchet(true);
 
-                        // Disengage ratchet
-                        pneumatics.setRatchet(false);
-
-                        // Add 0.5 second  delay after ratchet disengages, before motors go
-                        // if (timer.hasElapsed(0.5)) {
-                        if (lStickY < -Constants.kINPUT_DEADBAND) {
-                            // Let out left winch
-                            climb.setLeftWinchSpeed(lStickY / 2);
-                        }
-
-                        if (rStickY < -Constants.kINPUT_DEADBAND) {
-                            // Let out right winch
-                            climb.setRightWinchSpeed(-rStickY / 2);
-                        }
-                        // }
-
+                    // Left stick down
+                    // Reel in left climb (raise robot)
+                    if (lStickY > Constants.kINPUT_DEADBAND) {
+                        climb.setLeftWinchSpeed(lStickY);
                     } else {
-                        // Engage ratchet
-                        pneumatics.setRatchet(true);
+                        climb.setLeftWinchSpeed(0);
+                    }
 
-                        // Left stick down
-                        // Reel in left climb (raise robot)
-                        if (lStickY > Constants.kINPUT_DEADBAND) {
-                            climb.setLeftWinchSpeed(lStickY);
-                        } else {
-                            climb.setLeftWinchSpeed(0);
-                        }
-
-                        // Right stick down
-                        // Reel in right climb (raise robot)
-                        if (rStickY > Constants.kINPUT_DEADBAND) {
-                            climb.setRightWinchSpeed(-rStickY);
-                        } else {
-                            climb.setRightWinchSpeed(0);
-                        }
+                    // Right stick down
+                    // Reel in right climb (raise robot)
+                    if (rStickY > Constants.kINPUT_DEADBAND) {
+                        climb.setRightWinchSpeed(-rStickY);
+                    } else {
+                        climb.setRightWinchSpeed(0);
                     }
                 }
+            }
         }
     }
 
@@ -682,78 +681,77 @@ public class Robot extends TimedRobot {
 
         if (!endgameMode) {
 
-                // if (lTrigger > Constants.kINPUT_DEADBAND) {
-                //     shooter.runShooter(lTrigger);
-                // }
+            // if (lTrigger > Constants.kINPUT_DEADBAND) {
+            //     shooter.runShooter(lTrigger);
+            // }
 
-                // Stops shooter
-                // if (lButton) {
-                //     shooter.stop();
-                // }
+            // Stops shooter
+            // if (lButton) {
+            //     shooter.stop();
+            // }
 
-                // if (bButton) {
-                if (RPMInRange && velocity > 1500) {
-                    shooter.setSingulatorSpeed(0.8);
-                } else {
-                    shooter.setSingulatorSpeed(-0.1);
-                }
+            // if (bButton) {
+            if (RPMInRange && velocity > 1500) {
+                shooter.setSingulatorSpeed(0.8);
+            } else {
+                shooter.setSingulatorSpeed(-0.1);
+            }
 
-                // Sets intake to a speed
-                if (rTrigger > Constants.kINPUT_DEADBAND) {
-                    intake.setIntakeSpeed(rTrigger);
-                } else if (rButton) { // Reverse intake
-                    intake.setIntakeSpeed(-0.3);
-                } else { // Stop intake
-                    intake.setIntakeSpeed(0);
-                }
+            // Sets intake to a speed
+            if (rTrigger > Constants.kINPUT_DEADBAND) {
+                intake.setIntakeSpeed(rTrigger);
+            } else if (rButton) { // Reverse intake
+                intake.setIntakeSpeed(-0.3);
+            } else { // Stop intake
+                intake.setIntakeSpeed(0);
+            }
 
-                if (aButton) {
-                    intake.setHopperSpeed(0.8);
-                } else {
-                    intake.setHopperSpeed(0);
-                }
+            if (aButton) {
+                intake.setHopperSpeed(0.8);
+            } else {
+                intake.setHopperSpeed(0);
+            }
 
-                // Flip up control panel and engage based on FMS values
-                if (yButton) {
-                    controlPanel.spin();
-                } else {
-                    controlPanel.stop();
-                }
+            // Flip up control panel and engage based on FMS values
+            if (yButton) {
+                controlPanel.spin();
+            } else {
+                controlPanel.stop();
+            }
 
-                // Temporary control for flipping arm up
-                panelListenerTurns.update(xButton);
+            // Temporary control for flipping arm up
+            panelListenerTurns.update(xButton);
 
+            if (startButton) {
+                climb.setWinchSpeed(0);
+                pneumatics.setRatchet(true);
+            }
 
-                if (startButton) {
-                    climb.setWinchSpeed(0);
-                    pneumatics.setRatchet(true);
-                }
+            // add safety to make sure that you don't have them go in opposite directions?
 
-                // add safety to make sure that you don't have them go in opposite directions?
+            // Left winch engage
+            if (lStickY > Constants.kINPUT_DEADBAND) {
+                climb.setLeftWinchSpeed(-lStickY);
+            }
 
-                // Left winch engage
-                if (lStickY > Constants.kINPUT_DEADBAND) {
-                    climb.setLeftWinchSpeed(-lStickY);
-                }
+            if (lStickY < -Constants.kINPUT_DEADBAND) {
+                pneumatics.setRatchet(true);
+                climb.setLeftWinchSpeed(0.05);
+            } else {
+                pneumatics.setRatchet(false);
+            }
 
-                if (lStickY < -Constants.kINPUT_DEADBAND) {
-                    pneumatics.setRatchet(true);
-                    climb.setLeftWinchSpeed(0.05);
-                } else {
-                    pneumatics.setRatchet(false);
-                }
+            // Right winch engage
+            if (rStickY > Constants.kINPUT_DEADBAND) {
+                climb.setRightWinchSpeed(rStickY);
+            }
 
-                // Right winch engage
-                if (rStickY > Constants.kINPUT_DEADBAND) {
-                    climb.setRightWinchSpeed(rStickY);
-                }
-
-                if (rStickY < -Constants.kINPUT_DEADBAND) {
-                    pneumatics.setRatchet(true);
-                    climb.setRightWinchSpeed(-0.05);
-                } else {
-                    pneumatics.setRatchet(false);
-                }
+            if (rStickY < -Constants.kINPUT_DEADBAND) {
+                pneumatics.setRatchet(true);
+                climb.setRightWinchSpeed(-0.05);
+            } else {
+                pneumatics.setRatchet(false);
+            }
 
             shooterSetPoint = SmartDashboard.getNumber("Set RPM", 0);
             shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
