@@ -368,8 +368,8 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousPeriodic() {
         boolean targetAcquired = false; // initially there should be no targets
-        while (!targetAcquired) // while we don't see any,
-        {
+        while (!targetAcquired) {
+            // while we don't see any,
             driveTrain.curve(0.2, 0.2, 0.0, 0.0);
 
             // float tv = limelightTable->GetNumber("tv"); //converts networkTable to a regular
