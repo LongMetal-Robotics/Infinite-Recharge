@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.File;
 import java.util.Scanner;
 import org.longmetal.Constants;
-import org.longmetal.exception.SubsystemDisabledException;
 import org.longmetal.exception.SubsystemException;
 import org.longmetal.exception.SubsystemUninitializedException;
 import org.longmetal.input.Gamepad.Axis;
@@ -32,7 +31,6 @@ import org.longmetal.subsystem.DriveTrain;
 import org.longmetal.subsystem.Intake;
 import org.longmetal.subsystem.Pneumatics;
 import org.longmetal.subsystem.Shooter;
-import org.longmetal.subsystem.SubsystemManager;
 import org.longmetal.subsystem.Vision;
 import org.longmetal.util.Console;
 import org.longmetal.util.Delay;
@@ -54,7 +52,6 @@ public class Robot extends TimedRobot {
     Shooter shooter;
     Climb climb;
     ControlPanel controlPanel;
-    SubsystemManager manager;
     DigitalInput intakeLimit;
     Timer timer;
     Listener intakeListener;
@@ -124,7 +121,6 @@ public class Robot extends TimedRobot {
         shooter = new Shooter(true);
         climb = new Climb(true);
         controlPanel = new ControlPanel(true);
-        manager = new SubsystemManager();
         formula = new ShootFormula();
         intakeLimit = new DigitalInput(0);
         timer = new Timer();
@@ -291,8 +287,6 @@ public class Robot extends TimedRobot {
         // shootHigh = formula.shooterSpeed(/* Limelight distance */ 4) * 1.05;
         // shooterCheck = (shooter.getSpeed() > shootLow && shooter.getSpeed() < shootHigh);
         // SmartDashboard.putBoolean("ShooterCheck", shooterCheck);
-
-        manager.checkSendables();
 
         // read PID coefficients from SmartDashboard
         double p = SmartDashboard.getNumber("P Gain", 0);
@@ -556,7 +550,6 @@ public class Robot extends TimedRobot {
                 }
 
             } catch (SubsystemException e) {
-                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
                 e.printStackTrace();
 
                 boolean isUninitialized =
@@ -597,7 +590,6 @@ public class Robot extends TimedRobot {
                 intakeListener.update(intakeLimit.get());
 
             } catch (SubsystemException e) {
-                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
                 e.printStackTrace();
 
                 boolean isUninitialized =
@@ -622,7 +614,6 @@ public class Robot extends TimedRobot {
                 panelListenerTurns.update(!xButton);
 
             } catch (SubsystemException e) {
-                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
                 e.printStackTrace();
 
                 boolean isUninitialized =
@@ -697,7 +688,6 @@ public class Robot extends TimedRobot {
                     }
                 }
             } catch (SubsystemException e) {
-                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
                 e.printStackTrace();
 
                 boolean isUninitialized =
@@ -707,16 +697,6 @@ public class Robot extends TimedRobot {
                     climb.init();
                 }
             }
-        }
-    }
-
-    private String problemName(SubsystemException e) {
-        if (e.getClass().isInstance(SubsystemDisabledException.class)) {
-            return "Subsystem Disabled";
-        } else if (e.getClass().isInstance(SubsystemUninitializedException.class)) {
-            return "Subsystem Unitialized";
-        } else {
-            return "Generic Subsystem Problem";
         }
     }
 
@@ -799,7 +779,6 @@ public class Robot extends TimedRobot {
                 }
 
             } catch (SubsystemException e) {
-                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
                 e.printStackTrace();
 
                 boolean isUninitialized =
@@ -828,7 +807,6 @@ public class Robot extends TimedRobot {
                 }
 
             } catch (SubsystemException e) {
-                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
                 e.printStackTrace();
 
                 boolean isUninitialized =
@@ -852,7 +830,6 @@ public class Robot extends TimedRobot {
                 panelListenerTurns.update(xButton);
 
             } catch (SubsystemException e) {
-                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
                 e.printStackTrace();
 
                 boolean isUninitialized =
@@ -898,7 +875,6 @@ public class Robot extends TimedRobot {
                 }
 
             } catch (SubsystemException e) {
-                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
                 e.printStackTrace();
 
                 boolean isUninitialized =
