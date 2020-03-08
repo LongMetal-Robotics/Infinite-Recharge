@@ -25,7 +25,6 @@ import org.longmetal.exception.SubsystemException;
 import org.longmetal.exception.SubsystemUninitializedException;
 import org.longmetal.input.Gamepad.Axis;
 import org.longmetal.input.Gamepad.Button;
-import org.longmetal.input.DriveStick;
 import org.longmetal.input.Input;
 import org.longmetal.subsystem.Climb;
 import org.longmetal.subsystem.ControlPanel;
@@ -450,13 +449,13 @@ public class Robot extends TimedRobot {
                     },
                     Constants.kLOW_PORT_REVERSE_TIME);
         } /*else if (readyClimb || panelUp) { // When panel or climb up, drive slower
-            updateVision(false);
-            driveTrain.curve(
-                    input.forwardStick.getY(),
-                    input.forwardStick.getThrottle() * 0.2,
-                    input.turnStick.getTwist(),
-                    input.turnStick.getThrottle() * 0.5);
-        }*/ else {
+              updateVision(false);
+              driveTrain.curve(
+                      input.forwardStick.getY(),
+                      input.forwardStick.getThrottle() * 0.2,
+                      input.turnStick.getTwist(),
+                      input.turnStick.getThrottle() * 0.5);
+          }*/ else {
             updateVision(false);
             driveTrain.curve(
                     input.forwardStick.getY(),
