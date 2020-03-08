@@ -36,7 +36,6 @@ import org.longmetal.subsystem.SubsystemManager;
 import org.longmetal.subsystem.Vision;
 import org.longmetal.util.Console;
 import org.longmetal.util.Delay;
-import org.longmetal.util.LMMath;
 import org.longmetal.util.Listener;
 import org.longmetal.util.ShootFormula;
 
@@ -608,9 +607,8 @@ public class Robot extends TimedRobot {
                     pneumatics.setRatchet(false);
                     readyClimb = true;
                     if (!climb.getWinchEnabled()
-                            && !climb
-                                    .getWaitingWinchEnabled()) { // Winch is not enabled and we
-                                                                 // aren't waiting for it
+                            && !climb.getWaitingWinchEnabled()) { // Winch is not enabled and we
+                        // aren't waiting for it
                         climb.delayedEnableWinch();
                     } else if (climb.getWinchEnabled()) { // The winch is enabled! Let's climb!
                         climb.setLeftWinchSpeed(Constants.CLIMB_SPEED);
@@ -627,8 +625,9 @@ public class Robot extends TimedRobot {
 
                 if (readyClimb) {
 
-                    boolean sticksUp = lStickY < -Constants.kINPUT_DEADBAND
-                    || rStickY < -Constants.kINPUT_DEADBAND;
+                    boolean sticksUp =
+                            lStickY < -Constants.kINPUT_DEADBAND
+                                    || rStickY < -Constants.kINPUT_DEADBAND;
 
                     // Sticks up
                     if (sticksUp) {
