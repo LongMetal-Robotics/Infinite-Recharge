@@ -3,7 +3,6 @@ package org.longmetal.subsystem;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import org.longmetal.Constants;
-import org.longmetal.exception.SubsystemException;
 
 public class Climb extends Subsystem {
     private CANSparkMax winch1;
@@ -25,18 +24,15 @@ public class Climb extends Subsystem {
         super.init();
     }
 
-    public void setLeftWinchSpeed(double speed) throws SubsystemException {
-        check();
+    public void setLeftWinchSpeed(double speed) {
         winch1.set(speed);
     }
 
-    public void setRightWinchSpeed(double speed) throws SubsystemException {
-        check();
+    public void setRightWinchSpeed(double speed) {
         winch2.set(speed);
     }
 
-    public void setWinchSpeed(double speed) throws SubsystemException {
-        check();
+    public void setWinchSpeed(double speed) {
         setLeftWinchSpeed(speed);
         setRightWinchSpeed(-speed);
     }

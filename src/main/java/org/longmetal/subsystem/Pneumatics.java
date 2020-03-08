@@ -5,7 +5,6 @@ import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import org.longmetal.Constants;
-import org.longmetal.exception.SubsystemException;
 import org.longmetal.util.Console;
 
 public class Pneumatics extends Subsystem {
@@ -35,15 +34,13 @@ public class Pneumatics extends Subsystem {
         super.init();
     }
 
-    public void flipArmUp() throws SubsystemException {
-        check();
+    public void flipArmUp() {
         rotator.set(kForward);
         armUp = true;
         Console.log("armUp = " + armUp);
     }
 
-    public void flipArmDown() throws SubsystemException {
-        check();
+    public void flipArmDown() {
         rotator.set(kReverse);
         armUp = false;
         Console.log("armUp = " + armUp);
@@ -59,8 +56,7 @@ public class Pneumatics extends Subsystem {
     //     drumSpin2.set(on);
     // }
 
-    public void setRatchet(boolean on) throws SubsystemException {
-        check();
+    public void setRatchet(boolean on) {
         drumSpin.set(on ? kReverse : kForward);
     }
 }
