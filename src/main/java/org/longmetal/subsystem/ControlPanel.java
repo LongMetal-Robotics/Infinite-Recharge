@@ -9,7 +9,6 @@ import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import org.longmetal.Constants;
-import org.longmetal.exception.SubsystemException;
 
 public class ControlPanel extends Subsystem {
     // instance variables
@@ -80,20 +79,17 @@ public class ControlPanel extends Subsystem {
         return thisColor == color;
     }
 
-    public void spin() throws SubsystemException {
-        check();
+    public void spin() {
         spinner.set(
                 ControlMode.PercentOutput, Constants.k_SPINRATE); // spins motor at constant speed
     }
 
-    public void stop() throws SubsystemException {
-        check();
+    public void stop() {
         spinner.set(ControlMode.PercentOutput, 0.0); // Hard stop
     }
 
     // spins and returns false if not right color, or stops and returns true if right color
-    public boolean spinTo(PanelColor color) throws SubsystemException {
-        check();
+    public boolean spinTo(PanelColor color) {
         if (!isColor(color)) {
             spin();
             return false;
@@ -103,7 +99,7 @@ public class ControlPanel extends Subsystem {
         }
     }
     // takes color FMS is going to be looking at and returns what sensor is looking at
-    public PanelColor rotatedColor(PanelColor color) throws SubsystemException {
+    public PanelColor rotatedColor(PanelColor color) {
         if (color.equals(PanelColor.Red)) {
             return PanelColor.Green;
         } else if (color.equals(PanelColor.Green)) {
@@ -117,13 +113,12 @@ public class ControlPanel extends Subsystem {
         }
     }
     // spins with a new value
-    public boolean rotatedSpinTo(PanelColor color) throws SubsystemException {
+    public boolean rotatedSpinTo(PanelColor color) {
         return spinTo(rotatedColor(color));
     }
 
     // sets values for rotation
-    public void initRotate(int turns) throws SubsystemException {
-        check();
+    public void initRotate(int turns) {
         setRotations = turns * 2;
         accumulated = 0;
         lastColor = currentColor();
@@ -131,8 +126,7 @@ public class ControlPanel extends Subsystem {
     }
 
     // while spinning, updates the number of turns so you stop in the right place
-    public boolean updateRotate() throws SubsystemException {
-        check();
+    public boolean updateRotate() {
         PanelColor currentColor = currentColor();
         if (currentColor != lastColor) {
             lastColor = currentColor;

@@ -20,8 +20,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.File;
 import java.util.Scanner;
 import org.longmetal.Constants;
-import org.longmetal.exception.SubsystemException;
-import org.longmetal.exception.SubsystemUninitializedException;
 import org.longmetal.input.Gamepad.Axis;
 import org.longmetal.input.Gamepad.Button;
 import org.longmetal.input.Input;
@@ -129,11 +127,7 @@ public class Robot extends TimedRobot {
                 new Listener(
                         new Runnable() {
                             public void run() {
-                                try {
-                                    intake.runHopper(Constants.kTRANSPORT_SPEED);
-                                } catch (SubsystemException e) {
-                                    Console.log(e.getMessage());
-                                }
+                                intake.runHopper(Constants.kTRANSPORT_SPEED);    
                             }
                         },
                         null,
@@ -142,25 +136,17 @@ public class Robot extends TimedRobot {
                 new Listener(
                         new Runnable() {
                             public void run() {
-                                try {
                                     pneumatics.flipArmUp();
                                     panelUp = true;
                                     // controlPanel.turnsMode();
                                     // pneumatics.flipArmDown();
                                     // panelUp = false;
-                                } catch (SubsystemException e) {
-                                    Console.log(e.getMessage());
-                                }
                             }
                         },
                         new Runnable() {
                             public void run() {
-                                try {
                                     pneumatics.flipArmDown();
                                     panelUp = false;
-                                } catch (SubsystemException e) {
-                                    Console.log(e.getMessage());
-                                }
                             }
                         },
                         // null,
@@ -170,26 +156,17 @@ public class Robot extends TimedRobot {
                 new Listener(
                         new Runnable() {
                             public void run() {
-                                try {
                                     pneumatics.flipArmUp();
                                     panelUp = true;
                                     // controlPanel.colorMode();
                                     // pneumatics.flipArmDown();
                                     // panelUp = false;
-
-                                } catch (SubsystemException e) {
-                                    Console.log(e.getMessage());
-                                }
                             }
                         },
                         new Runnable() {
                             public void run() {
-                                try {
                                     pneumatics.flipArmDown();
                                     panelUp = false;
-                                } catch (SubsystemException e) {
-                                    Console.log(e.getMessage());
-                                }
                             }
                         },
                         // null,
@@ -458,12 +435,8 @@ public class Robot extends TimedRobot {
                     input.turnStick.getThrottle());
         }
 
-        String currentSubsystem = "Subsystem";
-
         if (!endgameMode) {
 
-            currentSubsystem = "Shooter";
-            try {
                 shooterSetPoint = 0;
                 // I'm not sure if this is the most efficient way to do this, but I will hopefully
                 // streamline it in the future
@@ -549,19 +522,6 @@ public class Robot extends TimedRobot {
                     lastShooterSetPoint = shooterSetPoint;
                 }
 
-            } catch (SubsystemException e) {
-                e.printStackTrace();
-
-                boolean isUninitialized =
-                        e.getClass().isInstance(SubsystemUninitializedException.class);
-                if (Shooter.getEnabled() && isUninitialized) {
-
-                    shooter.init();
-                }
-            }
-
-            currentSubsystem = "Intake";
-            try {
                 // Sets intake to a speed
                 if (rTrigger > Constants.kINPUT_DEADBAND) {
                     intake.setIntakeSpeed(rTrigger);
@@ -589,19 +549,6 @@ public class Robot extends TimedRobot {
 
                 intakeListener.update(intakeLimit.get());
 
-            } catch (SubsystemException e) {
-                e.printStackTrace();
-
-                boolean isUninitialized =
-                        e.getClass().isInstance(SubsystemUninitializedException.class);
-                if (currentSubsystem.equals("Intake") && Intake.getEnabled() && isUninitialized) {
-
-                    intake.init();
-                }
-            }
-
-            currentSubsystem = "Control Panel";
-            try {
                 // Flip up control panel and engage based on FMS values
                 if (yButton) {
                     // For now, this button will just spin the motor for testing purposes
@@ -613,24 +560,11 @@ public class Robot extends TimedRobot {
                 // Temporary control for flipping arm up
                 panelListenerTurns.update(!xButton);
 
-            } catch (SubsystemException e) {
-                e.printStackTrace();
-
-                boolean isUninitialized =
-                        e.getClass().isInstance(SubsystemUninitializedException.class);
-                if (ControlPanel.getEnabled() && isUninitialized) {
-
-                    controlPanel.init();
-                }
-            }
-
             // Puts the robot into endgame mode, disabling all manipulator subsystems
             if (startButton) {
                 endgameMode = true;
             }
         } else {
-            currentSubsystem = "Climb";
-            try {
                 if (rButton) {
                     // Release climb upwards, disengage solenoids
                     pneumatics.setRatchet(false);
@@ -687,16 +621,6 @@ public class Robot extends TimedRobot {
                         }
                     }
                 }
-            } catch (SubsystemException e) {
-                e.printStackTrace();
-
-                boolean isUninitialized =
-                        e.getClass().isInstance(SubsystemUninitializedException.class);
-                if (Climb.getEnabled() && isUninitialized) {
-
-                    climb.init();
-                }
-            }
         }
     }
 
@@ -756,12 +680,8 @@ public class Robot extends TimedRobot {
         // Start button, engages Endgame Mode
         boolean startButton = input.gamepad.getButton(Button.START);
 
-        String currentSubsystem = "Subsystem";
-
         if (!endgameMode) {
 
-            currentSubsystem = "Shooter";
-            try {
                 // if (lTrigger > Constants.kINPUT_DEADBAND) {
                 //     shooter.runShooter(lTrigger);
                 // }
@@ -778,19 +698,6 @@ public class Robot extends TimedRobot {
                     shooter.setSingulatorSpeed(-0.1);
                 }
 
-            } catch (SubsystemException e) {
-                e.printStackTrace();
-
-                boolean isUninitialized =
-                        e.getClass().isInstance(SubsystemUninitializedException.class);
-                if (Shooter.getEnabled() && isUninitialized) {
-
-                    shooter.init();
-                }
-            }
-
-            currentSubsystem = "Intake";
-            try {
                 // Sets intake to a speed
                 if (rTrigger > Constants.kINPUT_DEADBAND) {
                     intake.setIntakeSpeed(rTrigger);
@@ -806,19 +713,6 @@ public class Robot extends TimedRobot {
                     intake.setHopperSpeed(0);
                 }
 
-            } catch (SubsystemException e) {
-                e.printStackTrace();
-
-                boolean isUninitialized =
-                        e.getClass().isInstance(SubsystemUninitializedException.class);
-                if (currentSubsystem.equals("Intake") && Intake.getEnabled() && isUninitialized) {
-
-                    intake.init();
-                }
-            }
-
-            currentSubsystem = "Control Panel";
-            try {
                 // Flip up control panel and engage based on FMS values
                 if (yButton) {
                     controlPanel.spin();
@@ -829,19 +723,6 @@ public class Robot extends TimedRobot {
                 // Temporary control for flipping arm up
                 panelListenerTurns.update(xButton);
 
-            } catch (SubsystemException e) {
-                e.printStackTrace();
-
-                boolean isUninitialized =
-                        e.getClass().isInstance(SubsystemUninitializedException.class);
-                if (ControlPanel.getEnabled() && isUninitialized) {
-
-                    controlPanel.init();
-                }
-            }
-
-            currentSubsystem = "Climb";
-            try {
 
                 if (startButton) {
                     climb.setWinchSpeed(0);
@@ -873,17 +754,6 @@ public class Robot extends TimedRobot {
                 } else {
                     pneumatics.setRatchet(false);
                 }
-
-            } catch (SubsystemException e) {
-                e.printStackTrace();
-
-                boolean isUninitialized =
-                        e.getClass().isInstance(SubsystemUninitializedException.class);
-                if (Climb.getEnabled() && isUninitialized) {
-
-                    climb.init();
-                }
-            }
 
             shooterSetPoint = SmartDashboard.getNumber("Set RPM", 0);
             shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
