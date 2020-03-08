@@ -10,8 +10,8 @@ import org.longmetal.util.Delay;
 public class Climb extends Subsystem {
     private CANSparkMax winch1;
     private CANSparkMax winch2;
-    private CANEncoder encoder1;
-    private CANEncoder encoder2;
+    public CANEncoder encoder1;
+    public CANEncoder encoder2;
     private boolean winchEnabled = false;
     private boolean waitingWinchEnabled = false;
 

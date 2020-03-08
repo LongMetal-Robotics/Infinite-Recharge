@@ -36,6 +36,7 @@ import org.longmetal.subsystem.SubsystemManager;
 import org.longmetal.subsystem.Vision;
 import org.longmetal.util.Console;
 import org.longmetal.util.Delay;
+import org.longmetal.util.LMMath;
 import org.longmetal.util.Listener;
 import org.longmetal.util.ShootFormula;
 
@@ -450,6 +451,12 @@ public class Robot extends TimedRobot {
         String currentSubsystem = "Subsystem";
 
         if (!endgameMode) {
+            try {
+                pneumatics.setRatchet(false);
+            } catch (SubsystemException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
 
             currentSubsystem = "Shooter";
             try {
@@ -620,9 +627,11 @@ public class Robot extends TimedRobot {
 
                 if (readyClimb) {
 
+                    boolean sticksUp = lStickY < -Constants.kINPUT_DEADBAND
+                    || rStickY < -Constants.kINPUT_DEADBAND;
+
                     // Sticks up
-                    if (lStickY < -Constants.kINPUT_DEADBAND
-                            || rStickY < -Constants.kINPUT_DEADBAND) {
+                    if (sticksUp) {
 
                         // Disengage ratchet
                         pneumatics.setRatchet(false);
@@ -643,8 +652,17 @@ public class Robot extends TimedRobot {
                         }
 
                     } else {
+                        double lClimbPosition = climb.encoder1.getPosition();
+                        double rClimbPosition = climb.encoder1.getPosition();
+                        double minPosition = Math.min(lClimbPosition, rClimbPosition);
+
+                        if (minPosition >= 3) {
+                            pneumatics.setRatchet(true);
+                        } else {
+                            pneumatics.setRatchet(false);
+                        }
+
                         // Engage ratchet
-                        pneumatics.setRatchet(true);
                         climb.setWinchEnabled(false);
 
                         // Left stick down
