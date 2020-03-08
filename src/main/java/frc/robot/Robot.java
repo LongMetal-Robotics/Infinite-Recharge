@@ -382,7 +382,7 @@ public class Robot extends TimedRobot {
 
         AutoMode autoModeEnum = autoModeChooser.getSelected();
         
-
+        System.out.println(autoModeEnum);
         switch (autoModeEnum) {
             case DO_NOTHING:
                 autoMode = 0;
@@ -423,29 +423,39 @@ public class Robot extends TimedRobot {
     public void autonomousPeriodic() {
         boolean hasCollected = false;
         boolean hasTurned = false;
+        System.out.println(autoMode);
         if (autoMode == 0) {
             System.out.println("Auto works!");
+            Console.log("Auto Works!");
             System.out.println("Do Nothing");
         } else if (autoMode == 1) {
             System.out.println("Drive back");
             // Make robot drive off initiation line
+            
+            if (timer.get() < 4.0)
+            {
+                driveTrain.curve(-0.2, -0.2, 0.0, 0.0);
+            } else {
+                driveTrain.curve(0, 0, 0, 0);
+            }
+
         } else if (autoMode == 11) {
             if (timer.get() < 4.0) //
             {
-                try {
-                    intake.setIntakeSpeed(1.0);
-                    intake.setHopperSpeed(0.8);
-                } catch (SubsystemException e) {
-                    System.out.println("ERROR: Intake could not be turned on.");
-                }
+                // try {
+                //     intake.setIntakeSpeed(1.0);
+                //     intake.setHopperSpeed(0.8);
+                // } catch (SubsystemException e) {
+                //     System.out.println("ERROR: Intake could not be turned on.");
+                // }
                 driveTrain.curve(-0.2, -0.2, 0.0, 0.0);
             } else {
-                try {
-                    intake.setIntakeSpeed(0.0);
-                    intake.setHopperSpeed(0.0);
-                } catch (SubsystemException e) {
-                    System.out.println("ERROR: Intake could not be turned off.");
-                }
+                // try {
+                //     intake.setIntakeSpeed(0.0);
+                //     intake.setHopperSpeed(0.0);
+                // } catch (SubsystemException e) {
+                //     System.out.println("ERROR: Intake could not be turned off.");
+                // }
     
                 driveTrain.curve(0.0, 0.0, 0.0, 0.0);
                 hasCollected = true;
@@ -464,7 +474,19 @@ public class Robot extends TimedRobot {
     
             if (hasTurned) {
                 try {
-                    // if (bButton) {
+                    // updateVision(true);
+                    // //if (tY >= 10) {
+                    //     shooterSetPoint =
+                    //             (double)
+                    //                     //LMMath.limit(
+                    //                             formula.shooterSpeed(
+                    //                                             Vision.getLimelightDistance(
+                    //                                                     tY /*, Vision.Target.POWER_PORT*/))
+                    //                                     * 2.35,
+                    //                             shooter.minRPM,
+                    //                             shooter.maxRPM);
+                    // //}
+                    shooter.setShooterRPM(1500);
                     if (RPMInRange && velocity > 1500) {
                         shooter.setSingulatorSpeed(0.8);
                         intake.setHopperSpeed(1);
@@ -487,8 +509,24 @@ public class Robot extends TimedRobot {
     
                 shooterSetPoint = SmartDashboard.getNumber("Set RPM", 0);
                 shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
-    
-                if (timer.get() > 14.5) hasTurned = false;
+                
+                if (timer.get() > 14.5) {
+                    try {
+                        shooter.setShooterRPM(0);
+                    } catch (SubsystemException e) {
+                        Console.error("Shooter Problem: " + problemName(e) + ". Stack Trace:");
+                        e.printStackTrace();
+        
+                        boolean isUninitialized =
+                                e.getClass().isInstance(SubsystemUninitializedException.class);
+                        if (Shooter.getEnabled() && isUninitialized) {
+        
+                            shooter.init();
+                        }
+                    }
+                    updateVision(false);
+                    hasTurned = false;
+                }
             }
     
             if (timer.get() > 14.5) { // Stops robot to prepare for tele-op
@@ -523,7 +561,7 @@ public class Robot extends TimedRobot {
         //
         // I think this is a separate auto mode than the above code, but I don't know yet how to
         // separate them with a switcher
-        boolean targetAcquired = false; // initially there should be no targets
+        /*boolean targetAcquired = false; // initially there should be no targets
         while (!targetAcquired) // while we don't see any,
         {
             driveTrain.curve(0.2, 0.2, 0.0, 0.0);
@@ -535,7 +573,7 @@ public class Robot extends TimedRobot {
                 driveTrain.curve(0.0, 0.0, 0.0, 0.0); // stops the driving
                 //method to make the robot drive towards / align to the target
             }*/
-        }
+        //}
     }
 
     @Override
