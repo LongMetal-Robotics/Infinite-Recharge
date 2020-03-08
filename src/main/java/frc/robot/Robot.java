@@ -390,7 +390,7 @@ public class Robot extends TimedRobot {
         Delay.setEnabled(true); // I think these do the same thing, but we need to fix it either way
 
         AutoMode autoModeEnum = autoModeChooser.getSelected();
-        
+
         System.out.println(autoModeEnum);
         switch (autoModeEnum) {
             case DO_NOTHING:
@@ -440,9 +440,8 @@ public class Robot extends TimedRobot {
         } else if (autoMode == 1) {
             System.out.println("Drive back");
             // Make robot drive off initiation line
-            
-            if (timer.get() < 4.0)
-            {
+
+            if (timer.get() < 4.0) {
                 driveTrain.curve(-0.2, -0.2, 0.0, 0.0);
             } else {
                 driveTrain.curve(0, 0, 0, 0);
@@ -489,7 +488,8 @@ public class Robot extends TimedRobot {
                     //                     //LMMath.limit(
                     //                             formula.shooterSpeed(
                     //                                             Vision.getLimelightDistance(
-                    //                                                     tY /*, Vision.Target.POWER_PORT*/))
+                    //                                                     tY /*,
+                    // Vision.Target.POWER_PORT*/))
                     //                                     * 2.35,
                     //                             shooter.minRPM,
                     //                             shooter.maxRPM);
@@ -517,18 +517,18 @@ public class Robot extends TimedRobot {
 
                 shooterSetPoint = SmartDashboard.getNumber("Set RPM", 0);
                 shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
-                
+
                 if (timer.get() > 14.5) {
                     try {
                         shooter.setShooterRPM(0);
                     } catch (SubsystemException e) {
                         Console.error("Shooter Problem: " + problemName(e) + ". Stack Trace:");
                         e.printStackTrace();
-        
+
                         boolean isUninitialized =
                                 e.getClass().isInstance(SubsystemUninitializedException.class);
                         if (Shooter.getEnabled() && isUninitialized) {
-        
+
                             shooter.init();
                         }
                     }
@@ -578,7 +578,7 @@ public class Robot extends TimedRobot {
                 driveTrain.curve(0.0, 0.0, 0.0, 0.0); // stops the driving
                 //method to make the robot drive towards / align to the target
             }*/
-        //}
+        // }
     }
 
     @Override
