@@ -635,19 +635,14 @@ public class Robot extends TimedRobot {
                         // Disengage ratchet
                         pneumatics.setRatchet(false);
 
-                        if (!climb.getWinchEnabled() && !climb.getWaitingWinchEnabled()) {
-                            climb.delayedEnableWinch();
-                        } else if (climb.getWinchEnabled()) {
+                        if (lStickY < -Constants.kINPUT_DEADBAND) {
+                            // Let out left winch
+                            climb.setLeftWinchSpeed(-lStickY / 2);
+                        }
 
-                            if (lStickY < -Constants.kINPUT_DEADBAND) {
-                                // Let out left winch
-                                climb.setLeftWinchSpeed(-lStickY / 2);
-                            }
-
-                            if (rStickY < -Constants.kINPUT_DEADBAND) {
-                                // Let out right winch
-                                climb.setRightWinchSpeed(-rStickY / 2);
-                            }
+                        if (rStickY < -Constants.kINPUT_DEADBAND) {
+                            // Let out right winch
+                            climb.setRightWinchSpeed(-rStickY / 2);
                         }
 
                     } else {
@@ -655,6 +650,7 @@ public class Robot extends TimedRobot {
                         double rClimbPosition = climb.encoder1.getPosition();
                         double minPosition = Math.min(lClimbPosition, rClimbPosition);
 
+                        // If it has spooled out a reasonable amount, allow the ratchet in
                         if (minPosition >= 3) {
                             pneumatics.setRatchet(true);
                         } else {
