@@ -593,11 +593,10 @@ public class Robot extends TimedRobot {
                 }
 
             case COLLECT2: // Maybe start near opposite trench and collect those 2 balls and shoot
-                           // all 5
+                // all 5
 
-                           // this needs to be redone with pathweaver lmao
-                if (timer.get() < 3.0) 
-                {
+                // this needs to be redone with pathweaver lmao
+                if (timer.get() < 3.0) {
                     try {
                         intake.setIntakeSpeed(0.8);
                         intake.setHopperSpeed(1.0);
