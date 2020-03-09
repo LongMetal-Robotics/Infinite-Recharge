@@ -35,24 +35,24 @@ public class Climb extends Subsystem {
 
     public void setLeftWinchSpeed(double speed) throws SubsystemException {
         check();
-        if (speed < 0
-                && encoder1.getPosition()
-                        <= 1) { // Wants to reel in and is within 1 rotation of home
-            winch1.set(0);
-        } else {
+        // if (speed < 0){
+        //         // && encoder1.getPosition()
+        //                 // <= 1) { // Wants to reel in and is within 1 rotation of home
+        //     winch1.set(0);
+        // } else {
             winch1.set(speed);
-        }
+        // }
     }
 
     public void setRightWinchSpeed(double speed) throws SubsystemException {
         check();
-        if (speed < 0
-                && encoder2.getPosition()
-                        <= 1) { // Wants to reel in and is within 1 rotation of home
-            winch1.set(0);
-        } else {
+        // if (speed < 0){
+        //         // && encoder2.getPosition()
+        //                 // <= 1) { // Wants to reel in and is within 1 rotation of home
+        //     winch1.set(0);
+        // } else {
             winch2.set(-speed);
-        }
+        // }
     }
 
     public void setWinchSpeed(double speed) throws SubsystemException {

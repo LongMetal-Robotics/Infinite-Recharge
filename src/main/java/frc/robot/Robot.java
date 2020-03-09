@@ -598,23 +598,29 @@ public class Robot extends TimedRobot {
             // Puts the robot into endgame mode, disabling all manipulator subsystems
             if (startButton) {
                 endgameMode = true;
+                try {
+                    climb.resetEncoders();
+                } catch (SubsystemException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         } else {
             currentSubsystem = "Climb";
             try {
-                if (rButton) {
-                    // Release climb upwards, disengage solenoids
-                    pneumatics.setRatchet(false);
-                    readyClimb = true;
-                    if (!climb.getWinchEnabled()
-                            && !climb.getWaitingWinchEnabled()) { // Winch is not enabled and we
-                        // aren't waiting for it
-                        climb.delayedEnableWinch();
-                    } else if (climb.getWinchEnabled()) { // The winch is enabled! Let's climb!
-                        climb.setLeftWinchSpeed(Constants.CLIMB_SPEED);
-                        climb.setRightWinchSpeed(Constants.CLIMB_SPEED);
-                    } // We're waiting for the winch to be enabled. There's nothing to do here
-                }
+                // if (rButton) {
+                //     // Release climb upwards, disengage solenoids
+                //     pneumatics.setRatchet(false);
+                //     readyClimb = true;
+                //     // if (!climb.getWinchEnabled()
+                //     //         && !climb.getWaitingWinchEnabled()) { // Winch is not enabled and we
+                //     //     // aren't waiting for it
+                //     //     climb.delayedEnableWinch();
+                //     // } else if (climb.getWinchEnabled()) { // The winch is enabled! Let's climb!
+                //         climb.setLeftWinchSpeed(Constants.CLIMB_SPEED);
+                //         climb.setRightWinchSpeed(Constants.CLIMB_SPEED);
+                //     // } // We're waiting for the winch to be enabled. There's nothing to do here
+                // }
 
                 if (backButton) {
                     endgameMode = false;
@@ -623,7 +629,7 @@ public class Robot extends TimedRobot {
                     climb.setWinchEnabled(false);
                 }
 
-                if (readyClimb) {
+                // if (readyClimb) {
 
                     boolean sticksUp =
                             lStickY < -Constants.kINPUT_DEADBAND
@@ -635,29 +641,37 @@ public class Robot extends TimedRobot {
                         // Disengage ratchet
                         pneumatics.setRatchet(false);
 
-                        if (lStickY < -Constants.kINPUT_DEADBAND) {
-                            // Let out left winch
-                            climb.setLeftWinchSpeed(-lStickY / 2);
-                        }
+                        // if (!climb.getWinchEnabled() && !climb.getWaitingWinchEnabled()) {
+                        //     climb.delayedEnableWinch();
+                        // } else if (climb.getWinchEnabled()) {
 
-                        if (rStickY < -Constants.kINPUT_DEADBAND) {
-                            // Let out right winch
-                            climb.setRightWinchSpeed(-rStickY / 2);
-                        }
+                            if (lStickY < -Constants.kINPUT_DEADBAND) {
+                                // Let out left winch
+                                climb.setLeftWinchSpeed(-lStickY / 2);
+                            }
+
+                            if (rStickY < -Constants.kINPUT_DEADBAND) {
+                                // Let out right winch
+                                climb.setRightWinchSpeed(-rStickY / 2);
+                            }
+                        // }
 
                     } else {
                         double lClimbPosition = climb.encoder1.getPosition();
-                        double rClimbPosition = climb.encoder1.getPosition();
+                        double rClimbPosition = -climb.encoder2.getPosition();
                         double minPosition = Math.min(lClimbPosition, rClimbPosition);
+                        // SmartDashboard.putNumber("lClimb", lClimbPosition);
+                        // SmartDashboard.putNumber("rClimb", rClimbPosition);
 
                         // If it has spooled out a reasonable amount, allow the ratchet in
-                        if (minPosition >= 3) {
+                        if (minPosition >= 30) {
                             pneumatics.setRatchet(true);
                         } else {
                             pneumatics.setRatchet(false);
                         }
 
                         // Engage ratchet
+                    
                         climb.setWinchEnabled(false);
 
                         // Left stick down
@@ -676,7 +690,7 @@ public class Robot extends TimedRobot {
                             climb.setRightWinchSpeed(0);
                         }
                     }
-                }
+                // }
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
                 e.printStackTrace();
