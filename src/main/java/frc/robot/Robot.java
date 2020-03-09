@@ -88,7 +88,7 @@ public class Robot extends TimedRobot {
     double shootHigh = 0;
     boolean readyClimb = false;
     double conversionFactor = 2.35;
-    int autoMode = 0;
+    AutoMode autoMode;
 
     NetworkTable limelightTable =
             NetworkTableInstance.getDefault()
@@ -389,42 +389,9 @@ public class Robot extends TimedRobot {
         timer.start();
         Delay.setEnabled(true); // I think these do the same thing, but we need to fix it either way
 
-        AutoMode autoModeEnum = autoModeChooser.getSelected();
+        autoMode = autoModeChooser.getSelected();
 
-        System.out.println(autoModeEnum);
-        switch (autoModeEnum) {
-            case DO_NOTHING:
-                autoMode = 0;
-                break;
-
-            case DRIVE_BACK:
-                autoMode = 1;
-                break;
-
-            case SHOOT1:
-                autoMode = 11;
-                break;
-
-            case SHOOT2:
-                autoMode = 12;
-                break;
-
-            case SHOOT3:
-                autoMode = 13;
-                break;
-
-            case COLLECT1:
-                autoMode = 21;
-                break;
-
-            case COLLECT2:
-                autoMode = 22;
-                break;
-
-            case COLLECT3:
-                autoMode = 23;
-                break;
-        }
+        System.out.println(autoMode);
     }
 
     /** This function is called periodically during autonomous. */
@@ -432,95 +399,63 @@ public class Robot extends TimedRobot {
     public void autonomousPeriodic() {
         boolean hasCollected = false;
         boolean hasTurned = false;
-        System.out.println(autoMode);
-        if (autoMode == 0) {
-            System.out.println("Auto works!");
-            Console.log("Auto Works!");
-            System.out.println("Do Nothing");
-        } else if (autoMode == 1) {
-            System.out.println("Drive back");
-            // Make robot drive off initiation line
+        switch (autoMode) {
+            case DO_NOTHING:
+                System.out.println("Auto works!");
+                Console.log("Auto Works!");
+                System.out.println("Do Nothing");
+                break;
 
-            if (timer.get() < 4.0) {
-                driveTrain.curve(-0.2, -0.2, 0.0, 0.0);
-            } else {
-                driveTrain.curve(0, 0, 0, 0);
-            }
+            case DRIVE_BACK: // Robot drives straight back off the line, getting the initiation line points
+                System.out.println("Drive back");
+                // Make robot drive off initiation line
+                if (timer.get() < 4.0) {
+                    driveTrain.curve(-0.2, -0.2, 0.0, 0.0);
+                } else {
+                    driveTrain.curve(0, 0, 0, 0);
+                }
+                break;
 
-        } else if (autoMode == 11) {
-            if (timer.get() < 4.0) //
-            {
-                // try {
-                //     intake.setIntakeSpeed(1.0);
-                //     intake.setHopperSpeed(0.8);
-                // } catch (SubsystemException e) {
-                //     System.out.println("ERROR: Intake could not be turned on.");
-                // }
-                driveTrain.curve(-0.2, -0.2, 0.0, 0.0);
-            } else {
-                // try {
-                //     intake.setIntakeSpeed(0.0);
-                //     intake.setHopperSpeed(0.0);
-                // } catch (SubsystemException e) {
-                //     System.out.println("ERROR: Intake could not be turned off.");
-                // }
-                driveTrain.curve(0.0, 0.0, 0.0, 0.0);
-                hasCollected = true;
-            }
-
-            if (hasCollected) {
-                updateVision(true);
-                driveTrain.curveRaw(0, (tX / 30) / 2, true);
-                if (tX < 0.05) {
-                    updateVision(false);
+            case SHOOT1: // Robot drives back off the line, aims, and fires 3 balls
+                if (timer.get() < 4.0) //
+                {
+                    driveTrain.curve(-0.2, -0.2, 0.0, 0.0);
+                } else if (timer.get() < 4.5) {
                     driveTrain.curve(0.0, 0.0, 0.0, 0.0);
-                    hasCollected = false;
-                    hasTurned = true;
+                    hasCollected = true;
                 }
-            }
 
-            if (hasTurned) {
-                try {
-                    // updateVision(true);
-                    // //if (tY >= 10) {
-                    //     shooterSetPoint =
-                    //             (double)
-                    //                     //LMMath.limit(
-                    //                             formula.shooterSpeed(
-                    //                                             Vision.getLimelightDistance(
-                    //                                                     tY /*,
-                    // Vision.Target.POWER_PORT*/))
-                    //                                     * 2.35,
-                    //                             shooter.minRPM,
-                    //                             shooter.maxRPM);
-                    // //}
-                    shooter.setShooterRPM(1500);
-                    if (RPMInRange && velocity > 1500) {
-                        shooter.setSingulatorSpeed(0.8);
-                        intake.setHopperSpeed(1);
-                    } else {
-                        shooter.setSingulatorSpeed(0);
-                        intake.setHopperSpeed(0.0);
-                    }
-
-                } catch (SubsystemException e) {
-                    Console.error("Shooter Problem: " + problemName(e) + ". Stack Trace:");
-                    e.printStackTrace();
-
-                    boolean isUninitialized =
-                            e.getClass().isInstance(SubsystemUninitializedException.class);
-                    if (Shooter.getEnabled() && isUninitialized) {
-
-                        shooter.init();
+                if (hasCollected) {
+                    updateVision(true);
+                    driveTrain.curveRaw(0, (tX / 30) / 2, true);
+                    if (tX < 0.05) {
+                        updateVision(false);
+                        driveTrain.curve(0.0, 0.0, 0.0, 0.0);
+                        hasCollected = false;
+                        hasTurned = true;
                     }
                 }
 
-                shooterSetPoint = SmartDashboard.getNumber("Set RPM", 0);
-                shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
-
-                if (timer.get() > 14.5) {
+                if (hasTurned) {
                     try {
-                        shooter.setShooterRPM(0);
+                        updateVision(true);
+                        if (tY >= 10) {
+                            shooterSetPoint =
+                                    (double)
+                                            LMMath.limit(
+                                                    formula.shooterSpeed(
+                                                                    Vision.getLimelightDistance(tY)) * 2.35,
+                                                    shooter.minRPM,
+                                                    shooter.maxRPM);
+                        }
+                        if (RPMInRange && velocity > 1500) {
+                            shooter.setSingulatorSpeed(0.8);
+                            intake.setHopperSpeed(1);
+                        } else {
+                            shooter.setSingulatorSpeed(-0.1);
+                            intake.setHopperSpeed(0.0);
+                        }
+
                     } catch (SubsystemException e) {
                         Console.error("Shooter Problem: " + problemName(e) + ". Stack Trace:");
                         e.printStackTrace();
@@ -532,34 +467,137 @@ public class Robot extends TimedRobot {
                             shooter.init();
                         }
                     }
-                    updateVision(false);
-                    hasTurned = false;
+
+                    shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
+
+                    if (timer.get() > 14.5) {
+                        try {
+                            shooter.setShooterRPM(1000);
+                            driveTrain.curve(0.0, 0.0, 0.0, 0.0);
+                            intake.setHopperSpeed(0.2);
+                            shooter.setSingulatorSpeed(-0.1);
+                        } catch (SubsystemException e) {
+                            Console.error("Shooter Problem: " + problemName(e) + ". Stack Trace:");
+                            e.printStackTrace();
+
+                            boolean isUninitialized =
+                                    e.getClass().isInstance(SubsystemUninitializedException.class);
+                            if (Shooter.getEnabled() && isUninitialized) {
+
+                                shooter.init();
+                            }
+                        }
+                        updateVision(false);
+                        hasTurned = false;
+                    }
                 }
-            }
 
-            if (timer.get() > 14.5) { // Stops robot to prepare for tele-op
-                driveTrain.curve(0.0, 0.0, 0.0, 0.0);
-                try {
-                    intake.setHopperSpeed(0.0);
-                    shooter.setSingulatorSpeed(0);
-                } catch (SubsystemException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                break;
+
+            case SHOOT2: // Maybe turn and park near the trench to shoot?
+                break;
+
+            case SHOOT3: // Maybe just a different starting position
+
+                break;
+
+            case COLLECT1: // Robot drives straight back into the trench, collects 2 balls, aims, and shoots 5 balls
+                if (timer.get() < 5.0) //
+                {
+                    try {
+                        intake.setIntakeSpeed(0.8);
+                        intake.setHopperSpeed(1.0);
+                    } catch (SubsystemException e) {
+                        System.out.println("ERROR: Intake could not be turned on.");
+                    }
+                    driveTrain.curve(-0.2, -0.2, 0.0, 0.0);
+                } else if (timer.get() < 6.0) {
+                    try {
+                        intake.setIntakeSpeed(0.0);
+                        // intake.setHopperSpeed(0.0);
+                    } catch (SubsystemException e) {
+                        System.out.println("ERROR: Intake could not be turned off.");
+                    }
+                    driveTrain.curve(0.0, 0.0, 0.0, 0.0);
+                    hasCollected = true;
                 }
-            }
-        } else if (autoMode == 12) {
 
-        } else if (autoMode == 13) {
+                if (hasCollected) {
+                    updateVision(true);
+                    driveTrain.curveRaw(0, (tX / 30) / 2, true);
+                    if (tX < 0.05) {
+                        updateVision(false);
+                        driveTrain.curve(0.0, 0.0, 0.0, 0.0);
+                        hasCollected = false;
+                        hasTurned = true;
+                    }
+                }
 
-        } else if (autoMode == 21) {
+                if (hasTurned) {
+                    try {
+                        updateVision(true);
+                        if (tY >= 10) {
+                            shooterSetPoint =
+                                    (double)
+                                            LMMath.limit(
+                                                    formula.shooterSpeed(
+                                                                    Vision.getLimelightDistance(tY)) * 2.35,
+                                                    shooter.minRPM,
+                                                    shooter.maxRPM);
+                        }
+                        if (RPMInRange && velocity > 1500) {
+                            shooter.setSingulatorSpeed(0.8);
+                            intake.setHopperSpeed(1);
+                        } else {
+                            shooter.setSingulatorSpeed(-0.1);
+                            intake.setHopperSpeed(0.0);
+                        }
 
-        } else if (autoMode == 22) {
+                    } catch (SubsystemException e) {
+                        Console.error("Shooter Problem: " + problemName(e) + ". Stack Trace:");
+                        e.printStackTrace();
 
-        } else if (autoMode == 23) {
+                        boolean isUninitialized =
+                                e.getClass().isInstance(SubsystemUninitializedException.class);
+                        if (Shooter.getEnabled() && isUninitialized) {
 
-        } else {
-            Console.log("Auto error");
+                            shooter.init();
+                        }
+                    }
+
+                    shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
+
+                    if (timer.get() > 14.5) {
+                        try {
+                            shooter.setShooterRPM(1000);
+                            driveTrain.curve(0.0, 0.0, 0.0, 0.0);
+                            intake.setHopperSpeed(0.2);
+                            shooter.setSingulatorSpeed(-0.1);
+                        } catch (SubsystemException e) {
+                            Console.error("Shooter Problem: " + problemName(e) + ". Stack Trace:");
+                            e.printStackTrace();
+
+                            boolean isUninitialized =
+                                    e.getClass().isInstance(SubsystemUninitializedException.class);
+                            if (Shooter.getEnabled() && isUninitialized) {
+
+                                shooter.init();
+                            }
+                        }
+                        updateVision(false);
+                        hasTurned = false;
+                    }
+                }
+
+            case COLLECT2: // Maybe start near opposite trench and collect those 2 balls and shoot all 5
+
+                break;
+
+            case COLLECT3: // Maybe collect some of the balls over the 1 inch bumps in the center (without having the drivetrain touch the bumps)
+
+                break;
         }
+        
 
         //
         //
@@ -671,8 +709,7 @@ public class Robot extends TimedRobot {
                     shooter.setSingulatorSpeed(0);
                 } else {
                     if (bButton) {
-                        // SmartDashboard.getNumber("Factor", conversionFactor);
-
+                        
                         updateVision(true);
                         if (tY >= 10) {
                             shooterSetPoint =
@@ -680,7 +717,7 @@ public class Robot extends TimedRobot {
                                             LMMath.limit(
                                                     formula.shooterSpeed(
                                                                     Vision.getLimelightDistance(
-                                                                            tY /*, Vision.Target.POWER_PORT*/))
+                                                                            tY))
                                                             * 2.35,
                                                     shooter.minRPM,
                                                     shooter.maxRPM);
@@ -688,7 +725,7 @@ public class Robot extends TimedRobot {
 
                         SmartDashboard.putNumber(
                                 "Distance",
-                                Vision.getLimelightDistance(tY /*, Vision.Target.POWER_PORT*/));
+                                Vision.getLimelightDistance(tY));
 
                         /*if (RPMInRange && velocity > 1500) {
                             shooter.setSingulatorSpeed(1);
@@ -755,14 +792,6 @@ public class Robot extends TimedRobot {
                     intake.setIntakeSpeed(0);
                     intake.setHopperSpeed(0);
                 }
-
-                // if (bButton && lTrigger > Constants.kINPUT_DEADBAND) {
-                //     intake.setHopperSpeed(1);
-                //     /*} else if (xButton) {
-                //     intake.setHopperSpeed(0.8);*/
-                // } else {
-                //     intake.setHopperSpeed(0);
-                // }
 
                 intakeListener.update(intakeLimit.get());
 
