@@ -497,6 +497,7 @@ public class Robot extends TimedRobot {
                 break;
 
             case SHOOT2: // Maybe turn and park near the trench to shoot?
+
                 break;
 
             case SHOOT3: // Maybe just a different starting position
@@ -594,6 +595,93 @@ public class Robot extends TimedRobot {
 
             case COLLECT2: // Maybe start near opposite trench and collect those 2 balls and shoot
                            // all 5
+                if (timer.get() < 3.0) 
+                {
+                    try {
+                        intake.setIntakeSpeed(0.8);
+                        intake.setHopperSpeed(1.0);
+                    } catch (SubsystemException e) {
+                        System.out.println("ERROR: Intake could not be turned on.");
+                    }
+                    driveTrain.curve(-0.2, -0.2, 0.0, 0.0);
+                } else if (timer.get() < 4.0) {
+                    try {
+                        intake.setIntakeSpeed(0.0);
+                        // intake.setHopperSpeed(0.0);
+                    } catch (SubsystemException e) {
+                        System.out.println("ERROR: Intake could not be turned off.");
+                    }
+                    driveTrain.curve(0.0, 0.0, 0.0, 0.0);
+                    hasCollected = true;
+                }
+
+                if (hasCollected) {
+                    updateVision(true);
+                    driveTrain.curveRaw(0, (tX / 30) / 2, true);
+                    if (tX < 0.01) {
+                        updateVision(false);
+                        driveTrain.curve(0.0, 0.0, 0.0, 0.0);
+                        hasCollected = false;
+                        hasTurned = true;
+                    }
+                }
+
+                if (hasTurned) {
+                    try {
+                        updateVision(true);
+                        if (tY >= 10) {
+                            shooterSetPoint =
+                                    (double)
+                                            LMMath.limit(
+                                                    formula.shooterSpeed(
+                                                                    Vision.getLimelightDistance(tY))
+                                                            * 2.35,
+                                                    shooter.minRPM,
+                                                    shooter.maxRPM);
+                        }
+                        if (RPMInRange && velocity > 1500) {
+                            shooter.setSingulatorSpeed(0.8);
+                            intake.setHopperSpeed(1);
+                        } else {
+                            shooter.setSingulatorSpeed(-0.1);
+                            intake.setHopperSpeed(0.0);
+                        }
+
+                    } catch (SubsystemException e) {
+                        Console.error("Shooter Problem: " + problemName(e) + ". Stack Trace:");
+                        e.printStackTrace();
+
+                        boolean isUninitialized =
+                                e.getClass().isInstance(SubsystemUninitializedException.class);
+                        if (Shooter.getEnabled() && isUninitialized) {
+
+                            shooter.init();
+                        }
+                    }
+
+                    shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
+
+                    if (timer.get() > 14.5) {
+                        try {
+                            shooter.setShooterRPM(1000);
+                            driveTrain.curve(0.0, 0.0, 0.0, 0.0);
+                            intake.setHopperSpeed(0.2);
+                            shooter.setSingulatorSpeed(-0.1);
+                        } catch (SubsystemException e) {
+                            Console.error("Shooter Problem: " + problemName(e) + ". Stack Trace:");
+                            e.printStackTrace();
+
+                            boolean isUninitialized =
+                                    e.getClass().isInstance(SubsystemUninitializedException.class);
+                            if (Shooter.getEnabled() && isUninitialized) {
+
+                                shooter.init();
+                            }
+                        }
+                        updateVision(false);
+                        hasTurned = false;
+                    }
+                }
                 break;
 
             case COLLECT3: // Maybe collect some of the balls over the 1 inch bumps in the center
