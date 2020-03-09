@@ -40,7 +40,7 @@ public class Climb extends Subsystem {
         //                 // <= 1) { // Wants to reel in and is within 1 rotation of home
         //     winch1.set(0);
         // } else {
-            winch1.set(speed);
+        winch1.set(speed);
         // }
     }
 
@@ -51,7 +51,7 @@ public class Climb extends Subsystem {
         //                 // <= 1) { // Wants to reel in and is within 1 rotation of home
         //     winch1.set(0);
         // } else {
-            winch2.set(-speed);
+        winch2.set(-speed);
         // }
     }
 
