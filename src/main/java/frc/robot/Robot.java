@@ -407,7 +407,7 @@ public class Robot extends TimedRobot {
                 break;
 
             case DRIVE_BACK: // Robot drives straight back off the line, getting the initiation line
-                             // points
+                // points
                 System.out.println("Drive back");
                 // Make robot drive off initiation line
                 if (timer.get() < 4.0) {
@@ -497,14 +497,13 @@ public class Robot extends TimedRobot {
                 break;
 
             case SHOOT2: // Maybe turn and park near the trench to shoot?
-
                 break;
 
             case SHOOT3: // Maybe just a different starting position
                 break;
 
             case COLLECT1: // Robot drives straight back into the trench, collects 2 balls, aims,
-                           // and shoots 5 balls
+                // and shoots 5 balls
                 if (timer.get() < 5.0) //
                 {
                     try {
@@ -594,9 +593,8 @@ public class Robot extends TimedRobot {
                 }
 
             case COLLECT2: // Maybe start near opposite trench and collect those 2 balls and shoot
-                           // all 5
-                if (timer.get() < 3.0) 
-                {
+                // all 5
+                if (timer.get() < 3.0) {
                     try {
                         intake.setIntakeSpeed(0.8);
                         intake.setHopperSpeed(1.0);
@@ -685,7 +683,7 @@ public class Robot extends TimedRobot {
                 break;
 
             case COLLECT3: // Maybe collect some of the balls over the 1 inch bumps in the center
-                           // (without having the drivetrain touch the bumps)
+                // (without having the drivetrain touch the bumps)
                 break;
         }
 
