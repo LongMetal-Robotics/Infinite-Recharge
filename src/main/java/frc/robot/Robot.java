@@ -425,6 +425,7 @@ public class Robot extends TimedRobot {
         if (bButton) {
             updateVision(true);
             // driveTrain.curveRaw(0, (tX / 30) / 2, true);
+            SmartDashboard.putNumber("Alignment", driveTrain.alignmentCalc);
             driveTrain.curveRaw(0, driveTrain.alignmentCalc, true);
         } else if (aButton) {
             updateVision(false);
@@ -540,11 +541,11 @@ public class Robot extends TimedRobot {
                 }
 
                 SmartDashboard.putNumber("Set", shooterSetPoint);
-                if (shooterSetPoint != lastShooterSetPoint) {
-                    shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
-                    // shooter.setShooterRPM(shooterSetPoint);
-                    lastShooterSetPoint = shooterSetPoint;
-                }
+                // if (shooterSetPoint != lastShooterSetPoint) {
+                //     shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
+                //     // shooter.setShooterRPM(shooterSetPoint);
+                //     lastShooterSetPoint = shooterSetPoint;
+                // }
 
             } catch (SubsystemException e) {
                 Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
