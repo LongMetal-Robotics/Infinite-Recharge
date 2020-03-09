@@ -406,7 +406,8 @@ public class Robot extends TimedRobot {
                 System.out.println("Do Nothing");
                 break;
 
-            case DRIVE_BACK: // Robot drives straight back off the line, getting the initiation line points
+            case DRIVE_BACK: // Robot drives straight back off the line, getting the initiation line
+                             // points
                 System.out.println("Drive back");
                 // Make robot drive off initiation line
                 if (timer.get() < 4.0) {
@@ -444,7 +445,8 @@ public class Robot extends TimedRobot {
                                     (double)
                                             LMMath.limit(
                                                     formula.shooterSpeed(
-                                                                    Vision.getLimelightDistance(tY)) * 2.35,
+                                                                    Vision.getLimelightDistance(tY))
+                                                            * 2.35,
                                                     shooter.minRPM,
                                                     shooter.maxRPM);
                         }
@@ -498,10 +500,10 @@ public class Robot extends TimedRobot {
                 break;
 
             case SHOOT3: // Maybe just a different starting position
-
                 break;
 
-            case COLLECT1: // Robot drives straight back into the trench, collects 2 balls, aims, and shoots 5 balls
+            case COLLECT1: // Robot drives straight back into the trench, collects 2 balls, aims,
+                           // and shoots 5 balls
                 if (timer.get() < 5.0) //
                 {
                     try {
@@ -541,7 +543,8 @@ public class Robot extends TimedRobot {
                                     (double)
                                             LMMath.limit(
                                                     formula.shooterSpeed(
-                                                                    Vision.getLimelightDistance(tY)) * 2.35,
+                                                                    Vision.getLimelightDistance(tY))
+                                                            * 2.35,
                                                     shooter.minRPM,
                                                     shooter.maxRPM);
                         }
@@ -589,15 +592,14 @@ public class Robot extends TimedRobot {
                     }
                 }
 
-            case COLLECT2: // Maybe start near opposite trench and collect those 2 balls and shoot all 5
-
+            case COLLECT2: // Maybe start near opposite trench and collect those 2 balls and shoot
+                           // all 5
                 break;
 
-            case COLLECT3: // Maybe collect some of the balls over the 1 inch bumps in the center (without having the drivetrain touch the bumps)
-
+            case COLLECT3: // Maybe collect some of the balls over the 1 inch bumps in the center
+                           // (without having the drivetrain touch the bumps)
                 break;
         }
-        
 
         //
         //
@@ -709,23 +711,20 @@ public class Robot extends TimedRobot {
                     shooter.setSingulatorSpeed(0);
                 } else {
                     if (bButton) {
-                        
+
                         updateVision(true);
                         if (tY >= 10) {
                             shooterSetPoint =
                                     (double)
                                             LMMath.limit(
                                                     formula.shooterSpeed(
-                                                                    Vision.getLimelightDistance(
-                                                                            tY))
+                                                                    Vision.getLimelightDistance(tY))
                                                             * 2.35,
                                                     shooter.minRPM,
                                                     shooter.maxRPM);
                         }
 
-                        SmartDashboard.putNumber(
-                                "Distance",
-                                Vision.getLimelightDistance(tY));
+                        SmartDashboard.putNumber("Distance", Vision.getLimelightDistance(tY));
 
                         /*if (RPMInRange && velocity > 1500) {
                             shooter.setSingulatorSpeed(1);
