@@ -46,6 +46,7 @@ public class Constants {
     // Input
     public static final double kINPUT_DEADBAND =
             0.1; // If the value hasn't changed by more than this much we'll ignore it
+    public static final int CLIMB_DELAY = 500; // Time between ratchet release and motor start
 
     // Drive joysticks
     public static final int kP_LEFT_STICK = 0; // Left joystick port
