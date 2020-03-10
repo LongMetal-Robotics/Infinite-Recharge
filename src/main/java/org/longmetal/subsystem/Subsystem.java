@@ -1,6 +1,5 @@
 package org.longmetal.subsystem;
 
-import org.longmetal.exception.*;
 import org.longmetal.util.Console;
 
 public class Subsystem {
@@ -55,15 +54,5 @@ public class Subsystem {
 
     public static boolean getEnabled() {
         return enabled;
-    }
-
-    protected void check() throws SubsystemException {
-        if (!initialized) {
-            throw new SubsystemUninitializedException();
-        }
-        if (!enabled && !disabledErrorThrown) {
-            disabledErrorThrown = true;
-            throw new SubsystemDisabledException();
-        }
     }
 }

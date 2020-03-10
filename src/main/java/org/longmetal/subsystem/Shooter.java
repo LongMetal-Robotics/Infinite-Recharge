@@ -8,7 +8,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ControlType;
 import org.longmetal.Constants;
-import org.longmetal.exception.SubsystemException;
 
 public class Shooter extends Subsystem {
     private CANSparkMax drum;
@@ -59,18 +58,15 @@ public class Shooter extends Subsystem {
     //     System.out.println(drumEncoder.getVelocity());
     // }
 
-    public void runShooter(double d) throws SubsystemException {
-        check();
+    public void runShooter(double d) {
         drum.set(d);
     }
 
-    public void stop() throws SubsystemException {
-        check();
+    public void stop() {
         drum.set(0);
     }
 
-    public void setSingulatorSpeed(double d) throws SubsystemException {
-        check();
+    public void setSingulatorSpeed(double d) {
         mSingulator.set(ControlMode.PercentOutput, d);
     }
 
@@ -78,8 +74,7 @@ public class Shooter extends Subsystem {
         return drumEncoder.getVelocity();
     }
 
-    public void setShooterRPM(double velocity) throws SubsystemException {
-        check();
+    public void setShooterRPM(double velocity) {
         drumPID.setReference(velocity, ControlType.kVelocity);
     }
 }
