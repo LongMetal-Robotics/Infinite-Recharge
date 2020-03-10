@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import org.longmetal.Constants;
 
@@ -16,10 +17,17 @@ public class DriveTrain {
     public CANSparkMax mRearLeft, mFrontLeft, mRearRight, mFrontRight;
     public SpeedControllerGroup leftMotors, rightMotors;
 
+    public PIDController alignmentController;
+    public double kP = 0.0175, kI = 0.0003, kD = 0.00004, alignmentCalc = 0;
+
     private boolean reverseDrive = true;
     private double MAX_SPEED_MULT = 0.5;
 
     public DriveTrain() {
+        this(0.0, 0.0, 0.0);
+    }
+
+    public DriveTrain(double kP, double kI, double kD) {
         mRearLeft = new CANSparkMax(Constants.kP_REAR_LEFT, MotorType.kBrushless);
         mRearLeft.setIdleMode(IdleMode.kCoast);
         mFrontLeft = new CANSparkMax(Constants.kP_FRONT_LEFT, MotorType.kBrushless);
@@ -33,6 +41,10 @@ public class DriveTrain {
         rightMotors = new SpeedControllerGroup(mRearRight, mFrontRight);
 
         driveTrain = new DifferentialDrive(leftMotors, rightMotors);
+
+        alignmentController = new PIDController(kP, kI, kD);
+        alignmentController.setSetpoint(0);
+        alignmentController.setTolerance(Constants.kLINEUP_TOLERANCE);
     }
 
     public void setReverseDrive(boolean newReverseDrive) {
