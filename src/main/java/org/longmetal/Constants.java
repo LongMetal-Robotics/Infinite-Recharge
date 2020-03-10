@@ -46,6 +46,7 @@ public class Constants {
     // Input
     public static final double kINPUT_DEADBAND =
             0.1; // If the value hasn't changed by more than this much we'll ignore it
+    public static final int CLIMB_DELAY = 500; // Time between ratchet release and motor start
 
     // Drive Train
     public static final double kMAX_SPEED_MULT = 0.8; // Limit max speed, was 0.5
@@ -67,13 +68,14 @@ public class Constants {
     public static final int kREVERSE_BUTTON = 3; // Reverse button
 
     // Shooter
-    public static final double kSHOOTER_MIN = 0.1; // Min shooter speed
+    public static final double kSHOOTER_MIN = 1000; // Min shooter speed
     public static final double kSHOOTER_MAX =
-            0.75; // Max shooter speed (to protect against excessive amperage or safety I guess)
+            5000; // Max shooter speed (to protect against excessive amperage or safety I guess)
     public static final double kSHOOTER_SPEED_MODIFIER = 1; // Decrease shooter speed
     // Effect of modifiers on finals speeds
     public static final double kSHOOTER_X_MODIFIER = 0.5;
     public static final double kSHOOTER_Y_MODIFIER = 0.5;
+    public static final int kLOW_PORT_REVERSE_TIME = 2000;
 
     // Singulator / Transport
     public static final double kSINGULATOR_SPEED = 0.6; // singulator speed
@@ -83,7 +85,7 @@ public class Constants {
     public static final double kCONTROL_PANEL_SPEED = 0.4; // Control Panel Speed
 
     // Control Panel + Climb
-    public static final double k_SPINRATE = 0.2;
+    public static final double k_SPINRATE = 0.5;
     public static final double CLIMB_SPEED = 0.3;
 
     // Colors

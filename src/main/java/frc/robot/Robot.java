@@ -20,9 +20,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.File;
 import java.util.Scanner;
 import org.longmetal.Constants;
-import org.longmetal.exception.SubsystemDisabledException;
-import org.longmetal.exception.SubsystemException;
-import org.longmetal.exception.SubsystemUninitializedException;
 import org.longmetal.input.Gamepad.Axis;
 import org.longmetal.input.Gamepad.Button;
 import org.longmetal.input.Input;
@@ -32,7 +29,6 @@ import org.longmetal.subsystem.DriveTrain;
 import org.longmetal.subsystem.Intake;
 import org.longmetal.subsystem.Pneumatics;
 import org.longmetal.subsystem.Shooter;
-import org.longmetal.subsystem.SubsystemManager;
 import org.longmetal.subsystem.Vision;
 import org.longmetal.util.Console;
 import org.longmetal.util.Delay;
@@ -54,7 +50,6 @@ public class Robot extends TimedRobot {
     Shooter shooter;
     Climb climb;
     ControlPanel controlPanel;
-    SubsystemManager manager;
     DigitalInput intakeLimit;
     Timer timer;
     Listener intakeListener;
@@ -137,7 +132,6 @@ public class Robot extends TimedRobot {
         shooter = new Shooter(true);
         climb = new Climb(true);
         controlPanel = new ControlPanel(true);
-        manager = new SubsystemManager();
         formula = new ShootFormula();
         intakeLimit = new DigitalInput(0);
         timer = new Timer();
@@ -146,11 +140,7 @@ public class Robot extends TimedRobot {
                 new Listener(
                         new Runnable() {
                             public void run() {
-                                try {
-                                    intake.runHopper(Constants.kTRANSPORT_SPEED);
-                                } catch (SubsystemException e) {
-                                    Console.log(e.getMessage());
-                                }
+                                intake.runHopper(Constants.kTRANSPORT_SPEED);
                             }
                         },
                         null,
@@ -159,25 +149,17 @@ public class Robot extends TimedRobot {
                 new Listener(
                         new Runnable() {
                             public void run() {
-                                try {
-                                    pneumatics.flipArmUp();
-                                    panelUp = true;
-                                    // controlPanel.turnsMode();
-                                    // pneumatics.flipArmDown();
-                                    // panelUp = false;
-                                } catch (SubsystemException e) {
-                                    Console.log(e.getMessage());
-                                }
+                                pneumatics.flipArmUp();
+                                panelUp = true;
+                                // controlPanel.turnsMode();
+                                // pneumatics.flipArmDown();
+                                // panelUp = false;
                             }
                         },
                         new Runnable() {
                             public void run() {
-                                try {
-                                    pneumatics.flipArmDown();
-                                    panelUp = false;
-                                } catch (SubsystemException e) {
-                                    Console.log(e.getMessage());
-                                }
+                                pneumatics.flipArmDown();
+                                panelUp = false;
                             }
                         },
                         // null,
@@ -187,26 +169,17 @@ public class Robot extends TimedRobot {
                 new Listener(
                         new Runnable() {
                             public void run() {
-                                try {
-                                    pneumatics.flipArmUp();
-                                    panelUp = true;
-                                    // controlPanel.colorMode();
-                                    // pneumatics.flipArmDown();
-                                    // panelUp = false;
-
-                                } catch (SubsystemException e) {
-                                    Console.log(e.getMessage());
-                                }
+                                pneumatics.flipArmUp();
+                                panelUp = true;
+                                // controlPanel.colorMode();
+                                // pneumatics.flipArmDown();
+                                // panelUp = false;
                             }
                         },
                         new Runnable() {
                             public void run() {
-                                try {
-                                    pneumatics.flipArmDown();
-                                    panelUp = false;
-                                } catch (SubsystemException e) {
-                                    Console.log(e.getMessage());
-                                }
+                                pneumatics.flipArmDown();
+                                panelUp = false;
                             }
                         },
                         // null,
@@ -316,8 +289,6 @@ public class Robot extends TimedRobot {
         // shooterCheck = (shooter.getSpeed() > shootLow && shooter.getSpeed() < shootHigh);
         // SmartDashboard.putBoolean("ShooterCheck", shooterCheck);
 
-        manager.checkSendables();
-
         // read PID coefficients from SmartDashboard
         double p = SmartDashboard.getNumber("P Gain", 0);
         double i = SmartDashboard.getNumber("I Gain", 0);
@@ -370,7 +341,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
-        Delay.setEnabled(false);
+        Delay.setEnabled(
+                false); // VERY IMPORTANT: Stops all delays from running when the robot is disabled
     }
 
     /**
@@ -711,7 +683,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        Delay.setEnabled(true);
+        Delay.setEnabled(true); // Allows Delay to be used
         shooterSetPoint = 0;
         lastShooterSetPoint = 0;
     }
@@ -756,18 +728,33 @@ public class Robot extends TimedRobot {
         // Back button, disengages Endgame Mode
         boolean backButton = input.gamepad.getButton(Button.BACK);
 
+        boolean hopperOn = false;
+
         // Limelight line-up while B button is held
         if (bButton) {
             updateVision(true);
             driveTrain.curveRaw(0, (tX / 30) / 2, true);
-        } else if (readyClimb || panelUp) { // When panel or climb up, drive slower
+        } else if (aButton) {
             updateVision(false);
-            driveTrain.curve(
-                    input.forwardStick.getY(),
-                    input.forwardStick.getThrottle() * 0.1,
-                    input.turnStick.getTwist(),
-                    input.turnStick.getThrottle() * 0.5);
-        } else {
+            driveTrain.curveRaw(0.5, 0, false);
+
+            Delay.delay(
+                    new Runnable() {
+
+                        @Override
+                        public void run() {
+                            driveTrain.curveRaw(0, 0, true);
+                        }
+                    },
+                    Constants.kLOW_PORT_REVERSE_TIME);
+        } /*else if (readyClimb || panelUp) { // When panel or climb up, drive slower
+              updateVision(false);
+              driveTrain.curve(
+                      input.forwardStick.getY(),
+                      input.forwardStick.getThrottle() * 0.2,
+                      input.turnStick.getTwist(),
+                      input.turnStick.getThrottle() * 0.5);
+          }*/ else {
             updateVision(false);
             driveTrain.curve(
                     input.forwardStick.getY(),
@@ -776,23 +763,50 @@ public class Robot extends TimedRobot {
                     input.turnStick.getThrottle());
         }
 
-        String currentSubsystem = "Subsystem";
-
+        // Puts the robot into endgame mode, disabling all manipulator subsystems
+        if (startButton) {
+            endgameMode = true;
+            climb.resetEncoders();
+        }
         if (!endgameMode) {
+            pneumatics.setRatchet(false);
 
-            currentSubsystem = "Shooter";
-            try {
-                shooterSetPoint = 0;
-                // I'm not sure if this is the most efficient way to do this, but I will hopefully
-                // streamline it in the future
+            shooterSetPoint = 0;
+            // I'm not sure if this is the most efficient way to do this, but I will hopefully
+            // streamline it in the future
 
-                // Stops shooter
-                if (lButton) {
-                    shooterStop = true;
-                    // intake.setHopperSpeed(0);
-                } else if (bButton || aButton) {
-                    shooterStop = false;
+            // Stops shooter
+            if (lButton) {
+                shooterStop = true;
+                // intake.setHopperSpeed(0);
+            } else if (bButton || aButton) {
+                shooterStop = false;
+            }
+
+            if (shooterStop) {
+                if (backButton) {
+                    shooter.runShooter(-0.1);
+                    shooter.setSingulatorSpeed(-0.2);
+                } else {
+                    shooter.runShooter(0);
+                    shooter.setSingulatorSpeed(-0.1);
                 }
+            } else {
+                if (bButton) {
+                    // SmartDashboard.getNumber("Factor", conversionFactor);
+
+                    updateVision(true);
+                    if (tY >= 10) {
+                        shooterSetPoint =
+                                (double)
+                                        LMMath.limit(
+                                                formula.shooterSpeed(
+                                                                Vision.getLimelightDistance(
+                                                                        tY /*, Vision.Target.POWER_PORT*/))
+                                                        * 2.4,
+                                                shooter.minRPM,
+                                                shooter.maxRPM);
+                    }
 
                 if (shooterStop) {
                     shooter.setShooterRPM(0);
@@ -842,361 +856,153 @@ public class Robot extends TimedRobot {
                             shooter.setSingulatorSpeed(0);
                             intake.setHopperSpeed(0);
                         }
+                    SmartDashboard.putNumber(
+                            "Distance",
+                            Vision.getLimelightDistance(tY /*, Vision.Target.POWER_PORT*/));
+
+                    /*if (RPMInRange && velocity > 1500) {
+                        shooter.setSingulatorSpeed(1);
                     } else {
-                        updateVision(false);
-                        shooterSetPoint = shooter.minRPM;
-                    }
-                }
+                        shooter.setSingulatorSpeed(0);
+                    }*/
 
-                SmartDashboard.putNumber("Set", shooterSetPoint);
-                if (shooterSetPoint != lastShooterSetPoint) {
-                    shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
-                    // shooter.setShooterRPM(shooterSetPoint);
-                    lastShooterSetPoint = shooterSetPoint;
-                }
-
-            } catch (SubsystemException e) {
-                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
-                e.printStackTrace();
-
-                boolean isUninitialized =
-                        e.getClass().isInstance(SubsystemUninitializedException.class);
-                if (Shooter.getEnabled() && isUninitialized) {
-
-                    shooter.init();
-                }
-            }
-
-            currentSubsystem = "Intake";
-            try {
-                // Sets intake to a speed
-                if (rTrigger > Constants.kINPUT_DEADBAND) {
-                    intake.setIntakeSpeed(rTrigger);
-                    intake.setHopperSpeed(rTrigger);
-                } else if (rButton) { // Reverse intake
-                    intake.setIntakeSpeed(-0.3);
-                } else { // Stop intake
-                    intake.setIntakeSpeed(0);
-                    intake.setHopperSpeed(0);
-                }
-
-                intakeListener.update(intakeLimit.get());
-
-            } catch (SubsystemException e) {
-                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
-                e.printStackTrace();
-
-                boolean isUninitialized =
-                        e.getClass().isInstance(SubsystemUninitializedException.class);
-                if (currentSubsystem.equals("Intake") && Intake.getEnabled() && isUninitialized) {
-
-                    intake.init();
-                }
-            }
-
-            currentSubsystem = "Control Panel";
-            try {
-                // Flip up control panel and engage based on FMS values
-                if (yButton) {
-                    // For now, this button will just spin the motor for testing purposes
-                    controlPanel.spin();
-                } else {
-                    controlPanel.stop();
-                }
-
-                // Temporary control for flipping arm up
-                panelListenerTurns.update(!xButton);
-
-            } catch (SubsystemException e) {
-                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
-                e.printStackTrace();
-
-                boolean isUninitialized =
-                        e.getClass().isInstance(SubsystemUninitializedException.class);
-                if (ControlPanel.getEnabled() && isUninitialized) {
-
-                    controlPanel.init();
-                }
-            }
-
-            // Puts the robot into endgame mode, disabling all manipulator subsystems
-            if (startButton) {
-                endgameMode = true;
-            }
-        } else {
-            currentSubsystem = "Climb";
-            try {
-                if (rButton) {
-                    // Release climb upwards, disengage solenoids
-                    pneumatics.setRatchet(false);
-                    readyClimb = true;
-                    climb.setLeftWinchSpeed(Constants.CLIMB_SPEED);
-                    climb.setRightWinchSpeed(-Constants.CLIMB_SPEED);
-                }
-
-                if (backButton) {
-                    endgameMode = false;
-                    climb.setWinchSpeed(0);
-                }
-
-                if (readyClimb) {
-
-                    // Sticks up
-                    if (lStickY < -Constants.kINPUT_DEADBAND
-                            || rStickY < -Constants.kINPUT_DEADBAND) {
-
-                        // Disengage ratchet
-                        pneumatics.setRatchet(false);
-
-                        // Add 0.5 second  delay after ratchet disengages, before motors go
-                        // if (timer.hasElapsed(0.5)) {
-                        if (lStickY < -Constants.kINPUT_DEADBAND) {
-                            // Let out left winch
-                            climb.setLeftWinchSpeed(-lStickY / 2);
-                        }
-
-                        if (rStickY < -Constants.kINPUT_DEADBAND) {
-                            // Let out right winch
-                            climb.setRightWinchSpeed(rStickY / 2);
-                        }
-                        // }
-
+                    // Singulator directly controlled by left trigger
+                    // Hopper is either on or off
+                    if (lTrigger > Constants.kINPUT_DEADBAND) {
+                        shooter.setSingulatorSpeed(lTrigger);
+                        hopperOn = true;
+                        intake.setHopperSpeed(1);
                     } else {
-                        // Engage ratchet
-                        pneumatics.setRatchet(true);
-
-                        // Left stick down
-                        // Reel in left climb (raise robot)
-                        if (lStickY > Constants.kINPUT_DEADBAND) {
-                            climb.setLeftWinchSpeed(-lStickY);
-                        } else {
-                            climb.setLeftWinchSpeed(0);
-                        }
-
-                        // Right stick down
-                        // Reel in right climb (raise robot)
-                        if (rStickY > Constants.kINPUT_DEADBAND) {
-                            climb.setRightWinchSpeed(rStickY);
-                        } else {
-                            climb.setRightWinchSpeed(0);
-                        }
+                        shooter.setSingulatorSpeed(-0.1);
+                        intake.setHopperSpeed(0);
+                        hopperOn = false;
                     }
-                }
-            } catch (SubsystemException e) {
-                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
-                e.printStackTrace();
+                } else if (aButton) { // Sets shooter to lower speed to place into lower port
+                    updateVision(false);
+                    shooterSetPoint = 1500;
 
-                boolean isUninitialized =
-                        e.getClass().isInstance(SubsystemUninitializedException.class);
-                if (Climb.getEnabled() && isUninitialized) {
-
-                    climb.init();
+                    if (RPMInRange) {
+                        shooter.setSingulatorSpeed(1);
+                        hopperOn = true;
+                        intake.setHopperSpeed(1);
+                    } else {
+                        shooter.setSingulatorSpeed(-0.1);
+                        intake.setHopperSpeed(0);
+                        hopperOn = false;
+                    }
+                } else {
+                    updateVision(false);
+                    shooterSetPoint = Constants.kSHOOTER_MIN;
+                    shooter.setSingulatorSpeed(-0.1);
                 }
             }
-        }
-    }
 
-    private String problemName(SubsystemException e) {
-        if (e.getClass().isInstance(SubsystemDisabledException.class)) {
-            return "Subsystem Disabled";
-        } else if (e.getClass().isInstance(SubsystemUninitializedException.class)) {
-            return "Subsystem Unitialized";
+            SmartDashboard.putNumber("Set", shooterSetPoint);
+            if (shooterSetPoint != lastShooterSetPoint) {
+                shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
+                // shooter.setShooterRPM(shooterSetPoint);
+                lastShooterSetPoint = shooterSetPoint;
+            }
+
+            // Sets intake to a speed
+            if (rTrigger > Constants.kINPUT_DEADBAND) {
+                intake.setIntakeSpeed(rTrigger);
+                // intake.setHopperSpeed(rTrigger);
+            } else if (rButton) { // Reverse intake
+                intake.setIntakeSpeed(-0.3);
+            } else { // Stop intake
+                intake.setIntakeSpeed(0);
+                // intake.setHopperSpeed(0);
+            }
+
+            // if (bButton && lTrigger > Constants.kINPUT_DEADBAND) {
+            //     intake.setHopperSpeed(1);
+            //     /*} else if (xButton) {
+            //     intake.setHopperSpeed(0.8);*/
+            // } else {
+            //     intake.setHopperSpeed(0);
+            // }
+
+            if (lStickY < -0.5) {
+                intake.setHopperSpeed(1);
+            } else if (!hopperOn) {
+                intake.setHopperSpeed(0);
+            }
+
+            intakeListener.update(intakeLimit.get());
+
+            // Flip up control panel and engage based on FMS values
+            if (yButton) {
+                // For now, this button will just spin the motor for testing purposes
+                controlPanel.spin();
+            } else {
+                controlPanel.stop();
+            }
+
+            // Temporary control for flipping arm up
+            panelListenerTurns.update(!xButton);
         } else {
-            return "Generic Subsystem Problem";
-        }
-    }
 
-    @Override
-    public void testInit() {
-        SmartDashboard.putNumber("Set RPM", 0);
-    }
-
-    /** This function is called periodically during test mode. */
-    // For now, testPeriodic() will allow us to test all the controls directly, bypassing our
-    // automated features
-    @Override
-    public void testPeriodic() {
-        // Limelight line-up while 1 button is held
-        if (input.forwardStick.getRawButton(1)) {
-            updateVision(true);
-            driveTrain.curveRaw(0, (tX / 30) / 2, true);
-        } else {
-            updateVision(false);
-            driveTrain.curve(
-                    input.forwardStick.getY(),
-                    input.forwardStick.getThrottle(),
-                    input.turnStick.getTwist(),
-                    input.turnStick.getThrottle());
-        }
-
-        // Left Gamepad trigger, currently used for shooter
-        double lTrigger = input.gamepad.getAxis(Axis.LT);
-
-        // Right Gamepad trigger, currently used for intake
-        double rTrigger = input.gamepad.getAxis(Axis.RT);
-
-        // Left stick Y axis, left climb up/down
-        double lStickY = input.gamepad.getAxis(Axis.LS_Y);
-
-        // Right stick Y axis, right climb up/down
-        double rStickY = input.gamepad.getAxis(Axis.RS_Y);
-
-        // LB button, used to stop shooter
-        boolean lButton = input.gamepad.getButton(Button.LB);
-
-        // RB button, used to run reverse intake and release climb [only in climb mode]
-        boolean rButton = input.gamepad.getButton(Button.RB);
-
-        // X button, not currently used
-        boolean xButton = input.gamepad.getButton(Button.X);
-
-        // Y button, enables Control Panel Mode
-        boolean yButton = input.gamepad.getButton(Button.Y);
-
-        // A button, not currently used
-        boolean aButton = input.gamepad.getButton(Button.A);
-
-        // B button, currently prompts shooter to aim and set speed
-        boolean bButton = input.gamepad.getButton(Button.B);
-
-        // Start button, engages Endgame Mode
-        boolean startButton = input.gamepad.getButton(Button.START);
-
-        String currentSubsystem = "Subsystem";
-
-        if (!endgameMode) {
-
-            currentSubsystem = "Shooter";
-            try {
-                // if (lTrigger > Constants.kINPUT_DEADBAND) {
-                //     shooter.runShooter(lTrigger);
-                // }
-
-                // Stops shooter
-                // if (lButton) {
-                //     shooter.stop();
-                // }
-
-                // if (bButton) {
-                if (RPMInRange && velocity > 1500) {
-                    shooter.setSingulatorSpeed(0.8);
-                } else {
-                    shooter.setSingulatorSpeed(0);
-                }
-
-            } catch (SubsystemException e) {
-                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
-                e.printStackTrace();
-
-                boolean isUninitialized =
-                        e.getClass().isInstance(SubsystemUninitializedException.class);
-                if (Shooter.getEnabled() && isUninitialized) {
-
-                    shooter.init();
-                }
+            if (backButton) {
+                endgameMode = false;
+                pneumatics.setRatchet(true);
+                climb.setWinchSpeed(0);
+                climb.setWinchEnabled(false);
             }
 
-            currentSubsystem = "Intake";
-            try {
-                // Sets intake to a speed
-                if (rTrigger > Constants.kINPUT_DEADBAND) {
-                    intake.setIntakeSpeed(rTrigger);
-                } else if (rButton) { // Reverse intake
-                    intake.setIntakeSpeed(-0.3);
-                } else { // Stop intake
-                    intake.setIntakeSpeed(0);
-                }
+            boolean sticksUp =
+                    lStickY < -Constants.kINPUT_DEADBAND || rStickY < -Constants.kINPUT_DEADBAND;
 
-                if (aButton) {
-                    intake.setHopperSpeed(0.8);
-                } else {
-                    intake.setHopperSpeed(0);
-                }
+            // Sticks up
+            if (sticksUp) {
 
-            } catch (SubsystemException e) {
-                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
-                e.printStackTrace();
-
-                boolean isUninitialized =
-                        e.getClass().isInstance(SubsystemUninitializedException.class);
-                if (currentSubsystem.equals("Intake") && Intake.getEnabled() && isUninitialized) {
-
-                    intake.init();
-                }
-            }
-
-            currentSubsystem = "Control Panel";
-            try {
-                // Flip up control panel and engage based on FMS values
-                if (yButton) {
-                    controlPanel.spin();
-                } else {
-                    controlPanel.stop();
-                }
-
-                // Temporary control for flipping arm up
-                panelListenerTurns.update(xButton);
-
-            } catch (SubsystemException e) {
-                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
-                e.printStackTrace();
-
-                boolean isUninitialized =
-                        e.getClass().isInstance(SubsystemUninitializedException.class);
-                if (ControlPanel.getEnabled() && isUninitialized) {
-
-                    controlPanel.init();
-                }
-            }
-
-            currentSubsystem = "Climb";
-            try {
-
-                if (startButton) {
-                    climb.setWinchSpeed(0);
-                    pneumatics.setRatchet(true);
-                }
-
-                // add safety to make sure that you don't have them go in opposite directions?
-
-                // Left winch engage
-                if (lStickY > Constants.kINPUT_DEADBAND) {
-                    climb.setLeftWinchSpeed(-lStickY);
-                }
+                // Disengage ratchet
+                pneumatics.setRatchet(false);
 
                 if (lStickY < -Constants.kINPUT_DEADBAND) {
-                    pneumatics.setRatchet(true);
-                    climb.setLeftWinchSpeed(0.05);
-                } else {
-                    pneumatics.setRatchet(false);
-                }
-
-                // Right winch engage
-                if (rStickY > Constants.kINPUT_DEADBAND) {
-                    climb.setRightWinchSpeed(rStickY);
+                    // Let out left winch
+                    climb.setLeftWinchSpeed(-lStickY / 2);
                 }
 
                 if (rStickY < -Constants.kINPUT_DEADBAND) {
+                    // Let out right winch
+                    climb.setRightWinchSpeed(-rStickY / 2);
+                }
+
+            } else {
+                double lClimbPosition = climb.encoder1.getPosition();
+                double rClimbPosition = -climb.encoder2.getPosition();
+                double minPosition = Math.min(lClimbPosition, rClimbPosition);
+                // SmartDashboard.putNumber("lClimb", lClimbPosition);
+                // SmartDashboard.putNumber("rClimb", rClimbPosition);
+
+                // If it has spooled out a reasonable amount, allow the ratchet in
+                if (minPosition >= 30) {
                     pneumatics.setRatchet(true);
-                    climb.setRightWinchSpeed(-0.05);
                 } else {
                     pneumatics.setRatchet(false);
                 }
 
-            } catch (SubsystemException e) {
-                Console.error(currentSubsystem + " Problem: " + problemName(e) + ". Stack Trace:");
-                e.printStackTrace();
+                // Engage ratchet
 
-                boolean isUninitialized =
-                        e.getClass().isInstance(SubsystemUninitializedException.class);
-                if (Climb.getEnabled() && isUninitialized) {
+                climb.setWinchEnabled(false);
 
-                    climb.init();
+                // Left stick down
+                // Reel in left climb (raise robot)
+                if (lStickY > Constants.kINPUT_DEADBAND) {
+                    climb.setLeftWinchSpeed(-lStickY);
+                } else {
+                    climb.setLeftWinchSpeed(0);
+                }
+
+                // Right stick down
+                // Reel in right climb (raise robot)
+                if (rStickY > Constants.kINPUT_DEADBAND) {
+                    climb.setRightWinchSpeed(-rStickY);
+                } else {
+                    climb.setRightWinchSpeed(0);
                 }
             }
-
-            shooterSetPoint = SmartDashboard.getNumber("Set RPM", 0);
-            shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
         }
     }
 
