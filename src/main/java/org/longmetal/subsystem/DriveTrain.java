@@ -16,7 +16,7 @@ public class DriveTrain {
     public CANSparkMax mRearLeft, mFrontLeft, mRearRight, mFrontRight;
     public SpeedControllerGroup leftMotors, rightMotors;
 
-    private boolean reverseDrive = false;
+    private boolean reverseDrive = true;
     private double MAX_SPEED_MULT = 0.5;
 
     public DriveTrain() {
@@ -74,7 +74,7 @@ public class DriveTrain {
         driveTrain.curvatureDrive(driveX, driveZ, true); // Drive
     }
 
-    public void curveRaw(int xSpeed, double zRotation, boolean isQuickTurn) {
+    public void curveRaw(double xSpeed, double zRotation, boolean isQuickTurn) {
         driveTrain.curvatureDrive(xSpeed, zRotation, isQuickTurn);
     }
 }

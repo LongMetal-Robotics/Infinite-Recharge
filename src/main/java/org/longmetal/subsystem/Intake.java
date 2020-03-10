@@ -4,7 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.Timer;
 import org.longmetal.Constants;
-import org.longmetal.exception.SubsystemException;
+import org.longmetal.util.Delay;
 
 public class Intake extends Subsystem {
     private TalonSRX mIntake;
@@ -28,28 +28,25 @@ public class Intake extends Subsystem {
         super.init();
     }
 
-    public void setIntakeSpeed(double rTrigger) throws SubsystemException {
-        check();
+    public void setIntakeSpeed(double rTrigger) {
         mIntake.set(ControlMode.PercentOutput, rTrigger);
     }
 
-    public void setHopperSpeed(double d) throws SubsystemException {
-        check();
+    public void setHopperSpeed(double d) {
         mHopper.set(ControlMode.PercentOutput, -d);
     }
 
-    public void runHopper(double d) throws SubsystemException {
-        check();
+    public void runHopper(double d) {
         mHopper.set(ControlMode.PercentOutput, -d);
-        double oldTime = timer.get();
-        double newTime = 0;
-        boolean moveOn = false;
-        while (!moveOn) {
-            newTime = timer.get();
-            if (newTime - oldTime >= 3) {
-                moveOn = true;
-            }
-        }
-        mHopper.set(ControlMode.PercentOutput, 0);
+
+        Delay.delay(
+                new Runnable() {
+
+                    @Override
+                    public void run() {
+                        mHopper.set(ControlMode.PercentOutput, 0);
+                    }
+                },
+                6000);
     }
 }

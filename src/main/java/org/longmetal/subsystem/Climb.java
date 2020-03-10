@@ -4,7 +4,6 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import org.longmetal.Constants;
-import org.longmetal.exception.SubsystemException;
 import org.longmetal.util.Delay;
 
 public class Climb extends Subsystem {
@@ -21,8 +20,8 @@ public class Climb extends Subsystem {
 
     @Override
     public void init() {
-        winch1 = new CANSparkMax(Constants.kP_WINCH1, MotorType.kBrushless);
-        winch2 = new CANSparkMax(Constants.kP_WINCH2, MotorType.kBrushless);
+        winch1 = new CANSparkMax(Constants.kP_RWINCH, MotorType.kBrushless);
+        winch2 = new CANSparkMax(Constants.kP_LWINCH, MotorType.kBrushless);
         winch1.set(0);
         winch2.set(0);
         // winch1.setOpenLoopRampRate(1);
@@ -33,8 +32,7 @@ public class Climb extends Subsystem {
         super.init();
     }
 
-    public void setLeftWinchSpeed(double speed) throws SubsystemException {
-        check();
+    public void setLeftWinchSpeed(double speed)  {
         // if (speed < 0){
         //         // && encoder1.getPosition()
         //                 // <= 1) { // Wants to reel in and is within 1 rotation of home
@@ -44,8 +42,7 @@ public class Climb extends Subsystem {
         // }
     }
 
-    public void setRightWinchSpeed(double speed) throws SubsystemException {
-        check();
+    public void setRightWinchSpeed(double speed)  {
         // if (speed < 0){
         //         // && encoder2.getPosition()
         //                 // <= 1) { // Wants to reel in and is within 1 rotation of home
@@ -55,14 +52,12 @@ public class Climb extends Subsystem {
         // }
     }
 
-    public void setWinchSpeed(double speed) throws SubsystemException {
-        check();
+    public void setWinchSpeed(double speed) {
         setLeftWinchSpeed(speed);
         setRightWinchSpeed(speed);
     }
 
-    public void resetEncoders() throws SubsystemException {
-        check();
+    public void resetEncoders()  {
         encoder1.setPosition(0);
         encoder2.setPosition(0);
     }
