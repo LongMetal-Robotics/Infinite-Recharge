@@ -317,7 +317,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
-        Delay.setEnabled(false);
+        Delay.setEnabled(
+                false); // VERY IMPORTANT: Stops all delays from running when the robot is disabled
     }
 
     /**
@@ -332,7 +333,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        Delay.setEnabled(true);
+        Delay.setEnabled(true); // Allows Delay to be used
     }
 
     /** This function is called periodically during autonomous. */
@@ -355,7 +356,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        Delay.setEnabled(true);
+        Delay.setEnabled(true); // Allows Delay to be used
         shooterSetPoint = 0;
         lastShooterSetPoint = 0;
     }
@@ -435,7 +436,13 @@ public class Robot extends TimedRobot {
                     input.turnStick.getThrottle());
         }
 
+        // Puts the robot into endgame mode, disabling all manipulator subsystems
+        if (startButton) {
+            endgameMode = true;
+            climb.resetEncoders();
+        }
         if (!endgameMode) {
+            pneumatics.setRatchet(false);
 
             shooterSetPoint = 0;
             // I'm not sure if this is the most efficient way to do this, but I will hopefully
@@ -559,65 +566,66 @@ public class Robot extends TimedRobot {
 
             // Temporary control for flipping arm up
             panelListenerTurns.update(!xButton);
-
-            // Puts the robot into endgame mode, disabling all manipulator subsystems
-            if (startButton) {
-                endgameMode = true;
-            }
         } else {
-            if (rButton) {
-                // Release climb upwards, disengage solenoids
-                pneumatics.setRatchet(false);
-                readyClimb = true;
-                climb.setLeftWinchSpeed(-Constants.CLIMB_SPEED);
-                climb.setRightWinchSpeed(Constants.CLIMB_SPEED);
-            }
 
             if (backButton) {
                 endgameMode = false;
+                pneumatics.setRatchet(true);
                 climb.setWinchSpeed(0);
+                climb.setWinchEnabled(false);
             }
 
-            if (readyClimb) {
+            boolean sticksUp =
+                    lStickY < -Constants.kINPUT_DEADBAND || rStickY < -Constants.kINPUT_DEADBAND;
 
-                // Sticks up
-                if (lStickY < -Constants.kINPUT_DEADBAND || rStickY < -Constants.kINPUT_DEADBAND) {
+            // Sticks up
+            if (sticksUp) {
 
-                    // Disengage ratchet
-                    pneumatics.setRatchet(false);
+                // Disengage ratchet
+                pneumatics.setRatchet(false);
 
-                    // Add 0.5 second  delay after ratchet disengages, before motors go
-                    // if (timer.hasElapsed(0.5)) {
-                    if (lStickY < -Constants.kINPUT_DEADBAND) {
-                        // Let out left winch
-                        climb.setLeftWinchSpeed(lStickY / 2);
-                    }
+                if (lStickY < -Constants.kINPUT_DEADBAND) {
+                    // Let out left winch
+                    climb.setLeftWinchSpeed(-lStickY / 2);
+                }
 
-                    if (rStickY < -Constants.kINPUT_DEADBAND) {
-                        // Let out right winch
-                        climb.setRightWinchSpeed(-rStickY / 2);
-                    }
-                    // }
+                if (rStickY < -Constants.kINPUT_DEADBAND) {
+                    // Let out right winch
+                    climb.setRightWinchSpeed(-rStickY / 2);
+                }
 
-                } else {
-                    // Engage ratchet
+            } else {
+                double lClimbPosition = climb.encoder1.getPosition();
+                double rClimbPosition = -climb.encoder2.getPosition();
+                double minPosition = Math.min(lClimbPosition, rClimbPosition);
+                // SmartDashboard.putNumber("lClimb", lClimbPosition);
+                // SmartDashboard.putNumber("rClimb", rClimbPosition);
+
+                // If it has spooled out a reasonable amount, allow the ratchet in
+                if (minPosition >= 30) {
                     pneumatics.setRatchet(true);
+                } else {
+                    pneumatics.setRatchet(false);
+                }
 
-                    // Left stick down
-                    // Reel in left climb (raise robot)
-                    if (lStickY > Constants.kINPUT_DEADBAND) {
-                        climb.setLeftWinchSpeed(lStickY);
-                    } else {
-                        climb.setLeftWinchSpeed(0);
-                    }
+                // Engage ratchet
 
-                    // Right stick down
-                    // Reel in right climb (raise robot)
-                    if (rStickY > Constants.kINPUT_DEADBAND) {
-                        climb.setRightWinchSpeed(-rStickY);
-                    } else {
-                        climb.setRightWinchSpeed(0);
-                    }
+                climb.setWinchEnabled(false);
+
+                // Left stick down
+                // Reel in left climb (raise robot)
+                if (lStickY > Constants.kINPUT_DEADBAND) {
+                    climb.setLeftWinchSpeed(-lStickY);
+                } else {
+                    climb.setLeftWinchSpeed(0);
+                }
+
+                // Right stick down
+                // Reel in right climb (raise robot)
+                if (rStickY > Constants.kINPUT_DEADBAND) {
+                    climb.setRightWinchSpeed(-rStickY);
+                } else {
+                    climb.setRightWinchSpeed(0);
                 }
             }
         }
