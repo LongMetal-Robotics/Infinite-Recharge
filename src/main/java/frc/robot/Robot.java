@@ -399,57 +399,34 @@ public class Robot extends TimedRobot {
                 }
 
                 if (hasTurned) {
-                    try {
-                        updateVision(true);
-                        if (tY >= 10) {
-                            shooterSetPoint =
-                                    (double)
-                                            LMMath.limit(
-                                                    formula.shooterSpeed(
-                                                                    Vision.getLimelightDistance(tY))
-                                                            * 2.35,
-                                                    shooter.minRPM,
-                                                    shooter.maxRPM);
-                        }
-                        if (RPMInRange && velocity > 1500) {
-                            shooter.setSingulatorSpeed(0.8);
-                            intake.setHopperSpeed(1);
-                        } else {
-                            shooter.setSingulatorSpeed(-0.1);
-                            intake.setHopperSpeed(0.0);
-                        }
-
-                    } catch (SubsystemException e) {
-                        Console.error("Shooter Problem: " + problemName(e) + ". Stack Trace:");
-                        e.printStackTrace();
-
-                        boolean isUninitialized =
-                                e.getClass().isInstance(SubsystemUninitializedException.class);
-                        if (Shooter.getEnabled() && isUninitialized) {
-
-                            shooter.init();
-                        }
+                    updateVision(true);
+                    if (tY >= 10) {
+                        shooterSetPoint =
+                                (double)
+                                        LMMath.limit(
+                                                formula.shooterSpeed(
+                                                                Vision.getLimelightDistance(tY))
+                                                        * 2.35,
+                                                shooter.minRPM,
+                                                shooter.maxRPM);
+                    }
+                    if (RPMInRange && velocity > 1500) {
+                        shooter.setSingulatorSpeed(0.8);
+                        intake.setHopperSpeed(1);
+                    } else {
+                        shooter.setSingulatorSpeed(-0.1);
+                        intake.setHopperSpeed(0.0);
                     }
 
                     shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
 
                     if (timer.get() > 14.5) {
-                        try {
-                            shooter.setShooterRPM(1000);
-                            driveTrain.curve(0.0, 0.0, 0.0, 0.0);
-                            intake.setHopperSpeed(0.2);
-                            shooter.setSingulatorSpeed(-0.1);
-                        } catch (SubsystemException e) {
-                            Console.error("Shooter Problem: " + problemName(e) + ". Stack Trace:");
-                            e.printStackTrace();
-
-                            boolean isUninitialized =
-                                    e.getClass().isInstance(SubsystemUninitializedException.class);
-                            if (Shooter.getEnabled() && isUninitialized) {
-
-                                shooter.init();
-                            }
-                        }
+                        
+                        shooter.setShooterRPM(1000);
+                        driveTrain.curve(0.0, 0.0, 0.0, 0.0);
+                        intake.setHopperSpeed(0.2);
+                        shooter.setSingulatorSpeed(-0.1);
+                    
                         updateVision(false);
                         hasTurned = false;
                     }
@@ -467,20 +444,16 @@ public class Robot extends TimedRobot {
                 // and shoots 5 balls
                 if (timer.get() < 5.0) //
                 {
-                    try {
-                        intake.setIntakeSpeed(0.8);
-                        intake.setHopperSpeed(1.0);
-                    } catch (SubsystemException e) {
-                        System.out.println("ERROR: Intake could not be turned on.");
-                    }
+               
+                    intake.setIntakeSpeed(0.8);
+                    intake.setHopperSpeed(1.0);
+                    
                     driveTrain.curve(-0.2, -0.2, 0.0, 0.0);
                 } else if (timer.get() < 6.0) {
-                    try {
-                        intake.setIntakeSpeed(0.0);
-                        // intake.setHopperSpeed(0.0);
-                    } catch (SubsystemException e) {
-                        System.out.println("ERROR: Intake could not be turned off.");
-                    }
+                    
+                    intake.setIntakeSpeed(0.0);
+                    // intake.setHopperSpeed(0.0);
+                    
                     driveTrain.curve(0.0, 0.0, 0.0, 0.0);
                     hasCollected = true;
                 }
@@ -497,57 +470,35 @@ public class Robot extends TimedRobot {
                 }
 
                 if (hasTurned) {
-                    try {
-                        updateVision(true);
-                        if (tY >= 10) {
-                            shooterSetPoint =
-                                    (double)
-                                            LMMath.limit(
-                                                    formula.shooterSpeed(
-                                                                    Vision.getLimelightDistance(tY))
-                                                            * 2.35,
-                                                    shooter.minRPM,
-                                                    shooter.maxRPM);
-                        }
-                        if (RPMInRange && velocity > 1500) {
-                            shooter.setSingulatorSpeed(0.8);
-                            intake.setHopperSpeed(1);
-                        } else {
-                            shooter.setSingulatorSpeed(-0.1);
-                            intake.setHopperSpeed(0.0);
-                        }
-
-                    } catch (SubsystemException e) {
-                        Console.error("Shooter Problem: " + problemName(e) + ". Stack Trace:");
-                        e.printStackTrace();
-
-                        boolean isUninitialized =
-                                e.getClass().isInstance(SubsystemUninitializedException.class);
-                        if (Shooter.getEnabled() && isUninitialized) {
-
-                            shooter.init();
-                        }
+                   
+                    updateVision(true);
+                    if (tY >= 10) {
+                        shooterSetPoint =
+                                (double)
+                                        LMMath.limit(
+                                                formula.shooterSpeed(
+                                                                Vision.getLimelightDistance(tY))
+                                                        * 2.35,
+                                                shooter.minRPM,
+                                                shooter.maxRPM);
+                    }
+                    if (RPMInRange && velocity > 1500) {
+                        shooter.setSingulatorSpeed(0.8);
+                        intake.setHopperSpeed(1);
+                    } else {
+                        shooter.setSingulatorSpeed(-0.1);
+                        intake.setHopperSpeed(0.0);
                     }
 
                     shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
 
                     if (timer.get() > 14.5) {
-                        try {
-                            shooter.setShooterRPM(1000);
-                            driveTrain.curve(0.0, 0.0, 0.0, 0.0);
-                            intake.setHopperSpeed(0.2);
-                            shooter.setSingulatorSpeed(-0.1);
-                        } catch (SubsystemException e) {
-                            Console.error("Shooter Problem: " + problemName(e) + ". Stack Trace:");
-                            e.printStackTrace();
-
-                            boolean isUninitialized =
-                                    e.getClass().isInstance(SubsystemUninitializedException.class);
-                            if (Shooter.getEnabled() && isUninitialized) {
-
-                                shooter.init();
-                            }
-                        }
+                       
+                        shooter.setShooterRPM(1000);
+                        driveTrain.curve(0.0, 0.0, 0.0, 0.0);
+                        intake.setHopperSpeed(0.2);
+                        shooter.setSingulatorSpeed(-0.1);
+                        
                         updateVision(false);
                         hasTurned = false;
                     }
@@ -558,20 +509,16 @@ public class Robot extends TimedRobot {
 
                 // this needs to be redone with pathweaver lmao
                 if (timer.get() < 3.0) {
-                    try {
-                        intake.setIntakeSpeed(0.8);
-                        intake.setHopperSpeed(1.0);
-                    } catch (SubsystemException e) {
-                        System.out.println("ERROR: Intake could not be turned on.");
-                    }
+                    
+                    intake.setIntakeSpeed(0.8);
+                    intake.setHopperSpeed(1.0);
+                    
                     driveTrain.curve(-0.2, -0.2, 0.0, 0.0);
                 } else if (timer.get() < 4.0) {
-                    try {
-                        intake.setIntakeSpeed(0.0);
-                        // intake.setHopperSpeed(0.0);
-                    } catch (SubsystemException e) {
-                        System.out.println("ERROR: Intake could not be turned off.");
-                    }
+                    
+                    intake.setIntakeSpeed(0.0);
+                    // intake.setHopperSpeed(0.0);
+                    
                     driveTrain.curve(0.0, 0.0, 0.0, 0.0);
                     hasCollected = true;
                 }
@@ -588,57 +535,37 @@ public class Robot extends TimedRobot {
                 }
 
                 if (hasTurned) {
-                    try {
-                        updateVision(true);
-                        if (tY >= 10) {
-                            shooterSetPoint =
-                                    (double)
-                                            LMMath.limit(
-                                                    formula.shooterSpeed(
-                                                                    Vision.getLimelightDistance(tY))
-                                                            * 2.35,
-                                                    shooter.minRPM,
-                                                    shooter.maxRPM);
-                        }
-                        if (RPMInRange && velocity > 1500) {
-                            shooter.setSingulatorSpeed(0.8);
-                            intake.setHopperSpeed(1);
-                        } else {
-                            shooter.setSingulatorSpeed(-0.1);
-                            intake.setHopperSpeed(0.0);
-                        }
-
-                    } catch (SubsystemException e) {
-                        Console.error("Shooter Problem: " + problemName(e) + ". Stack Trace:");
-                        e.printStackTrace();
-
-                        boolean isUninitialized =
-                                e.getClass().isInstance(SubsystemUninitializedException.class);
-                        if (Shooter.getEnabled() && isUninitialized) {
-
-                            shooter.init();
-                        }
+                    
+                    updateVision(true);
+                    if (tY >= 10) {
+                        shooterSetPoint =
+                                (double)
+                                        LMMath.limit(
+                                                formula.shooterSpeed(
+                                                                Vision.getLimelightDistance(tY))
+                                                        * 2.4,
+                                                shooter.minRPM,
+                                                shooter.maxRPM);
                     }
+                    if (RPMInRange && velocity > 1500) {
+                        shooter.setSingulatorSpeed(0.8);
+                        intake.setHopperSpeed(1);
+                    } else {
+                        shooter.setSingulatorSpeed(-0.1);
+                        intake.setHopperSpeed(0.0);
+                    }
+
+                    
 
                     shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
 
                     if (timer.get() > 14.5) {
-                        try {
-                            shooter.setShooterRPM(1000);
-                            driveTrain.curve(0.0, 0.0, 0.0, 0.0);
-                            intake.setHopperSpeed(0.2);
-                            shooter.setSingulatorSpeed(-0.1);
-                        } catch (SubsystemException e) {
-                            Console.error("Shooter Problem: " + problemName(e) + ". Stack Trace:");
-                            e.printStackTrace();
-
-                            boolean isUninitialized =
-                                    e.getClass().isInstance(SubsystemUninitializedException.class);
-                            if (Shooter.getEnabled() && isUninitialized) {
-
-                                shooter.init();
-                            }
-                        }
+                        
+                        shooter.setShooterRPM(1000);
+                        driveTrain.curve(0.0, 0.0, 0.0, 0.0);
+                        intake.setHopperSpeed(0.2);
+                        shooter.setSingulatorSpeed(-0.1);
+                        
                         updateVision(false);
                         hasTurned = false;
                     }
