@@ -427,8 +427,7 @@ public class Robot extends TimedRobot {
                       input.forwardStick.getThrottle() * 0.2,
                       input.turnStick.getTwist(),
                       input.turnStick.getThrottle() * 0.5);
-          }*/
-        else {
+          }*/ else {
             updateVision(false);
             driveTrain.curve(
                     input.forwardStick.getY(),
@@ -436,8 +435,6 @@ public class Robot extends TimedRobot {
                     input.turnStick.getTwist(),
                     input.turnStick.getThrottle());
         }
-
-        
 
         // Puts the robot into endgame mode, disabling all manipulator subsystems
         if (startButton) {
@@ -579,8 +576,7 @@ public class Robot extends TimedRobot {
             }
 
             boolean sticksUp =
-                    lStickY < -Constants.kINPUT_DEADBAND
-                            || rStickY < -Constants.kINPUT_DEADBAND;
+                    lStickY < -Constants.kINPUT_DEADBAND || rStickY < -Constants.kINPUT_DEADBAND;
 
             // Sticks up
             if (sticksUp) {
