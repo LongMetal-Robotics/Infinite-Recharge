@@ -421,12 +421,12 @@ public class Robot extends TimedRobot {
                     shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
 
                     if (timer.get() > 14.5) {
-                        
+
                         shooter.setShooterRPM(1000);
                         driveTrain.curve(0.0, 0.0, 0.0, 0.0);
                         intake.setHopperSpeed(0.2);
                         shooter.setSingulatorSpeed(-0.1);
-                    
+
                         updateVision(false);
                         hasTurned = false;
                     }
@@ -444,16 +444,16 @@ public class Robot extends TimedRobot {
                 // and shoots 5 balls
                 if (timer.get() < 5.0) //
                 {
-               
+
                     intake.setIntakeSpeed(0.8);
                     intake.setHopperSpeed(1.0);
-                    
+
                     driveTrain.curve(-0.2, -0.2, 0.0, 0.0);
                 } else if (timer.get() < 6.0) {
-                    
+
                     intake.setIntakeSpeed(0.0);
                     // intake.setHopperSpeed(0.0);
-                    
+
                     driveTrain.curve(0.0, 0.0, 0.0, 0.0);
                     hasCollected = true;
                 }
@@ -470,7 +470,7 @@ public class Robot extends TimedRobot {
                 }
 
                 if (hasTurned) {
-                   
+
                     updateVision(true);
                     if (tY >= 10) {
                         shooterSetPoint =
@@ -493,12 +493,12 @@ public class Robot extends TimedRobot {
                     shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
 
                     if (timer.get() > 14.5) {
-                       
+
                         shooter.setShooterRPM(1000);
                         driveTrain.curve(0.0, 0.0, 0.0, 0.0);
                         intake.setHopperSpeed(0.2);
                         shooter.setSingulatorSpeed(-0.1);
-                        
+
                         updateVision(false);
                         hasTurned = false;
                     }
@@ -509,16 +509,16 @@ public class Robot extends TimedRobot {
 
                 // this needs to be redone with pathweaver lmao
                 if (timer.get() < 3.0) {
-                    
+
                     intake.setIntakeSpeed(0.8);
                     intake.setHopperSpeed(1.0);
-                    
+
                     driveTrain.curve(-0.2, -0.2, 0.0, 0.0);
                 } else if (timer.get() < 4.0) {
-                    
+
                     intake.setIntakeSpeed(0.0);
                     // intake.setHopperSpeed(0.0);
-                    
+
                     driveTrain.curve(0.0, 0.0, 0.0, 0.0);
                     hasCollected = true;
                 }
@@ -535,7 +535,7 @@ public class Robot extends TimedRobot {
                 }
 
                 if (hasTurned) {
-                    
+
                     updateVision(true);
                     if (tY >= 10) {
                         shooterSetPoint =
@@ -555,17 +555,15 @@ public class Robot extends TimedRobot {
                         intake.setHopperSpeed(0.0);
                     }
 
-                    
-
                     shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
 
                     if (timer.get() > 14.5) {
-                        
+
                         shooter.setShooterRPM(1000);
                         driveTrain.curve(0.0, 0.0, 0.0, 0.0);
                         intake.setHopperSpeed(0.2);
                         shooter.setSingulatorSpeed(-0.1);
-                        
+
                         updateVision(false);
                         hasTurned = false;
                     }
