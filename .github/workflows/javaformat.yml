@@ -8,6 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2 # v2 minimum required
-      - uses: axel-op/googlejavaformat-action@v2.0.0
+      - uses: axel-op/googlejavaformat-action@v3
         with:
           args: "--aosp --replace"
