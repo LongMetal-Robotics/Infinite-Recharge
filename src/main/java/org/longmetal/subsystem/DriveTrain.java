@@ -8,26 +8,26 @@ import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import org.longmetal.Constants;
 
-/*
+/**
  * While one could argue that this is a subsystem, you are probably going to be driving the robot no matter what, so we'll leave out the Subsystem methods.
  */
 public class DriveTrain {
-    public DifferentialDrive driveTrain;
+    public static DifferentialDrive driveTrain;
 
-    public CANSparkMax mRearLeft, mFrontLeft, mRearRight, mFrontRight;
-    public SpeedControllerGroup leftMotors, rightMotors;
+    public static CANSparkMax mRearLeft, mFrontLeft, mRearRight, mFrontRight;
+    public static SpeedControllerGroup leftMotors, rightMotors;
 
-    public PIDController alignmentController;
-    public double kP = 0.0175, kI = 0.0003, kD = 0.00004, alignmentCalc = 0;
+    public static PIDController alignmentController;
+    public static double kP = 0.0175, kI = 0.0003, kD = 0.00004, alignmentCalc = 0;
 
-    private boolean reverseDrive = true;
-    private double MAX_SPEED_MULT = 0.5;
+    private static boolean reverseDrive = true;
+    private static double MAX_SPEED_MULT = 0.5;
 
-    public DriveTrain() {
-        this(0.0, 0.0, 0.0);
+    public static void init() {
+        init(0.0, 0.0, 0.0);
     }
 
-    public DriveTrain(double kP, double kI, double kD) {
+    public static void init(double kP, double kI, double kD) {
         mRearLeft = new CANSparkMax(Constants.kP_REAR_LEFT, MotorType.kBrushless);
         mRearLeft.setIdleMode(IdleMode.kCoast);
         mFrontLeft = new CANSparkMax(Constants.kP_FRONT_LEFT, MotorType.kBrushless);
@@ -47,23 +47,23 @@ public class DriveTrain {
         alignmentController.setTolerance(Constants.kLINEUP_TOLERANCE);
     }
 
-    public void setReverseDrive(boolean newReverseDrive) {
+    public static void setReverseDrive(boolean newReverseDrive) {
         reverseDrive = newReverseDrive;
     }
 
-    public boolean getReverseDrive() {
+    public static boolean getReverseDrive() {
         return reverseDrive;
     }
 
-    public void setMaxSpeed(double maxSpeed) {
+    public static void setMaxSpeed(double maxSpeed) {
         MAX_SPEED_MULT = maxSpeed;
     }
 
-    public double getMaxSpeed() {
+    public static double getMaxSpeed() {
         return MAX_SPEED_MULT;
     }
 
-    public void curve(
+    public static void curve(
             double speedRaw,
             double speedThrottleRaw,
             double curvatureRaw,
@@ -86,7 +86,7 @@ public class DriveTrain {
         driveTrain.curvatureDrive(driveX, driveZ, true); // Drive
     }
 
-    public void curveRaw(double xSpeed, double zRotation, boolean isQuickTurn) {
+    public static void curveRaw(double xSpeed, double zRotation, boolean isQuickTurn) {
         driveTrain.curvatureDrive(xSpeed, zRotation, isQuickTurn);
     }
 }

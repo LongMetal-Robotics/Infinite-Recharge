@@ -12,21 +12,19 @@ import org.longmetal.Constants;
 
 public class ControlPanel extends Subsystem {
     // instance variables
-    private TalonSRX spinner; // spinner motor
-    private ColorSensorV3 csensor; // color sensor object
-    private Timer timer;
+    private static TalonSRX spinner; // spinner motor
+    private static ColorSensorV3 csensor; // color sensor object
+    private static Timer timer;
 
     private static PanelColor lastColor = PanelColor.Unknown;
     private static PanelColor initColor = PanelColor.Unknown;
     private static int setRotations = -1;
     private static int accumulated = -1;
-    private ColorMatch m_colorMatcher;
+    private static ColorMatch m_colorMatcher;
 
-    public ControlPanel(boolean setEnabled) {
-        super(setEnabled);
-    }
+    public static void init() {
+        initialized = true;
 
-    public void init() {
         // Spinner
         spinner = new TalonSRX(Constants.kP_PANEL);
         spinner.setNeutralMode(NeutralMode.Brake); // sets brake mode so we stop on color
@@ -42,8 +40,6 @@ public class ControlPanel extends Subsystem {
         m_colorMatcher.addColorMatch(Constants.kGreenTarget);
         m_colorMatcher.addColorMatch(Constants.kRedTarget);
         m_colorMatcher.addColorMatch(Constants.kYellowTarget);
-
-        super.init();
     }
 
     // public void colorMode() {
@@ -54,7 +50,7 @@ public class ControlPanel extends Subsystem {
     //         initRotate(4);
     // }
 
-    private PanelColor currentColor() {
+    private static PanelColor currentColor() {
         Color detectedColor = csensor.getColor(); // current color from sensor
         ColorMatchResult match =
                 m_colorMatcher.matchClosestColor(detectedColor); // closest color to one from sensor
@@ -74,22 +70,22 @@ public class ControlPanel extends Subsystem {
     }
 
     // identifies if color is specified color
-    private boolean isColor(PanelColor color) {
+    private static boolean isColor(PanelColor color) {
         PanelColor thisColor = currentColor();
         return thisColor == color;
     }
 
-    public void spin() {
+    public static void spin() {
         spinner.set(
                 ControlMode.PercentOutput, Constants.k_SPINRATE); // spins motor at constant speed
     }
 
-    public void stop() {
+    public static void stop() {
         spinner.set(ControlMode.PercentOutput, 0.0); // Hard stop
     }
 
     // spins and returns false if not right color, or stops and returns true if right color
-    public boolean spinTo(PanelColor color) {
+    public static boolean spinTo(PanelColor color) {
         if (!isColor(color)) {
             spin();
             return false;
@@ -99,7 +95,7 @@ public class ControlPanel extends Subsystem {
         }
     }
     // takes color FMS is going to be looking at and returns what sensor is looking at
-    public PanelColor rotatedColor(PanelColor color) {
+    public static PanelColor rotatedColor(PanelColor color) {
         if (color.equals(PanelColor.Red)) {
             return PanelColor.Green;
         } else if (color.equals(PanelColor.Green)) {
@@ -113,12 +109,12 @@ public class ControlPanel extends Subsystem {
         }
     }
     // spins with a new value
-    public boolean rotatedSpinTo(PanelColor color) {
+    public static boolean rotatedSpinTo(PanelColor color) {
         return spinTo(rotatedColor(color));
     }
 
     // sets values for rotation
-    public void initRotate(int turns) {
+    public static void initRotate(int turns) {
         setRotations = turns * 2;
         accumulated = 0;
         lastColor = currentColor();
@@ -126,7 +122,7 @@ public class ControlPanel extends Subsystem {
     }
 
     // while spinning, updates the number of turns so you stop in the right place
-    public boolean updateRotate() {
+    public static boolean updateRotate() {
         PanelColor currentColor = currentColor();
         if (currentColor != lastColor) {
             lastColor = currentColor;

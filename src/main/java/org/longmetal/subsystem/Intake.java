@@ -7,36 +7,26 @@ import org.longmetal.Constants;
 import org.longmetal.util.Delay;
 
 public class Intake extends Subsystem {
-    private TalonSRX mIntake;
-    private TalonSRX mHopper;
-    private Timer timer;
+    private static TalonSRX mIntake;
+    private static TalonSRX mHopper;
+    private static Timer timer;
 
-    public Intake(boolean setEnabled) {
-        super(setEnabled);
-        // if (setEnabled) { // I'm dumb and they way I wrote the inheritance, it wouldn't work (it
-        //     // wouldn't call the right init).
-        //     init();
-        // }
-    }
-
-    public void init() {
+    public static void init() {
         mIntake = new TalonSRX(Constants.kP_INTAKE);
         mHopper = new TalonSRX(Constants.kP_HOPPER);
         timer = new Timer();
         timer.start();
-
-        super.init();
     }
 
-    public void setIntakeSpeed(double rTrigger) {
+    public static void setIntakeSpeed(double rTrigger) {
         mIntake.set(ControlMode.PercentOutput, rTrigger);
     }
 
-    public void setHopperSpeed(double d) {
+    public static void setHopperSpeed(double d) {
         mHopper.set(ControlMode.PercentOutput, -d);
     }
 
-    public void runHopper(double d) {
+    public static void runHopper(double d) {
         mHopper.set(ControlMode.PercentOutput, -d);
 
         Delay.delay(
