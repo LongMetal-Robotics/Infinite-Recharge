@@ -12,7 +12,9 @@ public class ShootFormula {
 
     /**
      * Calculate the shooter's target speed to launch the ball to the target
-     * @param distance The horizontal distance we are from the target (as calculated from limelight values, most likely)
+     *
+     * @param distance The horizontal distance we are from the target (as calculated from limelight
+     *     values, most likely)
      * @return The required RPM to launch the ball to the target
      */
     public static double calculateSpeed(double distance) {

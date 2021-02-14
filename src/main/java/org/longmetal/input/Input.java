@@ -1,8 +1,7 @@
 package org.longmetal.input;
 
-import org.longmetal.Constants;
-
 import edu.wpi.first.wpilibj.Joystick;
+import org.longmetal.Constants;
 
 public class Input {
     private static int leftStickPortInit, rightStickPortInit;

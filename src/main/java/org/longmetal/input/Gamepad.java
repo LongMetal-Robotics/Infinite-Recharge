@@ -3,7 +3,8 @@ package org.longmetal.input;
 import edu.wpi.first.wpilibj.XboxController;
 
 /**
- * A wrapper class for the provided XboxController with some niceities such as getting buttons and axes with an Enum
+ * A wrapper class for the provided XboxController with some niceities such as getting buttons and
+ * axes with an Enum
  */
 public class Gamepad extends XboxController {
 
@@ -51,31 +52,31 @@ public class Gamepad extends XboxController {
     public DPad getDPad() {
         switch (getPOV(0)) {
             case 0:
-            return DPad.UP;
-            
+                return DPad.UP;
+
             case 45:
-            return DPad.UP_RIGHT;
+                return DPad.UP_RIGHT;
 
             case 90:
-            return DPad.RIGHT;
+                return DPad.RIGHT;
 
             case 135:
-            return DPad.DOWN_RIGHT;
-            
+                return DPad.DOWN_RIGHT;
+
             case 180:
-            return DPad.DOWN;
-            
+                return DPad.DOWN;
+
             case 225:
-            return DPad.DOWN_LEFT;
-            
+                return DPad.DOWN_LEFT;
+
             case 270:
-            return DPad.LEFT;
-            
+                return DPad.LEFT;
+
             case 315:
-            return DPad.UP_LEFT;
-            
+                return DPad.UP_LEFT;
+
             default:
-            return DPad.NONE;
+                return DPad.NONE;
         }
     }
 

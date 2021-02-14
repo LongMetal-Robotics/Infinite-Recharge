@@ -13,8 +13,8 @@ public class Delay {
     }
 
     /**
-     * Delay running a Runnable for a certain amount of time. If {@code Delay.setEnabled(false)} or {@code disable()} is called
-     * within the delay, the runnable will not run.
+     * Delay running a Runnable for a certain amount of time. If {@code Delay.setEnabled(false)} or
+     * {@code disable()} is called within the delay, the runnable will not run.
      *
      * @param exec The Runnable to delay
      * @param delay The time to delay running it (in ms)
