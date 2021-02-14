@@ -189,8 +189,7 @@ public class Robot extends TimedRobot {
                             public void run() {
                                 input.setQuinnDrive(false);
                             }
-                        }
-                        );
+                        });
 
         reverseListener =
                 new Listener(
@@ -207,8 +206,7 @@ public class Robot extends TimedRobot {
                             public void run() {
                                 driveTrain.setReverseDrive(false);
                             }
-                        }
-                        );
+                        });
 
         // Display PID Coefficients on SmartDashboard
 
