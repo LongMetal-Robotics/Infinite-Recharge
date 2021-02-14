@@ -26,10 +26,10 @@ public class Intake extends Subsystem {
         mHopper.set(ControlMode.PercentOutput, -d);
     }
 
-    public static void runHopper(double d) {
+    public static Delay runHopper(double d) {
         mHopper.set(ControlMode.PercentOutput, -d);
 
-        Delay.delay(
+        return new Delay(
                 new Runnable() {
 
                     @Override

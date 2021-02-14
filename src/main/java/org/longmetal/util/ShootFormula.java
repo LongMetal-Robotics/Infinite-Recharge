@@ -1,7 +1,7 @@
 package org.longmetal.util;
 
 // This file exists solely to house my basic formula for the shooter
-// -Ben
+// - Brooke
 
 /*  Prerecs:
         double LLDistance = distance taken from LimeLight (in meters)
@@ -10,7 +10,12 @@ package org.longmetal.util;
 
 public class ShootFormula {
 
-    public static double shooterSpeed(double distance) {
+    /**
+     * Calculate the shooter's target speed to launch the ball to the target
+     * @param distance The horizontal distance we are from the target (as calculated from limelight values, most likely)
+     * @return The required RPM to launch the ball to the target
+     */
+    public static double calculateSpeed(double distance) {
         double targetHeight = 2.495555;
         double rampHeight = 0.3048;
         double height = targetHeight - rampHeight;
