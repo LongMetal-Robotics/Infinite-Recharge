@@ -15,7 +15,16 @@ public class Shooter extends Subsystem {
     public static CANEncoder drumEncoder;
     private static TalonSRX mSingulator; // this is the motor that has the mec wheels attached
 
-    public static double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM, minRPM, acceptableDiff = 50;
+    public static double kP,
+            kI,
+            kD,
+            kIz,
+            kFF,
+            kMaxOutput,
+            kMinOutput,
+            maxRPM,
+            minRPM,
+            acceptableDiff = 50;
 
     public static void init() {
         drum = new CANSparkMax(Constants.kP_SHOOTER, MotorType.kBrushless);

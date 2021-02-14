@@ -20,7 +20,6 @@ public class Subsystem {
      *
      * @param isEnabled
      */
-
     public static void setEnabled(boolean isEnabled) {
         if (isEnabled) {
             disabledErrorThrown = false;
