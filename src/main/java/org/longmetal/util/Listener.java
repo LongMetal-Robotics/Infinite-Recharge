@@ -1,21 +1,9 @@
 package org.longmetal.util;
 
 public class Listener {
-    private boolean oldValue = false;
+    private boolean oldValue;
     private Runnable onTrue;
     private Runnable onFalse;
-
-    /**
-     * Create a Listener with an initial value of false
-     *
-     * @param onTrue is called during the {@link #update(boolean) update} method if the value
-     *     changes to true
-     * @param onFalse is called during the {@link #update(boolean) update} method if the value
-     *     changes to false
-     */
-    public Listener(Runnable onTrue, Runnable onFalse) {
-        this(onTrue, onFalse, false);
-    }
 
     /**
      * Create a Listener
@@ -24,13 +12,10 @@ public class Listener {
      *     changes to true
      * @param onFalse is called during the {@link #update(boolean) update} method if the value
      *     changes to false
-     * @param initValue is the value initally stored; it is what is the new value is compared to in
-     *     the {@link #update(boolean) update} method
      */
-    public Listener(Runnable onTrue, Runnable onFalse, boolean initValue) {
+    public Listener(Runnable onTrue, Runnable onFalse) {
         this.onTrue = onTrue;
         this.onFalse = onFalse;
-        oldValue = initValue;
     }
 
     /**
@@ -40,22 +25,17 @@ public class Listener {
      * @return a boolean which is true if a Runnable was run
      */
     public boolean update(boolean newValue) {
-        boolean somethingRan = false;
+        boolean somethingRan = true;
         if (oldValue != newValue) { // If the value changed
-            somethingRan = true;
-            if (newValue) { // If the new value is true
-                if (onTrue != null) {
-                    onTrue.run();
-                } else {
-                    somethingRan = false;
-                }
-            } else { // If the new value is false
-                if (onFalse != null) {
-                    onFalse.run();
-                } else {
-                    somethingRan = false;
-                }
+            if (newValue && onTrue != null) { // If the new value is true
+                onTrue.run();
+            } else if (!newValue && onFalse != null) { // If the new value is false
+                onFalse.run();
+            } else {
+                somethingRan = false;
             }
+        } else {
+            somethingRan = false;
         }
         oldValue = newValue; // Save the new value to compare the next time
         return somethingRan;
