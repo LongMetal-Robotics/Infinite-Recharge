@@ -7,19 +7,16 @@ import org.longmetal.Constants;
 import org.longmetal.util.Delay;
 
 public class Climb extends Subsystem {
-    private CANSparkMax winch1;
-    private CANSparkMax winch2;
-    public CANEncoder encoder1;
-    public CANEncoder encoder2;
-    private boolean winchEnabled = false;
-    private boolean waitingWinchEnabled = false;
+    private static CANSparkMax winch1;
+    private static CANSparkMax winch2;
+    public static CANEncoder encoder1;
+    public static CANEncoder encoder2;
+    private static boolean winchEnabled = false;
+    private static boolean waitingWinchEnabled = false;
 
-    public Climb(boolean isEnabled) {
-        super(isEnabled);
-    }
-
-    @Override
-    public void init() {
+    // @Override
+    public static void init() {
+        initialized = true;
         winch1 = new CANSparkMax(Constants.kP_RWINCH, MotorType.kBrushless);
         winch2 = new CANSparkMax(Constants.kP_LWINCH, MotorType.kBrushless);
         winch1.set(0);
@@ -28,11 +25,9 @@ public class Climb extends Subsystem {
         // winch2.setOpenLoopRampRate(1);
         encoder1 = winch1.getEncoder();
         encoder2 = winch2.getEncoder();
-
-        super.init();
     }
 
-    public void setLeftWinchSpeed(double speed) {
+    public static void setLeftWinchSpeed(double speed) {
         // if (speed < 0){
         //         // && encoder1.getPosition()
         //                 // <= 1) { // Wants to reel in and is within 1 rotation of home
@@ -42,7 +37,7 @@ public class Climb extends Subsystem {
         // }
     }
 
-    public void setRightWinchSpeed(double speed) {
+    public static void setRightWinchSpeed(double speed) {
         // if (speed < 0){
         //         // && encoder2.getPosition()
         //                 // <= 1) { // Wants to reel in and is within 1 rotation of home
@@ -52,25 +47,25 @@ public class Climb extends Subsystem {
         // }
     }
 
-    public void setWinchSpeed(double speed) {
+    public static void setWinchSpeed(double speed) {
         setLeftWinchSpeed(speed);
         setRightWinchSpeed(speed);
     }
 
-    public void resetEncoders() {
+    public static void resetEncoders() {
         encoder1.setPosition(0);
         encoder2.setPosition(0);
     }
 
-    public void setWinchEnabled(boolean enabled) {
+    public static void setWinchEnabled(boolean enabled) {
         winchEnabled = enabled;
     }
 
-    public boolean getWinchEnabled() {
+    public static boolean getWinchEnabled() {
         return winchEnabled;
     }
 
-    public void delayedEnableWinch() {
+    public static void delayedEnableWinch() {
         waitingWinchEnabled = true;
         Delay.delay(
                 new Runnable() {

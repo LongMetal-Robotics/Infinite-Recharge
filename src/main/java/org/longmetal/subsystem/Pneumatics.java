@@ -9,17 +9,13 @@ import org.longmetal.util.Console;
 
 public class Pneumatics extends Subsystem {
     // instance variables
-    private DoubleSolenoid rotator;
-    private DoubleSolenoid drumSpin;
+    private static DoubleSolenoid rotator;
+    private static DoubleSolenoid drumSpin;
 
-    private Compressor compressor;
-    private boolean armUp = false;
+    private static Compressor compressor;
+    private static boolean armUp = false;
 
-    public Pneumatics(boolean setEnabled) {
-        super(setEnabled);
-    }
-
-    public void init() {
+    public static void init() {
         compressor = new Compressor(Constants.kP_PCM);
         compressor.start();
         compressor.setClosedLoopControl(true);
@@ -30,17 +26,15 @@ public class Pneumatics extends Subsystem {
 
         drumSpin = new DoubleSolenoid(Constants.kC_CLIMB1, Constants.kC_CLIMB2);
         drumSpin.set(kOff);
-
-        super.init();
     }
 
-    public void flipArmUp() {
+    public static void flipArmUp() {
         rotator.set(kForward);
         armUp = true;
         Console.log("armUp = " + armUp);
     }
 
-    public void flipArmDown() {
+    public static void flipArmDown() {
         rotator.set(kReverse);
         armUp = false;
         Console.log("armUp = " + armUp);
@@ -56,7 +50,7 @@ public class Pneumatics extends Subsystem {
     //     drumSpin2.set(on);
     // }
 
-    public void setRatchet(boolean on) {
+    public static void setRatchet(boolean on) {
         drumSpin.set(on ? kReverse : kForward);
     }
 }

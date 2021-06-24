@@ -3,13 +3,13 @@ package org.longmetal.input;
 import org.longmetal.Constants;
 
 public class Input {
-    private int leftStickPortInit, rightStickPortInit;
-    public DriveStick forwardStick, turnStick;
-    public Gamepad gamepad;
-    private boolean isQuinnDrive = false;
+    private static int leftStickPortInit, rightStickPortInit;
+    public static DriveStick forwardStick, turnStick;
+    public static Gamepad gamepad;
+    private static boolean isQuinnDrive = false;
     // private boolean isTechDrive = false;
 
-    public Input() {
+    public static void init() {
         leftStickPortInit = Constants.kP_LEFT_STICK;
         rightStickPortInit = Constants.kP_RIGHT_STICK;
         forwardStick = new DriveStick(leftStickPortInit);
@@ -17,7 +17,7 @@ public class Input {
         gamepad = new Gamepad(Constants.kP_GAMEPAD);
     }
 
-    public void setQuinnDrive(boolean doIt) {
+    public static void setQuinnDrive(boolean doIt) {
         if (doIt) {
             forwardStick = new DriveStick(rightStickPortInit);
             turnStick = new DriveStick(leftStickPortInit);
@@ -28,7 +28,7 @@ public class Input {
         isQuinnDrive = doIt;
     }
 
-    public boolean isQuinnDrive() {
+    public static boolean isQuinnDrive() {
         return isQuinnDrive;
     }
 

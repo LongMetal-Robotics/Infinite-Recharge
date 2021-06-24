@@ -9,9 +9,8 @@ package org.longmetal.util;
 */
 
 public class ShootFormula {
-    public ShootFormula() {}
 
-    public double shooterSpeed(double distance) {
+    public static double shooterSpeed(double distance) {
         double targetHeight = 2.495555;
         double rampHeight = 0.3048;
         double height = targetHeight - rampHeight;

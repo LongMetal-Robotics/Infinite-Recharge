@@ -44,19 +44,11 @@ import org.longmetal.util.ShootFormula;
  */
 public class Robot extends TimedRobot {
 
-    Input input;
-    DriveTrain driveTrain;
-    Intake intake;
-    Shooter shooter;
-    Climb climb;
-    ControlPanel controlPanel;
     DigitalInput intakeLimit;
     Timer timer;
     Listener intakeListener;
     Listener panelListenerTurns;
     Listener panelListenerColor;
-    ShootFormula formula;
-    Pneumatics pneumatics;
 
     SendableChooser<Boolean> chooserQuinnDrive;
 
@@ -113,21 +105,13 @@ public class Robot extends TimedRobot {
             Console.warn("Could not determine commit or branch. (" + e.getLocalizedMessage() + ")");
         }
 
-        input = new Input();
-        driveTrain = new DriveTrain();
-        intake = new Intake(true);
-        shooter = new Shooter(true);
-        climb = new Climb(true);
-        controlPanel = new ControlPanel(true);
-        formula = new ShootFormula();
         intakeLimit = new DigitalInput(0);
         timer = new Timer();
-        pneumatics = new Pneumatics(true);
         intakeListener =
                 new Listener(
                         new Runnable() {
                             public void run() {
-                                intake.runHopper(Constants.kTRANSPORT_SPEED);
+                                Intake.runHopper(Constants.kTRANSPORT_SPEED);
                             }
                         },
                         null);
@@ -135,7 +119,7 @@ public class Robot extends TimedRobot {
                 new Listener(
                         new Runnable() {
                             public void run() {
-                                pneumatics.flipArmUp();
+                                Pneumatics.flipArmUp();
                                 panelUp = true;
                                 // controlPanel.turnsMode();
                                 // pneumatics.flipArmDown();
@@ -144,7 +128,7 @@ public class Robot extends TimedRobot {
                         },
                         new Runnable() {
                             public void run() {
-                                pneumatics.flipArmDown();
+                                Pneumatics.flipArmDown();
                                 panelUp = false;
                             }
                         });
@@ -153,7 +137,7 @@ public class Robot extends TimedRobot {
                 new Listener(
                         new Runnable() {
                             public void run() {
-                                pneumatics.flipArmUp();
+                                Pneumatics.flipArmUp();
                                 panelUp = true;
                                 // controlPanel.colorMode();
                                 // pneumatics.flipArmDown();
@@ -162,7 +146,7 @@ public class Robot extends TimedRobot {
                         },
                         new Runnable() {
                             public void run() {
-                                pneumatics.flipArmDown();
+                                Pneumatics.flipArmDown();
                                 panelUp = false;
                             }
                         });
@@ -180,14 +164,14 @@ public class Robot extends TimedRobot {
 
                             @Override
                             public void run() {
-                                input.setQuinnDrive(true);
+                                Input.setQuinnDrive(true);
                             }
                         },
                         new Runnable() {
 
                             @Override
                             public void run() {
-                                input.setQuinnDrive(false);
+                                Input.setQuinnDrive(false);
                             }
                         });
 
@@ -197,22 +181,22 @@ public class Robot extends TimedRobot {
 
                             @Override
                             public void run() {
-                                driveTrain.setReverseDrive(true);
+                                DriveTrain.setReverseDrive(true);
                             }
                         },
                         new Runnable() {
 
                             @Override
                             public void run() {
-                                driveTrain.setReverseDrive(false);
+                                DriveTrain.setReverseDrive(false);
                             }
                         });
 
         // Display PID Coefficients on SmartDashboard
 
-        SmartDashboard.putNumber("I Gain", driveTrain.kI);
-        SmartDashboard.putNumber("P Gain", driveTrain.kP);
-        SmartDashboard.putNumber("D Gain", driveTrain.kD);
+        SmartDashboard.putNumber("I Gain", DriveTrain.kI);
+        SmartDashboard.putNumber("P Gain", DriveTrain.kP);
+        SmartDashboard.putNumber("D Gain", DriveTrain.kD);
 
         updateVision(false);
     }
@@ -227,26 +211,26 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
 
-        SmartDashboard.putData("Drive Train", driveTrain.driveTrain);
-        SmartDashboard.putBoolean("Quinn Drive", input.isQuinnDrive());
+        SmartDashboard.putData("Drive Train", DriveTrain.driveTrain);
+        SmartDashboard.putBoolean("Quinn Drive", Input.isQuinnDrive());
         quinnDriveListener.update(chooserQuinnDrive.getSelected());
 
         // Reverse Drive mode
 
-        boolean forwardDrive = input.forwardStick.getRawButtonPressed(Constants.kFORWARD_BUTTON);
-        boolean reverseDrive = input.forwardStick.getRawButton(Constants.kREVERSE_BUTTON);
+        boolean forwardDrive = Input.forwardStick.getRawButtonPressed(Constants.kFORWARD_BUTTON);
+        boolean reverseDrive = Input.forwardStick.getRawButton(Constants.kREVERSE_BUTTON);
 
         if (forwardDrive ^ reverseDrive) { // XOR: a or b but not both
             reverseListener.update(reverseDrive);
         }
 
-        SmartDashboard.putBoolean("Reverse Drive", driveTrain.getReverseDrive());
+        SmartDashboard.putBoolean("Reverse Drive", DriveTrain.getReverseDrive());
 
         // Endgame mode
         SmartDashboard.putBoolean("Endgame Mode", endgameMode);
 
         // Shooter RPM
-        SmartDashboard.putNumber("ShooterRPM", shooter.getSpeed());
+        SmartDashboard.putNumber("ShooterRPM", Shooter.getSpeed());
 
         // Shooter CorrectRPM
         // shootLow = formula.shooterSpeed(/*Limelight distance*/ 4) * 0.95;
@@ -262,24 +246,24 @@ public class Robot extends TimedRobot {
         conversionFactor = SmartDashboard.getNumber("Shoot Factor", 0);
 
         // if PID coefficients on SmartDashboard have changed, write new values to controller
-        if ((p != driveTrain.kP)) {
-            driveTrain.alignmentController.setP(p);
-            driveTrain.kP = p;
+        if ((p != DriveTrain.kP)) {
+            DriveTrain.alignmentController.setP(p);
+            DriveTrain.kP = p;
         }
-        if ((i != driveTrain.kI)) {
-            driveTrain.alignmentController.setI(i);
-            driveTrain.kI = i;
+        if ((i != DriveTrain.kI)) {
+            DriveTrain.alignmentController.setI(i);
+            DriveTrain.kI = i;
         }
-        if ((d != driveTrain.kD)) {
-            driveTrain.alignmentController.setD(d);
-            driveTrain.kD = d;
+        if ((d != DriveTrain.kD)) {
+            DriveTrain.alignmentController.setD(d);
+            DriveTrain.kD = d;
         }
 
         SmartDashboard.putNumber("Set Point", shooterSetPoint);
         SmartDashboard.putNumber("Shoot Factor", 0);
-        velocity = shooter.drumEncoder.getVelocity();
+        velocity = Shooter.drumEncoder.getVelocity();
         double velocityDiff = Math.abs(shooterSetPoint - velocity);
-        RPMInRange = velocityDiff <= shooter.acceptableDiff;
+        RPMInRange = velocityDiff <= Shooter.acceptableDiff;
         SmartDashboard.putBoolean("RPM In Range", RPMInRange);
         SmartDashboard.putNumber("RPM Diff", velocityDiff);
 
@@ -298,8 +282,8 @@ public class Robot extends TimedRobot {
     }
 
     public void enabledPeriodic() {
-        driveTrain.alignmentCalc =
-                (double) LMMath.limit(-1 * driveTrain.alignmentController.calculate(tX), -0.5, 0.5);
+        DriveTrain.alignmentCalc =
+                (double) LMMath.limit(-1 * DriveTrain.alignmentController.calculate(tX), -0.5, 0.5);
     }
 
     /**
@@ -325,7 +309,7 @@ public class Robot extends TimedRobot {
         boolean targetAcquired = false; // initially there should be no targets
         while (!targetAcquired) {
             // while we don't see any,
-            driveTrain.curve(0.2, 0.2, 0.0, 0.0);
+            DriveTrain.curve(0.2, 0.2, 0.0, 0.0);
 
             // float tv = limelightTable->GetNumber("tv"); //converts networkTable to a regular
             // float?
@@ -351,40 +335,40 @@ public class Robot extends TimedRobot {
         enabledPeriodic();
 
         // Left Gamepad trigger, currently used for shooter
-        double lTrigger = input.gamepad.getAxis(Axis.LT);
+        double lTrigger = Input.gamepad.getAxis(Axis.LT);
 
         // Right Gamepad trigger, currently used for intake
-        double rTrigger = input.gamepad.getAxis(Axis.RT);
+        double rTrigger = Input.gamepad.getAxis(Axis.RT);
 
         // Left stick Y axis, left climb up/down
-        double lStickY = input.gamepad.getAxis(Axis.LS_Y);
+        double lStickY = Input.gamepad.getAxis(Axis.LS_Y);
 
         // Right stick Y axis, right climb up/down
-        double rStickY = input.gamepad.getAxis(Axis.RS_Y);
+        double rStickY = Input.gamepad.getAxis(Axis.RS_Y);
 
         // LB button, used to stop shooter
-        boolean lButton = input.gamepad.getButton(Button.LB);
+        boolean lButton = Input.gamepad.getButton(Button.LB);
 
         // RB button, used to run reverse intake and release climb [only in climb mode]
-        boolean rButton = input.gamepad.getButton(Button.RB);
+        boolean rButton = Input.gamepad.getButton(Button.RB);
 
         // X button, not currently used
-        boolean xButton = input.gamepad.getButton(Button.X);
+        boolean xButton = Input.gamepad.getButton(Button.X);
 
         // Y button, enables Control Panel Mode
-        boolean yButton = input.gamepad.getButton(Button.Y);
+        boolean yButton = Input.gamepad.getButton(Button.Y);
 
         // A button, not currently used
-        boolean aButton = input.gamepad.getButton(Button.A);
+        boolean aButton = Input.gamepad.getButton(Button.A);
 
         // B button, currently prompts shooter to aim and set speed
-        boolean bButton = input.gamepad.getButton(Button.B);
+        boolean bButton = Input.gamepad.getButton(Button.B);
 
         // Start button, engages Endgame Mode
-        boolean startButton = input.gamepad.getButton(Button.START);
+        boolean startButton = Input.gamepad.getButton(Button.START);
 
         // Back button, disengages Endgame Mode
-        boolean backButton = input.gamepad.getButton(Button.BACK);
+        boolean backButton = Input.gamepad.getButton(Button.BACK);
 
         boolean hopperOn = false;
 
@@ -392,18 +376,18 @@ public class Robot extends TimedRobot {
         if (bButton) {
             updateVision(true);
             // driveTrain.curveRaw(0, (tX / 30) / 2, true);
-            SmartDashboard.putNumber("Alignment", driveTrain.alignmentCalc);
-            driveTrain.curveRaw(0, driveTrain.alignmentCalc, true);
+            SmartDashboard.putNumber("Alignment", DriveTrain.alignmentCalc);
+            DriveTrain.curveRaw(0, DriveTrain.alignmentCalc, true);
         } else if (aButton) {
             updateVision(false);
-            driveTrain.curveRaw(0.5, 0, false);
+            DriveTrain.curveRaw(0.5, 0, false);
 
             Delay.delay(
                     new Runnable() {
 
                         @Override
                         public void run() {
-                            driveTrain.curveRaw(0, 0, true);
+                            DriveTrain.curveRaw(0, 0, true);
                         }
                     },
                     Constants.kLOW_PORT_REVERSE_TIME);
@@ -416,20 +400,20 @@ public class Robot extends TimedRobot {
                       input.turnStick.getThrottle() * 0.5);
           }*/ else {
             updateVision(false);
-            driveTrain.curve(
-                    input.forwardStick.getY(),
-                    input.forwardStick.getThrottle(),
-                    input.turnStick.getTwist(),
-                    input.turnStick.getThrottle());
+            DriveTrain.curve(
+                    Input.forwardStick.getY(),
+                    Input.forwardStick.getThrottle(),
+                    Input.turnStick.getTwist(),
+                    Input.turnStick.getThrottle());
         }
 
         // Puts the robot into endgame mode, disabling all manipulator subsystems
         if (startButton) {
             endgameMode = true;
-            climb.resetEncoders();
+            Climb.resetEncoders();
         }
         if (!endgameMode) {
-            pneumatics.setRatchet(false);
+            Pneumatics.setRatchet(false);
 
             shooterSetPoint = 0;
             // I'm not sure if this is the most efficient way to do this, but I will hopefully
@@ -445,11 +429,11 @@ public class Robot extends TimedRobot {
 
             if (shooterStop) {
                 if (backButton) {
-                    shooter.runShooter(-0.1);
-                    shooter.setSingulatorSpeed(-0.2);
+                    Shooter.runShooter(-0.1);
+                    Shooter.setSingulatorSpeed(-0.2);
                 } else {
-                    shooter.runShooter(0);
-                    shooter.setSingulatorSpeed(-0.1);
+                    Shooter.runShooter(0);
+                    Shooter.setSingulatorSpeed(-0.1);
                 }
             } else {
                 if (bButton) {
@@ -460,12 +444,12 @@ public class Robot extends TimedRobot {
                         shooterSetPoint =
                                 (double)
                                         LMMath.limit(
-                                                formula.shooterSpeed(
+                                                ShootFormula.shooterSpeed(
                                                                 Vision.getLimelightDistance(
                                                                         tY /*, Vision.Target.POWER_PORT*/))
                                                         * 2.4,
-                                                shooter.minRPM,
-                                                shooter.maxRPM);
+                                                Shooter.minRPM,
+                                                Shooter.maxRPM);
                     }
 
                     SmartDashboard.putNumber(
@@ -481,12 +465,12 @@ public class Robot extends TimedRobot {
                     // Singulator directly controlled by left trigger
                     // Hopper is either on or off
                     if (lTrigger > Constants.kINPUT_DEADBAND) {
-                        shooter.setSingulatorSpeed(lTrigger);
+                        Shooter.setSingulatorSpeed(lTrigger);
                         hopperOn = true;
-                        intake.setHopperSpeed(1);
+                        Intake.setHopperSpeed(1);
                     } else {
-                        shooter.setSingulatorSpeed(-0.1);
-                        intake.setHopperSpeed(0);
+                        Shooter.setSingulatorSpeed(-0.1);
+                        Intake.setHopperSpeed(0);
                         hopperOn = false;
                     }
                 } else if (aButton) { // Sets shooter to lower speed to place into lower port
@@ -494,36 +478,36 @@ public class Robot extends TimedRobot {
                     shooterSetPoint = 1500;
 
                     if (RPMInRange) {
-                        shooter.setSingulatorSpeed(1);
+                        Shooter.setSingulatorSpeed(1);
                         hopperOn = true;
-                        intake.setHopperSpeed(1);
+                        Intake.setHopperSpeed(1);
                     } else {
-                        shooter.setSingulatorSpeed(-0.1);
-                        intake.setHopperSpeed(0);
+                        Shooter.setSingulatorSpeed(-0.1);
+                        Intake.setHopperSpeed(0);
                         hopperOn = false;
                     }
                 } else {
                     updateVision(false);
                     shooterSetPoint = Constants.kSHOOTER_MIN;
-                    shooter.setSingulatorSpeed(-0.1);
+                    Shooter.setSingulatorSpeed(-0.1);
                 }
             }
 
             SmartDashboard.putNumber("Set", shooterSetPoint);
             if (shooterSetPoint != lastShooterSetPoint) {
-                shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
+                Shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
                 // shooter.setShooterRPM(shooterSetPoint);
                 lastShooterSetPoint = shooterSetPoint;
             }
 
             // Sets intake to a speed
             if (rTrigger > Constants.kINPUT_DEADBAND) {
-                intake.setIntakeSpeed(rTrigger);
+                Intake.setIntakeSpeed(rTrigger);
                 // intake.setHopperSpeed(rTrigger);
             } else if (rButton) { // Reverse intake
-                intake.setIntakeSpeed(-0.3);
+                Intake.setIntakeSpeed(-0.3);
             } else { // Stop intake
-                intake.setIntakeSpeed(0);
+                Intake.setIntakeSpeed(0);
                 // intake.setHopperSpeed(0);
             }
 
@@ -536,9 +520,9 @@ public class Robot extends TimedRobot {
             // }
 
             if (lStickY < -0.5) {
-                intake.setHopperSpeed(1);
+                Intake.setHopperSpeed(1);
             } else if (!hopperOn) {
-                intake.setHopperSpeed(0);
+                Intake.setHopperSpeed(0);
             }
 
             intakeListener.update(intakeLimit.get());
@@ -546,9 +530,9 @@ public class Robot extends TimedRobot {
             // Flip up control panel and engage based on FMS values
             if (yButton) {
                 // For now, this button will just spin the motor for testing purposes
-                controlPanel.spin();
+                ControlPanel.spin();
             } else {
-                controlPanel.stop();
+                ControlPanel.stop();
             }
 
             // Temporary control for flipping arm up
@@ -557,9 +541,9 @@ public class Robot extends TimedRobot {
 
             if (backButton) {
                 endgameMode = false;
-                pneumatics.setRatchet(true);
-                climb.setWinchSpeed(0);
-                climb.setWinchEnabled(false);
+                Pneumatics.setRatchet(true);
+                Climb.setWinchSpeed(0);
+                Climb.setWinchEnabled(false);
             }
 
             boolean sticksUp =
@@ -569,50 +553,50 @@ public class Robot extends TimedRobot {
             if (sticksUp) {
 
                 // Disengage ratchet
-                pneumatics.setRatchet(false);
+                Pneumatics.setRatchet(false);
 
                 if (lStickY < -Constants.kINPUT_DEADBAND) {
                     // Let out left winch
-                    climb.setLeftWinchSpeed(-lStickY / 2);
+                    Climb.setLeftWinchSpeed(-lStickY / 2);
                 }
 
                 if (rStickY < -Constants.kINPUT_DEADBAND) {
                     // Let out right winch
-                    climb.setRightWinchSpeed(-rStickY / 2);
+                    Climb.setRightWinchSpeed(-rStickY / 2);
                 }
 
             } else {
-                double lClimbPosition = climb.encoder1.getPosition();
-                double rClimbPosition = -climb.encoder2.getPosition();
+                double lClimbPosition = Climb.encoder1.getPosition();
+                double rClimbPosition = -Climb.encoder2.getPosition();
                 double minPosition = Math.min(lClimbPosition, rClimbPosition);
                 // SmartDashboard.putNumber("lClimb", lClimbPosition);
                 // SmartDashboard.putNumber("rClimb", rClimbPosition);
 
                 // If it has spooled out a reasonable amount, allow the ratchet in
                 if (minPosition >= 30) {
-                    pneumatics.setRatchet(true);
+                    Pneumatics.setRatchet(true);
                 } else {
-                    pneumatics.setRatchet(false);
+                    Pneumatics.setRatchet(false);
                 }
 
                 // Engage ratchet
 
-                climb.setWinchEnabled(false);
+                Climb.setWinchEnabled(false);
 
                 // Left stick down
                 // Reel in left climb (raise robot)
                 if (lStickY > Constants.kINPUT_DEADBAND) {
-                    climb.setLeftWinchSpeed(-lStickY);
+                    Climb.setLeftWinchSpeed(-lStickY);
                 } else {
-                    climb.setLeftWinchSpeed(0);
+                    Climb.setLeftWinchSpeed(0);
                 }
 
                 // Right stick down
                 // Reel in right climb (raise robot)
                 if (rStickY > Constants.kINPUT_DEADBAND) {
-                    climb.setRightWinchSpeed(-rStickY);
+                    Climb.setRightWinchSpeed(-rStickY);
                 } else {
-                    climb.setRightWinchSpeed(0);
+                    Climb.setRightWinchSpeed(0);
                 }
             }
         }

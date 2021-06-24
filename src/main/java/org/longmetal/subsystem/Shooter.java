@@ -10,22 +10,23 @@ import com.revrobotics.ControlType;
 import org.longmetal.Constants;
 
 public class Shooter extends Subsystem {
-    private CANSparkMax drum;
-    public CANPIDController drumPID;
-    public CANEncoder drumEncoder;
-    private TalonSRX mSingulator; // this is the motor that has the mec wheels attached
+    private static CANSparkMax drum;
+    public static CANPIDController drumPID;
+    public static CANEncoder drumEncoder;
+    private static TalonSRX mSingulator; // this is the motor that has the mec wheels attached
 
-    public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM, minRPM, acceptableDiff = 50;
+    public static double kP,
+            kI,
+            kD,
+            kIz,
+            kFF,
+            kMaxOutput,
+            kMinOutput,
+            maxRPM,
+            minRPM,
+            acceptableDiff = 50;
 
-    public Shooter(boolean setEnabled) {
-        super(setEnabled);
-        // if (setEnabled) { // I'm dumb and they way I wrote the inheritance, it wouldn't work (it
-        //     // wouldn't call the right init).
-        //     init();
-        // }
-    }
-
-    public void init() {
+    public static void init() {
         drum = new CANSparkMax(Constants.kP_SHOOTER, MotorType.kBrushless);
         drumEncoder = new CANEncoder(drum);
         drum.set(0);
@@ -48,8 +49,6 @@ public class Shooter extends Subsystem {
         drumPID.setOutputRange(kMinOutput, kMaxOutput);
         mSingulator = new TalonSRX(Constants.kP_SINGULATOR);
         drum.setOpenLoopRampRate(1);
-
-        super.init();
     }
 
     // public void testShooter(double lTrigger) throws SubsystemException {
@@ -58,23 +57,23 @@ public class Shooter extends Subsystem {
     //     System.out.println(drumEncoder.getVelocity());
     // }
 
-    public void runShooter(double d) {
+    public static void runShooter(double d) {
         drum.set(d);
     }
 
-    public void stop() {
+    public static void stop() {
         drum.set(0);
     }
 
-    public void setSingulatorSpeed(double d) {
+    public static void setSingulatorSpeed(double d) {
         mSingulator.set(ControlMode.PercentOutput, d);
     }
 
-    public double getSpeed() {
+    public static double getSpeed() {
         return drumEncoder.getVelocity();
     }
 
-    public void setShooterRPM(double velocity) {
+    public static void setShooterRPM(double velocity) {
         drumPID.setReference(velocity, ControlType.kVelocity);
     }
 }
