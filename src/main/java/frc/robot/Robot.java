@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
+/* Copyright (c) 2020-2021 LongMetal Robotics.                                */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -74,10 +74,6 @@ public class Robot extends TimedRobot {
     double tX, tY, lastShooterSetPoint, shooterSetPoint, velocity;
     boolean RPMInRange = false;
 
-    /**
-     * This function is run when the robot is first started up and should be used for any
-     * initialization code.
-     */
     @Override
     public void robotInit() {
 
@@ -198,16 +194,9 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("P Gain", DriveTrain.kP);
         SmartDashboard.putNumber("D Gain", DriveTrain.kD);
 
-        updateVision(false);
+        visionEnableAndQuery(false);
     }
 
-    /**
-     * This function is called every robot packet, no matter the mode. Use this for items like
-     * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
-     *
-     * <p>This runs after the mode specific periodic functions, but before LiveWindow and
-     * SmartDashboard integrated updating.
-     */
     @Override
     public void robotPeriodic() {
 
@@ -246,15 +235,15 @@ public class Robot extends TimedRobot {
         conversionFactor = SmartDashboard.getNumber("Shoot Factor", 0);
 
         // if PID coefficients on SmartDashboard have changed, write new values to controller
-        if ((p != DriveTrain.kP)) {
+        if (p != DriveTrain.kP) {
             DriveTrain.alignmentController.setP(p);
             DriveTrain.kP = p;
         }
-        if ((i != DriveTrain.kI)) {
+        if (i != DriveTrain.kI) {
             DriveTrain.alignmentController.setI(i);
             DriveTrain.kI = i;
         }
-        if ((d != DriveTrain.kD)) {
+        if (d != DriveTrain.kD) {
             DriveTrain.alignmentController.setD(d);
             DriveTrain.kD = d;
         }
@@ -278,7 +267,7 @@ public class Robot extends TimedRobot {
     }
 
     public void enabledInit() {
-        Delay.setEnabled(true);
+        Delay.setEnabled(true); // Allows Delay to be used
     }
 
     public void enabledPeriodic() {
@@ -286,20 +275,9 @@ public class Robot extends TimedRobot {
                 (double) LMMath.limit(-1 * DriveTrain.alignmentController.calculate(tX), -0.5, 0.5);
     }
 
-    /**
-     * This autonomous (along with the chooser code above) shows how to select between different
-     * autonomous modes using the dashboard. The sendable chooser code works with the Java
-     * SmartDashboard. If you prefer the LabVIEW Dashboard (you don't), remove all of the chooser
-     * code and uncomment the getString line to get the auto name from the text box below the Gyro
-     *
-     * <p>You can add additional auto modes by adding additional comparisons to the switch structure
-     * below with additional strings. If using the SendableChooser make sure to add them to the
-     * chooser code above as well.
-     */
     @Override
     public void autonomousInit() {
         enabledInit();
-        Delay.setEnabled(true); // Allows Delay to be used
     }
 
     /** This function is called periodically during autonomous. */
@@ -324,7 +302,6 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         enabledInit();
-        Delay.setEnabled(true); // Allows Delay to be used
         shooterSetPoint = 0;
         lastShooterSetPoint = 0;
     }
@@ -372,17 +349,25 @@ public class Robot extends TimedRobot {
 
         boolean hopperOn = false;
 
+        /**
+         * Exclusionary Driving Modes Take control away from the driver and trust the algorithms for
+         * a bit
+         */
+
         // Limelight line-up while B button is held
         if (bButton) {
-            updateVision(true);
+            visionEnableAndQuery(true);
             // driveTrain.curveRaw(0, (tX / 30) / 2, true);
             SmartDashboard.putNumber("Alignment", DriveTrain.alignmentCalc);
             DriveTrain.curveRaw(0, DriveTrain.alignmentCalc, true);
-        } else if (aButton) {
-            updateVision(false);
+        } else if (aButton) { // Drive forward for a few seconds?
+            // I see... a number of problems with this...
+            // 1. I don't know what it does or why it does it
+            // 2. It sets a timer every tick the A button is pressed
+            visionEnableAndQuery(false);
             DriveTrain.curveRaw(0.5, 0, false);
 
-            Delay.delay(
+            new Delay(
                     new Runnable() {
 
                         @Override
@@ -391,15 +376,17 @@ public class Robot extends TimedRobot {
                         }
                     },
                     Constants.kLOW_PORT_REVERSE_TIME);
-        } /*else if (readyClimb || panelUp) { // When panel or climb up, drive slower
-              updateVision(false);
-              driveTrain.curve(
-                      input.forwardStick.getY(),
-                      input.forwardStick.getThrottle() * 0.2,
-                      input.turnStick.getTwist(),
-                      input.turnStick.getThrottle() * 0.5);
-          }*/ else {
-            updateVision(false);
+
+            /* } else if (readyClimb || panelUp) { // When panel or climb up, drive slower
+                updateVision(false);
+                driveTrain.curve(
+                        input.forwardStick.getY(),
+                        input.forwardStick.getThrottle() * 0.2,
+                        input.turnStick.getTwist(),
+                        input.turnStick.getThrottle() * 0.5);
+            }*/
+        } else { // Regular driving
+            visionEnableAndQuery(false);
             DriveTrain.curve(
                     Input.forwardStick.getY(),
                     Input.forwardStick.getThrottle(),
@@ -412,6 +399,8 @@ public class Robot extends TimedRobot {
             endgameMode = true;
             Climb.resetEncoders();
         }
+
+        // If we're in the normal part of the match
         if (!endgameMode) {
             Pneumatics.setRatchet(false);
 
@@ -423,28 +412,30 @@ public class Robot extends TimedRobot {
             if (lButton) {
                 shooterStop = true;
                 // intake.setHopperSpeed(0);
-            } else if (bButton || aButton) {
+            } else if (bButton
+                    || aButton) { // Pressing A or B needs the shooter again, so let's re-enable it
                 shooterStop = false;
             }
-
-            if (shooterStop) {
-                if (backButton) {
-                    Shooter.runShooter(-0.1);
+          
+            if (shooterStop) { // When the shooter isn't running,
+                if (backButton) { // When we press the back button...
+                    Shooter.runShooter(-0.1); // Run the mechanism in reverse
                     Shooter.setSingulatorSpeed(-0.2);
-                } else {
-                    Shooter.runShooter(0);
+                } else { // Otherwise
+                    Shooter.runShooter(0); // Keep the shooter clear
                     Shooter.setSingulatorSpeed(-0.1);
                 }
-            } else {
-                if (bButton) {
+            } else { // When the shooter is running
+                if (bButton) { // B - Turn on the limelight and calculate our distance from the
+                               // target
                     // SmartDashboard.getNumber("Factor", conversionFactor);
 
-                    updateVision(true);
+                    visionEnableAndQuery(true);
                     if (tY >= 10) {
                         shooterSetPoint =
                                 (double)
                                         LMMath.limit(
-                                                ShootFormula.shooterSpeed(
+                                                ShootFormula.calculateSpeed(
                                                                 Vision.getLimelightDistance(
                                                                         tY /*, Vision.Target.POWER_PORT*/))
                                                         * 2.4,
@@ -474,7 +465,7 @@ public class Robot extends TimedRobot {
                         hopperOn = false;
                     }
                 } else if (aButton) { // Sets shooter to lower speed to place into lower port
-                    updateVision(false);
+                    visionEnableAndQuery(false);
                     shooterSetPoint = 1500;
 
                     if (RPMInRange) {
@@ -486,15 +477,15 @@ public class Robot extends TimedRobot {
                         Intake.setHopperSpeed(0);
                         hopperOn = false;
                     }
-                } else {
-                    updateVision(false);
+                } else { // We're not doing anything else with the shooter, so idle it
+                    visionEnableAndQuery(false);
                     shooterSetPoint = Constants.kSHOOTER_MIN;
                     Shooter.setSingulatorSpeed(-0.1);
                 }
             }
 
             SmartDashboard.putNumber("Set", shooterSetPoint);
-            if (shooterSetPoint != lastShooterSetPoint) {
+            if (shooterSetPoint != lastShooterSetPoint) { // It changed
                 Shooter.drumPID.setReference(shooterSetPoint, ControlType.kVelocity);
                 // shooter.setShooterRPM(shooterSetPoint);
                 lastShooterSetPoint = shooterSetPoint;
@@ -520,8 +511,10 @@ public class Robot extends TimedRobot {
             // }
 
             if (lStickY < -0.5) {
-                Intake.setHopperSpeed(1);
-            } else if (!hopperOn) {
+                // If our forward commanded speed is faster than 0.5
+                Intake.setHopperSpeed(1); // Enable the hopper
+            } else if (!hopperOn) { // hopperOn is somewhat useless but I'll look more deeply a bit
+                                    // later
                 Intake.setHopperSpeed(0);
             }
 
@@ -537,21 +530,19 @@ public class Robot extends TimedRobot {
 
             // Temporary control for flipping arm up
             panelListenerTurns.update(!xButton);
-        } else {
+        } else { // Endgame
 
-            if (backButton) {
-                endgameMode = false;
-                Pneumatics.setRatchet(true);
-                Climb.setWinchSpeed(0);
-                Climb.setWinchEnabled(false);
+            if (backButton) { // Back = ...
+                endgameMode = false; // Disable endgame
+                Pneumatics.setRatchet(true); // But engage the ratchets
+                Climb.setWinchSpeed(0); // Stop the winch
+                Climb.setWinchEnabled(false); // But leave it enabled
             }
 
-            boolean sticksUp =
+            boolean sticksUp = // Is either stick pushed up?
                     lStickY < -Constants.kINPUT_DEADBAND || rStickY < -Constants.kINPUT_DEADBAND;
 
-            // Sticks up
             if (sticksUp) {
-
                 // Disengage ratchet
                 Pneumatics.setRatchet(false);
 
@@ -566,8 +557,14 @@ public class Robot extends TimedRobot {
                 }
 
             } else {
-                double lClimbPosition = Climb.encoder1.getPosition();
-                double rClimbPosition = -Climb.encoder2.getPosition();
+                double lClimbPosition =
+                        Climb.encoder1
+                                .getPosition(); // Return 'rotations' if not otherwise specified
+                                                // (and it wasn't I think...)
+                double rClimbPosition =
+                        -Climb.encoder2
+                                .getPosition(); // Return 'rotations' if not otherwise specified
+                                                // (and it wasn't I think...)
                 double minPosition = Math.min(lClimbPosition, rClimbPosition);
                 // SmartDashboard.putNumber("lClimb", lClimbPosition);
                 // SmartDashboard.putNumber("rClimb", rClimbPosition);
@@ -581,7 +578,8 @@ public class Robot extends TimedRobot {
 
                 // Engage ratchet
 
-                Climb.setWinchEnabled(false);
+                Climb.setWinchEnabled(
+                        false); // we never call getWinchEnabled so I'm not sure what this is for
 
                 // Left stick down
                 // Reel in left climb (raise robot)
@@ -602,7 +600,7 @@ public class Robot extends TimedRobot {
         }
     }
 
-    private void updateVision(boolean enable) {
+    private void visionEnableAndQuery(boolean enable) {
         if (enable) { // If `enable` is `true`, turn on the LEDs and vision processing
             limelightTable.getEntry("ledMode").setDouble(Constants.LL_ON);
             limelightTable.getEntry("pipeline").setNumber(Constants.PIPELINE_VISION);

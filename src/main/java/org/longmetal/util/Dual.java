@@ -21,7 +21,7 @@ public class Dual<Type> {
      *
      * @return the value of a
      */
-    public Type geta() {
+    public Type getA() {
         return a;
     }
 
@@ -30,7 +30,7 @@ public class Dual<Type> {
      *
      * @return the value of b
      */
-    public Type getb() {
+    public Type getB() {
         return b;
     }
 
@@ -39,7 +39,7 @@ public class Dual<Type> {
      *
      * @param a the value to store to a
      */
-    public void seta(Type a) {
+    public void setA(Type a) {
         this.a = a;
     }
 
@@ -48,7 +48,7 @@ public class Dual<Type> {
      *
      * @param b the value to store to b
      */
-    public void setb(Type b) {
+    public void setB(Type b) {
         this.b = b;
     }
 }

@@ -65,9 +65,9 @@ public class Climb extends Subsystem {
         return winchEnabled;
     }
 
-    public static void delayedEnableWinch() {
+    public static Delay delayedEnableWinch() {
         waitingWinchEnabled = true;
-        Delay.delay(
+        return new Delay(
                 new Runnable() {
 
                     @Override

@@ -1,8 +1,12 @@
 package org.longmetal.input;
 
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 
-public class Gamepad extends Joystick {
+/**
+ * A wrapper class for the provided XboxController with some niceities such as getting buttons and
+ * axes with an Enum
+ */
+public class Gamepad extends XboxController {
 
     public Gamepad(int port) {
         super(port);
@@ -11,34 +15,34 @@ public class Gamepad extends Joystick {
     public boolean getButton(Button button) throws EnumConstantNotPresentException {
         switch (button) {
             case A:
-                return getRawButton(1);
+                return getAButton();
 
             case B:
-                return getRawButton(2);
+                return getBButton();
 
             case X:
-                return getRawButton(3);
+                return getXButton();
 
             case Y:
-                return getRawButton(4);
+                return getYButton();
 
             case LB:
-                return getRawButton(5);
+                return getBumper(Hand.kLeft);
 
             case RB:
-                return getRawButton(6);
+                return getBumper(Hand.kRight);
 
             case BACK:
-                return getRawButton(7);
+                return getBackButton();
 
             case START:
-                return getRawButton(8);
+                return getStartButton();
 
             case LS:
-                return getRawButton(9);
+                return getStickButton(Hand.kLeft);
 
             case RS:
-                return getRawButton(10);
+                return getStickButton(Hand.kRight);
 
             default:
                 throw new EnumConstantNotPresentException(Button.class, button.name());
@@ -50,14 +54,26 @@ public class Gamepad extends Joystick {
             case 0:
                 return DPad.UP;
 
+            case 45:
+                return DPad.UP_RIGHT;
+
             case 90:
                 return DPad.RIGHT;
+
+            case 135:
+                return DPad.DOWN_RIGHT;
 
             case 180:
                 return DPad.DOWN;
 
+            case 225:
+                return DPad.DOWN_LEFT;
+
             case 270:
                 return DPad.LEFT;
+
+            case 315:
+                return DPad.UP_LEFT;
 
             default:
                 return DPad.NONE;
@@ -67,33 +83,37 @@ public class Gamepad extends Joystick {
     public double getAxis(Axis axis) {
         switch (axis) {
             case LS_X:
-                return getRawAxis(0);
+                return getX(Hand.kLeft);
 
             case LS_Y:
-                return getRawAxis(1);
+                return getY(Hand.kLeft);
 
             case RS_X:
-                return getRawAxis(4);
+                return getX(Hand.kRight);
 
             case RS_Y:
-                return getRawAxis(5);
+                return getY(Hand.kRight);
 
             case LT:
-                return getRawAxis(2);
+                return getTriggerAxis(Hand.kLeft);
 
             case RT:
-                return getRawAxis(3);
+                return getTriggerAxis(Hand.kRight);
 
             default:
-                return 0;
+                throw new EnumConstantNotPresentException(Axis.class, axis.name());
         }
     }
 
     public enum DPad {
-        LEFT,
-        RIGHT,
         UP,
+        UP_RIGHT,
+        RIGHT,
+        DOWN_RIGHT,
         DOWN,
+        DOWN_LEFT,
+        LEFT,
+        UP_LEFT,
         NONE
     }
 
