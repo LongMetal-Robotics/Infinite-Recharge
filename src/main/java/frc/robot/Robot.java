@@ -416,7 +416,7 @@ public class Robot extends TimedRobot {
                     || aButton) { // Pressing A or B needs the shooter again, so let's re-enable it
                 shooterStop = false;
             }
-
+          
             if (shooterStop) { // When the shooter isn't running,
                 if (backButton) { // When we press the back button...
                     Shooter.runShooter(-0.1); // Run the mechanism in reverse
