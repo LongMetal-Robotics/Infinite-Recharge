@@ -110,8 +110,7 @@ public class Robot extends TimedRobot {
                                 Intake.runHopper(Constants.kTRANSPORT_SPEED);
                             }
                         },
-                        null,
-                        true);
+                        null);
         panelListenerTurns =
                 new Listener(
                         new Runnable() {
@@ -128,9 +127,7 @@ public class Robot extends TimedRobot {
                                 Pneumatics.flipArmDown();
                                 panelUp = false;
                             }
-                        },
-                        // null,
-                        false);
+                        });
 
         panelListenerColor =
                 new Listener(
@@ -148,9 +145,7 @@ public class Robot extends TimedRobot {
                                 Pneumatics.flipArmDown();
                                 panelUp = false;
                             }
-                        },
-                        // null,
-                        false);
+                        });
 
         timer.start();
 
@@ -174,8 +169,7 @@ public class Robot extends TimedRobot {
                             public void run() {
                                 Input.setQuinnDrive(false);
                             }
-                        },
-                        false);
+                        });
 
         reverseListener =
                 new Listener(
@@ -192,8 +186,7 @@ public class Robot extends TimedRobot {
                             public void run() {
                                 DriveTrain.setReverseDrive(false);
                             }
-                        },
-                        false);
+                        });
 
         // Display PID Coefficients on SmartDashboard
 
